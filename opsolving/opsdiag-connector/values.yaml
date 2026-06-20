@@ -1,0 +1,182 @@
+## @section Global parameters
+##
+global:
+  ## @param global.imageRegistry Global Docker image registry override
+  imageRegistry: ""
+  ## @param global.imagePullSecrets Global Docker registry secret names as strings or maps with a `name` key
+  imagePullSecrets: []
+
+## @section Common parameters
+##
+## @param nameOverride String to partially override `common.names.name`
+nameOverride: ""
+## @param fullnameOverride String to fully override `common.names.fullname`
+fullnameOverride: ""
+## @param namespaceOverride String to fully override `common.names.namespace`
+namespaceOverride: ""
+## @param commonLabels Labels to add to all rendered resources
+commonLabels: {}
+## @param commonAnnotations Annotations to add to all rendered resources
+commonAnnotations: {}
+
+## @section OpsDiag connector image parameters
+##
+image:
+  ## @param image.registry OpsDiag connector image registry
+  registry: europe-west1-docker.pkg.dev
+  ## @param image.repository OpsDiag connector image repository
+  repository: prod-common-cicd/docker-public/opsdiag-connector
+  ## @param image.tag OpsDiag connector image tag; defaults to chart appVersion when empty
+  tag: ""
+  ## @param image.digest OpsDiag connector image digest, used instead of tag when set
+  digest: ""
+  ## @param image.pullPolicy OpsDiag connector image pull policy
+  pullPolicy: IfNotPresent
+  ## @param image.pullSecrets OpsDiag connector image pull secret names as strings or maps with a `name` key
+  pullSecrets: []
+
+## @section OpsDiag connector configuration
+##
+connector:
+  ## @param connector.license Gateway connector pseudo-license JWT. Prefer `connector.existingSecret` for real installs.
+  license: ""
+  ## @param connector.existingSecret Existing secret containing the gateway connector pseudo-license JWT
+  existingSecret: ""
+  ## @param connector.existingSecretKey Key inside `connector.existingSecret` or the chart-created secret
+  existingSecretKey: license
+  ## @param connector.licenseServer Control API endpoint used to exchange the license for a short-lived gateway token
+  licenseServer: https://control.compute.opsdiag.ai/api/gateway/token
+  ## @param connector.gatewayURL Public gateway server WebSocket URL
+  gatewayURL: wss://gateway.compute.opsdiag.ai/
+  ## @param connector.connectTimeoutSeconds Gateway WebSocket connect timeout in seconds
+  connectTimeoutSeconds: 10
+  ## @param connector.reconnectMinSeconds Minimum reconnect backoff in seconds
+  reconnectMinSeconds: 1
+  ## @param connector.reconnectMaxSeconds Maximum reconnect backoff in seconds
+  reconnectMaxSeconds: 30
+  ## @param connector.maxFrameBytes Maximum gateway frame payload size in bytes
+  maxFrameBytes: 98304
+
+## @section Deployment parameters
+##
+## @param replicaCount Number of connector replicas
+replicaCount: 1
+## @param revisionHistoryLimit Number of old ReplicaSets to retain
+revisionHistoryLimit: 10
+## @param updateStrategy.type Deployment strategy type
+updateStrategy:
+  type: RollingUpdate
+## @param command Override default container command
+command: []
+## @param args Override default container args
+args: []
+## @param extraEnvVars Extra environment variables for the connector container
+extraEnvVars: []
+## @param extraEnvVarsCM Name of an existing ConfigMap with extra environment variables
+extraEnvVarsCM: ""
+## @param extraEnvVarsSecret Name of an existing Secret with extra environment variables
+extraEnvVarsSecret: ""
+## @param extraVolumes Extra volumes for the connector pod
+extraVolumes: []
+## @param extraVolumeMounts Extra volume mounts for the connector container
+extraVolumeMounts: []
+## @param extraDeploy Extra Kubernetes manifests to render after chart resources
+extraDeploy: []
+
+## @section Service account parameters
+##
+serviceAccount:
+  ## @param serviceAccount.create Create a ServiceAccount for connector pods
+  create: true
+  ## @param serviceAccount.name ServiceAccount name. Defaults to the chart fullname when empty.
+  name: ""
+  ## @param serviceAccount.annotations ServiceAccount annotations
+  annotations: {}
+  ## @param serviceAccount.automountServiceAccountToken Mount the Kubernetes API token into connector pods
+  automountServiceAccountToken: false
+
+## @section Pod security parameters
+##
+podSecurityContext:
+  ## @param podSecurityContext.enabled Enable pod security context
+  enabled: true
+  ## @param podSecurityContext.fsGroup Pod filesystem group
+  fsGroup: 65532
+  ## @param podSecurityContext.seccompProfile.type Pod seccomp profile type
+  seccompProfile:
+    type: RuntimeDefault
+
+containerSecurityContext:
+  ## @param containerSecurityContext.enabled Enable container security context
+  enabled: true
+  ## @param containerSecurityContext.runAsUser Container user ID
+  runAsUser: 65532
+  ## @param containerSecurityContext.runAsGroup Container group ID
+  runAsGroup: 65532
+  ## @param containerSecurityContext.runAsNonRoot Run container as non-root
+  runAsNonRoot: true
+  ## @param containerSecurityContext.readOnlyRootFilesystem Use read-only root filesystem
+  readOnlyRootFilesystem: true
+  ## @param containerSecurityContext.allowPrivilegeEscalation Allow privilege escalation
+  allowPrivilegeEscalation: false
+  ## @param containerSecurityContext.capabilities.drop Linux capabilities to drop
+  capabilities:
+    drop:
+      - ALL
+
+## @section Resource parameters
+##
+## @param resourcesPreset Common resources preset used when `resources` is empty. Allowed values include `nano`, `micro`, `small`, `medium`, `large`, `xlarge`, and `2xlarge`.
+resourcesPreset: nano
+## @param resources Explicit resource requests and limits. Overrides `resourcesPreset` when set.
+resources: {}
+
+## @section Healthcheck parameters
+##
+livenessProbe:
+  ## @param livenessProbe.enabled Enable liveness probe
+  enabled: false
+  ## @param livenessProbe.spec Liveness probe spec rendered as-is when enabled
+  spec: {}
+readinessProbe:
+  ## @param readinessProbe.enabled Enable readiness probe
+  enabled: false
+  ## @param readinessProbe.spec Readiness probe spec rendered as-is when enabled
+  spec: {}
+startupProbe:
+  ## @param startupProbe.enabled Enable startup probe
+  enabled: false
+  ## @param startupProbe.spec Startup probe spec rendered as-is when enabled
+  spec: {}
+
+## @section Scheduling parameters
+##
+## @param podLabels Extra labels for connector pods
+podLabels: {}
+## @param podAnnotations Extra annotations for connector pods
+podAnnotations: {}
+## @param podAffinityPreset Pod affinity preset. Ignored when `affinity` is set. Allowed values: `soft`, `hard`.
+podAffinityPreset: ""
+## @param podAntiAffinityPreset Pod anti-affinity preset. Ignored when `affinity` is set. Allowed values: `soft`, `hard`.
+podAntiAffinityPreset: soft
+## @param nodeAffinityPreset.type Node affinity preset type. Ignored when `affinity` is set. Allowed values: `soft`, `hard`.
+nodeAffinityPreset:
+  type: ""
+  ## @param nodeAffinityPreset.key Node label key for the node affinity preset
+  key: ""
+  ## @param nodeAffinityPreset.values Node label values for the node affinity preset
+  values: []
+## @param affinity Full affinity object. Overrides affinity presets when set.
+affinity: {}
+## @param nodeSelector Node labels for pod assignment
+nodeSelector: {}
+## @param tolerations Tolerations for pod assignment
+tolerations: []
+## @param topologySpreadConstraints Topology spread constraints for connector pods
+topologySpreadConstraints: []
+## @param priorityClassName Pod priority class name
+priorityClassName: ""
+## @param schedulerName Alternate scheduler name
+schedulerName: ""
+## @param terminationGracePeriodSeconds Pod termination grace period in seconds
+terminationGracePeriodSeconds: 30

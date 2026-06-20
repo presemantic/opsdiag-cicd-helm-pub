@@ -1,0 +1,101 @@
+name: "charts-public"
+
+on:
+  workflow_dispatch:
+    inputs:
+      VERSION_TAG:
+        description: Version tag to package, if not set latest timestamp tag will be used
+        required: true
+        type: string
+        default: '2025-01-01.01-01-01.aaaaaa'
+  push:
+    tags:
+      - '20*'
+
+permissions:
+  contents: read
+
+env:
+  REGION: europe-west1
+  GAR_LOCATION: europe-west1-docker.pkg.dev/prod-common-cicd/charts-public
+  CHART_PATH: opsolving/opsdiag-connector
+  CHART_NAMESPACE: opsolving
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "[Checkout] Build"
+        uses: actions/checkout@v4
+        with:
+          path: build
+
+      - name: "[Checkout] Helpers"
+        uses: actions/checkout@v4
+        with:
+          repository: presemantic/actions-helpers
+          path: helpers
+          ref: main
+          token: ${{ secrets.GH_ACTIONS_HELPERS_TOKEN }}
+
+      - name: "[Versioner] Get version from latest tag"
+        working-directory: build
+        env:
+          MANUAL_VERSION_TAG: ${{ github.event.inputs.VERSION_TAG }}
+        run: |
+          source ${GITHUB_WORKSPACE}/helpers/git.sh
+          git_versioning base-version
+
+      - name: "[Versioner] Print fetch version"
+        run: |
+          echo "Version fetched: ${{ env.VERSION_TAG }}"
+
+      - name: "[Checkout] Checkout to Tag"
+        uses: actions/checkout@v4
+        with:
+          path: build
+          ref: ${{ env.VERSION_TAG }}
+
+      - name: "[Helm] Setup"
+        uses: azure/setup-helm@v4
+
+      - name: "[GOOGLE] Setup Credentials"
+        id: gcp-auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: "${{ secrets.GCP_SA_ARTIFACT_REGISTRY_KEY }}"
+          token_format: "access_token"
+
+      - name: "[GOOGLE] Set up Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v1"
+
+      - name: "[GOOGLE] Use gcloud CLI"
+        run: "gcloud info"
+
+      - name: "[Helm] Registry auth"
+        run: |
+          echo "${{ steps.gcp-auth.outputs.access_token }}" | helm registry login \
+            -u oauth2accesstoken \
+            --password-stdin \
+            "https://${{ env.REGION }}-docker.pkg.dev"
+
+      - name: "[Helm] Set app version"
+        run: |
+          sed -i "s/^appVersion:.*/appVersion: \"${VERSION_TAG}\"/" "build/${CHART_PATH}/Chart.yaml"
+
+      - name: "[Helm] Dependency update"
+        run: |
+          helm dependency update "build/${CHART_PATH}"
+
+      - name: "[Helm] Lint"
+        run: |
+          helm lint "build/${CHART_PATH}"
+
+      - name: "[Helm] Package"
+        run: |
+          mkdir -p dist
+          helm package "build/${CHART_PATH}" --destination dist
+
+      - name: "[Helm] Push"
+        run: |
+          helm push dist/*.tgz "oci://${GAR_LOCATION}/${CHART_NAMESPACE}"
