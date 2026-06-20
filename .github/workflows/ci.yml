@@ -87,7 +87,7 @@ jobs:
           echo "${{ steps.gcp-auth.outputs.access_token }}" | helm registry login \
             -u oauth2accesstoken \
             --password-stdin \
-            "https://${{ env.REGION }}-docker.pkg.dev"
+            "${{ env.REGION }}-docker.pkg.dev"
 
       - name: "[Helm] Set app version"
         run: |
