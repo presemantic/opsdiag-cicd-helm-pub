@@ -47,7 +47,7 @@ connector:
   ## @param connector.licenseServer Control API endpoint used to exchange the license for a short-lived gateway token
   licenseServer: https://control.compute.opsdiag.ai/api/gateway/token
   ## @param connector.gatewayURL Public gateway server WebSocket URL
-  gatewayURL: wss://gateway.compute.opsdiag.ai/
+  gatewayURL: wss://gateway.opsdiag.ai/
   ## @param connector.connectTimeoutSeconds Gateway WebSocket connect timeout in seconds
   connectTimeoutSeconds: 10
   ## @param connector.reconnectMinSeconds Minimum reconnect backoff in seconds
