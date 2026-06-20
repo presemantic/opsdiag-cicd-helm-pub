@@ -12,5 +12,4 @@ metadata:
 data:
   config.yaml: |
     license: ""
-    licenseServer: {{ .Values.connector.licenseServer | quote }}
     gatewayURL: {{ .Values.connector.gatewayURL | quote }}

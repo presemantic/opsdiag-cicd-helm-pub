@@ -80,8 +80,6 @@ spec:
           env:
             - name: CONFIG_PATH
               value: /app/config.yaml
-            - name: GATEWAY_LICENSE_SERVER
-              value: {{ .Values.connector.licenseServer | quote }}
             - name: GATEWAY_URL
               value: {{ .Values.connector.gatewayURL | quote }}
             {{- if or .Values.connector.license .Values.connector.existingSecret }}

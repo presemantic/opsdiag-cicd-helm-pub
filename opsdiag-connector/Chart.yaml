@@ -3,7 +3,7 @@ name: opsdiag-connector
 description: OpsDiag customer-side gateway connector
 type: application
 version: 0.1.0
-appVersion: "2026-06-20.23-09-35.2f0eb2"
+appVersion: "2026-06-21.01-08-55.fd309e"
 home: https://opsdiag.ai
 sources:
   - https://github.com/presemantic/opsdiag-gateway-connector

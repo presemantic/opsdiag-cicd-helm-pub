@@ -1,4 +1,4 @@
-name: "charts-public"
+name: "opsdiag-charts"
 
 on:
   workflow_dispatch:
@@ -17,8 +17,8 @@ permissions:
 
 env:
   REGION: europe-west1
-  GAR_LOCATION: europe-west1-docker.pkg.dev/prod-common-cicd/charts-public
-  CHART_PATH: opsdiag/opsdiag-connector
+  GAR_LOCATION: europe-west1-docker.pkg.dev/prod-common-cicd/charts-opsdiag
+  CHART_PATH: opsdiag-connector
 
 jobs:
   build:
@@ -88,23 +88,6 @@ jobs:
             --password-stdin \
             "${{ env.REGION }}-docker.pkg.dev"
 
-      - name: "[Helm] Set app version"
-        run: |
-          sed -i "s/^appVersion:.*/appVersion: \"${VERSION_TAG}\"/" "build/${CHART_PATH}/Chart.yaml"
-
-      - name: "[Helm] Resolve chart target"
-        run: |
-          set -euo pipefail
-          chart_namespace="${CHART_PATH%%/*}"
-
-          if [ -z "${chart_namespace}" ] || [ "${chart_namespace}" = "${CHART_PATH}" ]; then
-            echo "CHART_PATH must include namespace directory, for example opsdiag/opsdiag-connector"
-            exit 1
-          fi
-
-          echo "CHART_NAMESPACE=${chart_namespace}" >>"${GITHUB_ENV}"
-          echo "Chart target: ${GAR_LOCATION}/${chart_namespace}/${CHART_PATH##*/}"
-
       - name: "[Helm] Dependency update"
         run: |
           helm dependency update "build/${CHART_PATH}"
@@ -120,4 +103,4 @@ jobs:
 
       - name: "[Helm] Push"
         run: |
-          helm push dist/*.tgz "oci://${GAR_LOCATION}/${CHART_NAMESPACE}"
+          helm push dist/*.tgz "oci://${GAR_LOCATION}"

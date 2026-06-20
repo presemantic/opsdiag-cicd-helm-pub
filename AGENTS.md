@@ -1,12 +1,12 @@
-# OpsDiag Public Charts Instructions
+# OpsDiag Charts Instructions
 
 ## Purpose
 
-This project is `charts-public`: the public Helm chart repository for OpsDiag deployable artifacts.
+This project is `opsdiag-charts`: the public Helm chart repository for OpsDiag deployable artifacts.
 
 ## Structure
 
-- [`opsdiag/opsdiag-connector/`](./opsdiag/opsdiag-connector/) contains the public Helm chart for the customer-side OpsDiag gateway connector.
+- [`opsdiag-connector/`](./opsdiag-connector/) contains the public Helm chart for the customer-side OpsDiag gateway connector.
 - [`.github/workflows/ci.yml`](./.github/workflows/ci.yml) packages public charts on timestamp release tags and pushes them to Artifact Registry as Helm OCI artifacts.
 - Chart dependencies must use the Opsolving public chart repository and depend only on `common` from `https://github.com/opsolving/charts/tree/main/opsolving/common`.
 - [`README.md`](./README.md) documents the public chart repository contents.
@@ -19,8 +19,12 @@ Use the Bitnami-style pattern where application templates stay thin and reuse th
 
 Do not vendor dependency charts into this repository unless explicitly requested. Dependency resolution should use Helm dependency commands against `https://opsolving.github.io/charts/`.
 
-Chart release workflows must publish Helm OCI artifacts to `europe-west1-docker.pkg.dev/prod-common-cicd/charts-public`. The `charts-public` Artifact Registry repository must be an OCI/Docker-compatible repository for `helm push` and `helm install oci://...` workflows.
+Chart release workflows must publish Helm OCI artifacts to `europe-west1-docker.pkg.dev/prod-common-cicd/charts-opsdiag`. The `charts-opsdiag` Artifact Registry repository must be an OCI/Docker-compatible repository for `helm push` and `helm install oci://...` workflows.
 
-The published OCI namespace is derived from the first chart source directory segment. For example, `opsdiag/opsdiag-connector` is pushed as `europe-west1-docker.pkg.dev/prod-common-cicd/charts-public/opsdiag/opsdiag-connector`.
+Charts are pushed directly to the dedicated OpsDiag chart repository without an extra namespace segment. For example, `opsdiag-connector` is pushed as `europe-west1-docker.pkg.dev/prod-common-cicd/charts-opsdiag/opsdiag-connector`.
+
+The public connector chart must not expose or inject the Control gateway-token endpoint. The connector binary owns that production default; the chart only supplies the license secret, gateway WebSocket URL, and runtime tuning values.
+
+The connector chart `appVersion` and default image tag track the released `opsdiag-connector` image tag. The release workflow must not rewrite `appVersion` to the chart release tag.
 
 The chart release workflow must not require `presemantic/actions-helpers` or `GH_ACTIONS_HELPERS_TOKEN`; it resolves timestamp release tags directly from the triggering GitHub ref.
