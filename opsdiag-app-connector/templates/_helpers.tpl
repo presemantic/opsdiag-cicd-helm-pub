@@ -3,7 +3,7 @@ Copyright OpsDiag. All Rights Reserved.
 SPDX-License-Identifier: APACHE-2.0
 */}}
 
-{{- define "opsdiag-connector.serviceAccountName" -}}
+{{- define "opsdiag-app-connector.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create -}}
 {{- default (include "common.names.fullname" .) .Values.serviceAccount.name -}}
 {{- else -}}
@@ -11,11 +11,11 @@ SPDX-License-Identifier: APACHE-2.0
 {{- end -}}
 {{- end -}}
 
-{{- define "opsdiag-connector.configMapName" -}}
+{{- define "opsdiag-app-connector.configMapName" -}}
 {{- printf "%s-config" (include "common.names.fullname" .) | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{- define "opsdiag-connector.secretName" -}}
+{{- define "opsdiag-app-connector.secretName" -}}
 {{- if .Values.connector.existingSecret -}}
 {{- .Values.connector.existingSecret -}}
 {{- else -}}
@@ -23,12 +23,12 @@ SPDX-License-Identifier: APACHE-2.0
 {{- end -}}
 {{- end -}}
 
-{{- define "opsdiag-connector.selectorLabels" -}}
+{{- define "opsdiag-app-connector.selectorLabels" -}}
 {{ include "common.labels.matchLabels" (dict "customLabels" .Values.podLabels "context" .) }}
 app.kubernetes.io/component: connector
 {{- end -}}
 
-{{- define "opsdiag-connector.podLabels" -}}
+{{- define "opsdiag-app-connector.podLabels" -}}
 {{ include "common.labels.standard" (dict "customLabels" .Values.commonLabels "context" .) }}
 app.kubernetes.io/component: connector
 {{- with .Values.podLabels }}
@@ -36,7 +36,7 @@ app.kubernetes.io/component: connector
 {{- end }}
 {{- end -}}
 
-{{- define "opsdiag-connector.resources" -}}
+{{- define "opsdiag-app-connector.resources" -}}
 {{- if .Values.resources -}}
 {{ include "common.tplvalues.render" (dict "value" .Values.resources "context" .) }}
 {{- else if .Values.resourcesPreset -}}
@@ -44,7 +44,7 @@ app.kubernetes.io/component: connector
 {{- end -}}
 {{- end -}}
 
-{{- define "opsdiag-connector.affinity" -}}
+{{- define "opsdiag-app-connector.affinity" -}}
 {{- if .Values.affinity -}}
 {{ include "common.tplvalues.render" (dict "value" .Values.affinity "context" .) }}
 {{- else -}}

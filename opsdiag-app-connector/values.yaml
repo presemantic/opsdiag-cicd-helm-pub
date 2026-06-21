@@ -25,7 +25,7 @@ image:
   ## @param image.registry OpsDiag connector image registry
   registry: europe-west1-docker.pkg.dev
   ## @param image.repository OpsDiag connector image repository
-  repository: prod-common-cicd/docker-public/opsdiag-connector
+  repository: prod-common-cicd/docker-public/opsdiag-app-connector
   ## @param image.tag OpsDiag connector image tag; defaults to chart appVersion when empty
   tag: "2026-06-22.00-19-02.7b61a8"
   ## @param image.digest OpsDiag connector image digest, used instead of tag when set
@@ -38,21 +38,21 @@ image:
 ## @section OpsDiag connector configuration
 ##
 connector:
-  ## @param connector.license Gateway connector pseudo-license JWT. Prefer `connector.existingSecret` for real installs.
+  ## @param connector.license App connector pseudo-license JWT. Prefer `connector.existingSecret` for real installs.
   license: ""
-  ## @param connector.existingSecret Existing secret containing the gateway connector pseudo-license JWT
+  ## @param connector.existingSecret Existing secret containing the app connector pseudo-license JWT
   existingSecret: ""
   ## @param connector.existingSecretKey Key inside `connector.existingSecret` or the chart-created secret
   existingSecretKey: license
-  ## @param connector.gatewayURL Public gateway server WebSocket URL
-  gatewayURL: wss://relay.control.opsdiag.ai/
-  ## @param connector.connectTimeoutSeconds Gateway WebSocket connect timeout in seconds
+  ## @param connector.relayURL Public control relay WebSocket URL
+  relayURL: wss://relay.control.opsdiag.ai/
+  ## @param connector.connectTimeoutSeconds Relay WebSocket connect timeout in seconds
   connectTimeoutSeconds: 10
   ## @param connector.reconnectMinSeconds Minimum reconnect backoff in seconds
   reconnectMinSeconds: 1
   ## @param connector.reconnectMaxSeconds Maximum reconnect backoff in seconds
   reconnectMaxSeconds: 30
-  ## @param connector.maxFrameBytes Maximum gateway frame payload size in bytes
+  ## @param connector.maxFrameBytes Maximum relay frame payload size in bytes
   maxFrameBytes: 98304
 
 ## @section Deployment parameters

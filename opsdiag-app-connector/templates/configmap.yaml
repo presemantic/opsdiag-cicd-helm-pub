@@ -1,8 +1,7 @@
-{{- if and .Values.connector.license (not .Values.connector.existingSecret) }}
 apiVersion: v1
-kind: Secret
+kind: ConfigMap
 metadata:
-  name: {{ include "opsdiag-connector.secretName" . }}
+  name: {{ include "opsdiag-app-connector.configMapName" . }}
   namespace: {{ include "common.names.namespace" . | quote }}
   labels:
     {{- include "common.labels.standard" (dict "customLabels" .Values.commonLabels "context" .) | nindent 4 }}
@@ -10,7 +9,7 @@ metadata:
   annotations:
     {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
   {{- end }}
-type: Opaque
 data:
-  {{ .Values.connector.existingSecretKey }}: {{ .Values.connector.license | b64enc | quote }}
-{{- end }}
+  config.yaml: |
+    license: ""
+    relayURL: {{ .Values.connector.relayURL | quote }}

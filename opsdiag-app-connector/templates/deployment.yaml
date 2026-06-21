@@ -16,11 +16,11 @@ spec:
     {{- include "common.tplvalues.render" (dict "value" .Values.updateStrategy "context" .) | nindent 4 }}
   selector:
     matchLabels:
-      {{- include "opsdiag-connector.selectorLabels" . | nindent 6 }}
+      {{- include "opsdiag-app-connector.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "opsdiag-connector.podLabels" . | nindent 8 }}
+        {{- include "opsdiag-app-connector.podLabels" . | nindent 8 }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{- if and .Values.connector.license (not .Values.connector.existingSecret) }}
@@ -30,7 +30,7 @@ spec:
         {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
         {{- end }}
     spec:
-      serviceAccountName: {{ include "opsdiag-connector.serviceAccountName" . }}
+      serviceAccountName: {{ include "opsdiag-app-connector.serviceAccountName" . }}
       automountServiceAccountToken: {{ .Values.serviceAccount.automountServiceAccountToken }}
       {{- include "common.images.renderPullSecrets" (dict "images" (list .Values.image) "context" $) | nindent 6 }}
       {{- if .Values.podSecurityContext.enabled }}
@@ -48,7 +48,7 @@ spec:
       nodeSelector:
         {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
       {{- end }}
-      {{- $affinity := include "opsdiag-connector.affinity" . | trim }}
+      {{- $affinity := include "opsdiag-app-connector.affinity" . | trim }}
       {{- if $affinity }}
       affinity:
         {{- $affinity | nindent 8 }}
@@ -80,22 +80,22 @@ spec:
           env:
             - name: CONFIG_PATH
               value: /app/config.yaml
-            - name: GATEWAY_URL
-              value: {{ .Values.connector.gatewayURL | quote }}
+            - name: RELAY_URL
+              value: {{ .Values.connector.relayURL | quote }}
             {{- if or .Values.connector.license .Values.connector.existingSecret }}
-            - name: GATEWAY_LICENSE
+            - name: APP_CONNECTOR_LICENSE
               valueFrom:
                 secretKeyRef:
-                  name: {{ include "opsdiag-connector.secretName" . }}
+                  name: {{ include "opsdiag-app-connector.secretName" . }}
                   key: {{ .Values.connector.existingSecretKey }}
             {{- end }}
-            - name: GATEWAY_CONNECT_TIMEOUT_SECONDS
+            - name: APP_CONNECTOR_CONNECT_TIMEOUT_SECONDS
               value: {{ .Values.connector.connectTimeoutSeconds | quote }}
-            - name: GATEWAY_RECONNECT_MIN_SECONDS
+            - name: APP_CONNECTOR_RECONNECT_MIN_SECONDS
               value: {{ .Values.connector.reconnectMinSeconds | quote }}
-            - name: GATEWAY_RECONNECT_MAX_SECONDS
+            - name: APP_CONNECTOR_RECONNECT_MAX_SECONDS
               value: {{ .Values.connector.reconnectMaxSeconds | quote }}
-            - name: GATEWAY_MAX_FRAME_BYTES
+            - name: APP_CONNECTOR_MAX_FRAME_BYTES
               value: {{ .Values.connector.maxFrameBytes | quote }}
             {{- with .Values.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 12 }}
@@ -111,7 +111,7 @@ spec:
                 name: {{ . }}
             {{- end }}
           {{- end }}
-          {{- $resources := include "opsdiag-connector.resources" . | trim }}
+          {{- $resources := include "opsdiag-app-connector.resources" . | trim }}
           {{- if $resources }}
           resources:
             {{- $resources | nindent 12 }}
@@ -139,7 +139,7 @@ spec:
       volumes:
         - name: connector-config
           configMap:
-            name: {{ include "opsdiag-connector.configMapName" . }}
+            name: {{ include "opsdiag-app-connector.configMapName" . }}
         {{- with .Values.extraVolumes }}
         {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
         {{- end }}
