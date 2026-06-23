@@ -79,10 +79,6 @@ spec:
               value: /app/config.yaml
             - name: APP_CONNECTOR_CONNECT_TIMEOUT_SECONDS
               value: {{ .Values.connector.connectTimeoutSeconds | quote }}
-            - name: APP_CONNECTOR_RECONNECT_MIN_SECONDS
-              value: {{ .Values.connector.reconnectMinSeconds | quote }}
-            - name: APP_CONNECTOR_RECONNECT_MAX_SECONDS
-              value: {{ .Values.connector.reconnectMaxSeconds | quote }}
             - name: APP_CONNECTOR_MAX_FRAME_BYTES
               value: {{ .Values.connector.maxFrameBytes | quote }}
             {{- with .Values.extraEnvVars }}

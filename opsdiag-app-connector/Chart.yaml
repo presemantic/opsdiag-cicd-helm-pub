@@ -2,8 +2,8 @@ apiVersion: v2
 name: opsdiag-app-connector
 description: OpsDiag customer-side app connector
 type: application
-version: 0.1.10
-appVersion: "2026-06-23.20-59-12.7a7880"
+version: 0.1.11
+appVersion: "2026-06-23.21-08-00.640739"
 home: https://opsdiag.ai
 sources:
   - https://github.com/presemantic/opsdiag-app-connector

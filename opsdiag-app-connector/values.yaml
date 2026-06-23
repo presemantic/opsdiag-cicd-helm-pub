@@ -27,7 +27,7 @@ image:
   ## @param image.repository OpsDiag connector image repository
   repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-connector
   ## @param image.tag OpsDiag connector image tag; defaults to chart appVersion when empty
-  tag: "2026-06-23.20-59-12.7a7880"
+  tag: "2026-06-23.21-08-00.640739"
   ## @param image.digest OpsDiag connector image digest, used instead of tag when set
   digest: ""
   ## @param image.pullPolicy OpsDiag connector image pull policy
@@ -45,10 +45,6 @@ config: {}
 connector:
   ## @param connector.connectTimeoutSeconds Relay WebSocket connect timeout in seconds
   connectTimeoutSeconds: 10
-  ## @param connector.reconnectMinSeconds Minimum reconnect backoff in seconds
-  reconnectMinSeconds: 1
-  ## @param connector.reconnectMaxSeconds Maximum reconnect backoff in seconds
-  reconnectMaxSeconds: 30
   ## @param connector.maxFrameBytes Maximum relay frame payload size in bytes
   maxFrameBytes: 98304
 
