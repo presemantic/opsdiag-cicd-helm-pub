@@ -49,6 +49,8 @@ podSecurityContext:
     type: RuntimeDefault
 containerSecurityContext:
   enabled: true
+  runAsUser: 101
+  runAsGroup: 101
   runAsNonRoot: true
   readOnlyRootFilesystem: false
   allowPrivilegeEscalation: false

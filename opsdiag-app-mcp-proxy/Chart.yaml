@@ -2,7 +2,7 @@ apiVersion: v2
 name: opsdiag-app-mcp-proxy
 description: OpsDiag app MCP proxy API
 type: application
-version: 0.1.0
+version: 0.1.1
 appVersion: "2026-06-25.02-55-25.20fe9d"
 home: https://opsdiag.ai
 sources:
