@@ -23,8 +23,11 @@ image:
 
 ## @section Runtime config file
 config: {}
-agent:
-  kind: ""
+runtime:
+  agentKind: root
+  licenseService: opsdiag-app-agent
+  localDispatch: true
+  maxParallelNodes: 6
 
 ## @section Deployment parameters
 replicaCount: 1

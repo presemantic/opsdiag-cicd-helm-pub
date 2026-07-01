@@ -81,10 +81,14 @@ spec:
           env:
             - name: CONFIG_PATH
               value: /app/config.yaml
-            {{- with .Values.agent.kind }}
             - name: AGENT_KIND
-              value: {{ . | quote }}
-            {{- end }}
+              value: {{ .Values.runtime.agentKind | quote }}
+            - name: AGENT_LICENSE_SERVICE
+              value: {{ .Values.runtime.licenseService | quote }}
+            - name: AGENT_LOCAL_DISPATCH
+              value: {{ .Values.runtime.localDispatch | quote }}
+            - name: AGENT_FLOW_MAX_PARALLEL_NODES
+              value: {{ .Values.runtime.maxParallelNodes | quote }}
             {{- with .Values.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 12 }}
             {{- end }}

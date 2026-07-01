@@ -6,9 +6,9 @@ Public Helm charts for OpsDiag.
 
 - [`opsdiag-app-front`](./opsdiag-app-front) deploys the OpsDiag app frontend.
 - [`opsdiag-app-api`](./opsdiag-app-api) deploys the OpsDiag app API and optional migration Job.
-- [`opsdiag-app-agent`](./opsdiag-app-agent) deploys one parameterized OpsDiag app agent release.
-- [`opsdiag-app-mcp-proxy`](./opsdiag-app-mcp-proxy) deploys the internal OpsDiag MCP proxy.
-- [`opsdiag-app-mcp-server`](./opsdiag-app-mcp-server) deploys one parameterized OpsDiag MCP server release.
+- [`opsdiag-app-agent`](./opsdiag-app-agent) deploys the single multi-role OpsDiag app-agent runtime.
+- [`opsdiag-app-mcp-proxy`](./opsdiag-app-mcp-proxy) is retained as a retired compatibility chart and is not part of the active app runtime.
+- [`opsdiag-app-mcp-server`](./opsdiag-app-mcp-server) is retained as a retired compatibility chart and is not part of the active app runtime.
 - [`opsdiag-app-sched`](./opsdiag-app-sched) deploys the OpsDiag app scheduler.
 - [`opsdiag-app-connector`](./opsdiag-app-connector) deploys the customer-side OpsDiag app connector.
 
@@ -22,8 +22,8 @@ helm install opsdiag-app-connector \
 
 The app backend charts render `/app/config.yaml` from `values.config` and expose
 ClusterIP services on port 8000. The frontend chart serves nginx on port 3000.
-The agent and MCP server charts are reused for multiple releases by setting
-`agent.kind` or `mcpServer.kind`/`mcpServer.providers`.
+The app-agent chart deploys one scalable multi-role service; scale it with
+replicas rather than installing per-agent or per-provider releases.
 
 The chart defaults are compatible with OpenShift restricted SCC: they do not pin
 `runAsUser`, `runAsGroup`, or `fsGroup`, allowing OpenShift to inject the
