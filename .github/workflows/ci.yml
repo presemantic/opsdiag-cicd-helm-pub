@@ -30,8 +30,6 @@ jobs:
           - opsdiag-app-agent
           - opsdiag-app-connector
           - opsdiag-app-front
-          - opsdiag-app-mcp-proxy
-          - opsdiag-app-mcp-server
           - opsdiag-app-sched
     steps:
       - name: "[Checkout] Build"
