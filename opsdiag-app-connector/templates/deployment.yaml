@@ -77,10 +77,6 @@ spec:
           env:
             - name: CONFIG_PATH
               value: /app/config.yaml
-            - name: APP_CONNECTOR_CONNECT_TIMEOUT_SECONDS
-              value: {{ .Values.connector.connectTimeoutSeconds | quote }}
-            - name: APP_CONNECTOR_MAX_FRAME_BYTES
-              value: {{ .Values.connector.maxFrameBytes | quote }}
             {{- with .Values.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 12 }}
             {{- end }}
