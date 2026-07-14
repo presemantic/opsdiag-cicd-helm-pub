@@ -16,7 +16,7 @@ containerName: front
 image:
   registry: europe-west1-docker.pkg.dev
   repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-front
-  tag: "2026-06-25.21-59-22.ba5516"
+  tag: "2026-07-13.13-01-08.cd9a2e8"
   digest: ""
   pullPolicy: IfNotPresent
   pullSecrets: []

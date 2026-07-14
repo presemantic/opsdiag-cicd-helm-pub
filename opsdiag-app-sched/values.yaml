@@ -16,7 +16,7 @@ containerName: sched
 image:
   registry: europe-west1-docker.pkg.dev
   repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-sched
-  tag: "2026-06-25.22-42-36.4df732"
+  tag: "2026-07-10.10-25-56.a33533d"
   digest: ""
   pullPolicy: IfNotPresent
   pullSecrets: []
