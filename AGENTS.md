@@ -36,6 +36,8 @@ The connector chart `appVersion` and default image tag track the released `opsdi
 
 The same image ownership rule applies to every public application chart: `Chart.yaml` `appVersion` and the default `values.yaml` `image.tag` must be identical to the released component image, and changing that image requires a chart version bump. Deployment values must not compensate for stale chart metadata with an `image.tag` override.
 
+Chart `opsdiag-app-agent` `0.1.4` selects the App Agent release with connector-routed OKD/OpenShift discovery and diagnostics. Cluster API servers remain access-scoped runtime configuration and bearer credentials remain in named App Agent credentials rather than chart defaults.
+
 The connector chart must stay compatible with OpenShift restricted SCC. Do not set fixed `runAsUser`, `runAsGroup`, or `fsGroup` defaults; OpenShift injects a namespace-range random UID. Keep non-root, no privilege escalation, read-only root filesystem, dropped capabilities, and RuntimeDefault seccomp defaults.
 
 The chart release workflow must not require `presemantic/actions-helpers` or `GH_ACTIONS_HELPERS_TOKEN`; it resolves timestamp release tags directly from the triggering GitHub ref.
