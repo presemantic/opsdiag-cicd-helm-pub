@@ -40,6 +40,8 @@ Chart `opsdiag-app-agent` `0.1.4` selects the App Agent release with connector-r
 
 Chart `opsdiag-app-agent` `0.1.5` selects the App Agent release with 46 strict connector-routed Artifactory/Xray read-only tools, bounded queries, secret-shaped response redaction, and the verified LPP live-smoke behavior. Platform origins and authentication remain named App Agent credentials rather than chart defaults.
 
+Chart `opsdiag-app-agent` `0.1.6` selects the App Agent release with 67 strict connector-routed PMM tools over the Grafana datasource proxy and Prometheus-compatible endpoints. Named PMM instances, bearer tokens, datasource identifiers, and TLS settings remain App Agent configuration rather than chart defaults.
+
 The connector chart must stay compatible with OpenShift restricted SCC. Do not set fixed `runAsUser`, `runAsGroup`, or `fsGroup` defaults; OpenShift injects a namespace-range random UID. Keep non-root, no privilege escalation, read-only root filesystem, dropped capabilities, and RuntimeDefault seccomp defaults.
 
 The chart release workflow must not require `presemantic/actions-helpers` or `GH_ACTIONS_HELPERS_TOKEN`; it resolves timestamp release tags directly from the triggering GitHub ref.
