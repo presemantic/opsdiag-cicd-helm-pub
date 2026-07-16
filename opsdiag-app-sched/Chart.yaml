@@ -2,7 +2,7 @@ apiVersion: v2
 name: opsdiag-app-sched
 description: OpsDiag app scheduler
 type: application
-version: 0.1.2
+version: 0.1.3
 appVersion: "2026-07-10.10-25-56.a33533d"
 home: https://opsdiag.ai
 sources:

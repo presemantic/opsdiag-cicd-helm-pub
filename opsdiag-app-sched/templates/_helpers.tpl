@@ -11,7 +11,7 @@ SPDX-License-Identifier: APACHE-2.0
 {{- end -}}
 {{- end -}}
 
-{{- define "opsdiag-app-sched.configMapName" -}}
+{{- define "opsdiag-app-sched.configSecretName" -}}
 {{- printf "%s-config" (include "common.names.fullname" .) | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 

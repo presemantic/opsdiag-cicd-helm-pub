@@ -22,7 +22,7 @@ spec:
       labels:
         {{- include "opsdiag-app-sched.podLabels" . | nindent 8 }}
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
         {{- with .Values.podAnnotations }}
         {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
         {{- end }}
@@ -122,8 +122,8 @@ spec:
             {{- end }}
       volumes:
         - name: app-config
-          configMap:
-            name: {{ include "opsdiag-app-sched.configMapName" . }}
+          secret:
+            secretName: {{ include "opsdiag-app-sched.configSecretName" . }}
         {{- with .Values.extraVolumes }}
         {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
         {{- end }}

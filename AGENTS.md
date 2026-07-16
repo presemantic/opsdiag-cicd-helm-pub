@@ -57,3 +57,9 @@ Chart `opsdiag-app-api` `0.1.4` exposes GitHub Actions as a read-only SDLC provi
 The connector chart must stay compatible with OpenShift restricted SCC. Do not set fixed `runAsUser`, `runAsGroup`, or `fsGroup` defaults; OpenShift injects a namespace-range random UID. Keep non-root, no privilege escalation, read-only root filesystem, dropped capabilities, and RuntimeDefault seccomp defaults.
 
 The chart release workflow must not require `presemantic/actions-helpers` or `GH_ACTIONS_HELPERS_TOKEN`; it resolves timestamp release tags directly from the triggering GitHub ref.
+
+## App Scheduler Configuration
+
+The public `opsdiag-app-sched` chart renders the complete scheduler runtime config into a Kubernetes `Secret`, mounts it read-only at `/app/config.yaml`, and rolls the Deployment when that secret content changes. Provider credentials must never move to a ConfigMap, App API values, frontend state, or database seed. Liveness and readiness use `/api/live` and `/api/ready`; readiness covers scheduler configuration, license activation, and App API connectivity rather than the health of every provider source.
+
+Chart `opsdiag-app-sched` `0.1.3` is the scheduler v2 phase-one compatibility release: it switches runtime configuration from ConfigMap to Secret and adopts `/api/live` plus `/api/ready`, while intentionally retaining the existing scheduler `appVersion` and default image tag. A later chart release may select the scheduler v2 image only after the secret-backed configuration is installed.
