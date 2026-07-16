@@ -50,6 +50,8 @@ Chart `opsdiag-app-agent` `0.1.8` selects the adaptive MCP evidence release. It 
 
 Chart `opsdiag-app-agent` `0.1.9` selects the fail-closed, connector-routed Argo CD and GitHub Actions diagnostics release. Both providers expose only fixed read-only tool catalogs, enforce configured scope and bounded pagination/log retrieval, and redact credential-shaped content.
 
+Chart `opsdiag-app-agent` `0.1.10` selects the proxy-safe Argo CD cluster lookup release. `get_cluster` uses Argo CD's exact server query selector and verifies the returned server locally, avoiding route ambiguity when a Kubernetes API URL contains reserved path characters.
+
 Chart `opsdiag-app-api` `0.1.4` exposes GitHub Actions as a read-only SDLC provider agent while keeping legacy Template RCA layout validation independent from later catalog additions.
 
 The connector chart must stay compatible with OpenShift restricted SCC. Do not set fixed `runAsUser`, `runAsGroup`, or `fsGroup` defaults; OpenShift injects a namespace-range random UID. Keep non-root, no privilege escalation, read-only root filesystem, dropped capabilities, and RuntimeDefault seccomp defaults.
