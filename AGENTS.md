@@ -44,6 +44,10 @@ Chart `opsdiag-app-agent` `0.1.5` selects the App Agent release with 46 strict c
 
 Chart `opsdiag-app-agent` `0.1.6` selects the App Agent release with 67 strict connector-routed PMM tools over the Grafana datasource proxy and Prometheus-compatible endpoints. Named PMM instances, bearer tokens, datasource identifiers, and TLS settings remain App Agent configuration rather than chart defaults.
 
+Chart `opsdiag-app-api` `0.1.3` selects the App API release with deterministic artifact evidence IDs, idempotent checkpoint acknowledgements, and scoped byte-bounded evidence paging for private chat runs.
+
+Chart `opsdiag-app-agent` `0.1.8` selects the adaptive MCP evidence release. It preserves complete private artifacts, sends compact structurally valid model projections, segments safe seven-day temporal queries, uses the PMM Grafana `/graph` base and target datasource identity, and propagates per-target insecure TLS intent through the authenticated Relay for configured PMM and OKD endpoints.
+
 The connector chart must stay compatible with OpenShift restricted SCC. Do not set fixed `runAsUser`, `runAsGroup`, or `fsGroup` defaults; OpenShift injects a namespace-range random UID. Keep non-root, no privilege escalation, read-only root filesystem, dropped capabilities, and RuntimeDefault seccomp defaults.
 
 The chart release workflow must not require `presemantic/actions-helpers` or `GH_ACTIONS_HELPERS_TOKEN`; it resolves timestamp release tags directly from the triggering GitHub ref.
