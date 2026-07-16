@@ -48,6 +48,10 @@ Chart `opsdiag-app-api` `0.1.3` selects the App API release with deterministic a
 
 Chart `opsdiag-app-agent` `0.1.8` selects the adaptive MCP evidence release. It preserves complete private artifacts, sends compact structurally valid model projections, segments safe seven-day temporal queries, uses the PMM Grafana `/graph` base and target datasource identity, and propagates per-target insecure TLS intent through the authenticated Relay for configured PMM and OKD endpoints.
 
+Chart `opsdiag-app-agent` `0.1.9` selects the fail-closed, connector-routed Argo CD and GitHub Actions diagnostics release. Both providers expose only fixed read-only tool catalogs, enforce configured scope and bounded pagination/log retrieval, and redact credential-shaped content.
+
+Chart `opsdiag-app-api` `0.1.4` exposes GitHub Actions as a read-only SDLC provider agent while keeping legacy Template RCA layout validation independent from later catalog additions.
+
 The connector chart must stay compatible with OpenShift restricted SCC. Do not set fixed `runAsUser`, `runAsGroup`, or `fsGroup` defaults; OpenShift injects a namespace-range random UID. Keep non-root, no privilege escalation, read-only root filesystem, dropped capabilities, and RuntimeDefault seccomp defaults.
 
 The chart release workflow must not require `presemantic/actions-helpers` or `GH_ACTIONS_HELPERS_TOKEN`; it resolves timestamp release tags directly from the triggering GitHub ref.

@@ -16,7 +16,7 @@ containerName: api
 image:
   registry: europe-west1-docker.pkg.dev
   repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-api
-  tag: "2026-07-16.02-45-43.8c69925"
+  tag: "2026-07-16.12-47-08.bab48f3"
   digest: ""
   pullPolicy: IfNotPresent
   pullSecrets: []
