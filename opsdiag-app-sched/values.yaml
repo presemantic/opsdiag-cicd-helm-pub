@@ -78,13 +78,13 @@ livenessProbe:
   enabled: true
   spec:
     httpGet:
-      path: /api/live
+      path: /api/health
       port: http
 readinessProbe:
   enabled: true
   spec:
     httpGet:
-      path: /api/ready
+      path: /api/health
       port: http
 startupProbe:
   enabled: false
