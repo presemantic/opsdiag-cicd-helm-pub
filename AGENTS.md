@@ -54,6 +54,14 @@ Chart `opsdiag-app-agent` `0.1.10` selects the proxy-safe Argo CD cluster lookup
 
 Chart `opsdiag-app-api` `0.1.4` exposes GitHub Actions as a read-only SDLC provider agent while keeping legacy Template RCA layout validation independent from later catalog additions.
 
+Chart `opsdiag-app-agent` `0.1.11` selects the scheduled-scope evidence release used by Scheduler v2 and includes the connector-routed Datadog managed MCP integration. Scheduled evidence references remain scoped to the run and downstream nodes receive only the evidence allowed by the immutable execution snapshot.
+
+Chart `opsdiag-app-agent` `0.1.12` selects the same Scheduler v2 and Datadog functionality from exact pushed image `2026-07-17.02-31-45.db901b7`, whose shipped binary is attested after the registry push.
+
+Chart `opsdiag-app-api` `0.1.5` selects Scheduler v2 API image `2026-07-17.02-26-49.f5e79bf` and moves scheduler-worker authentication out of the rendered ConfigMap into a chart-managed or externally supplied Kubernetes Secret.
+
+Chart `opsdiag-app-front` `0.1.4` selects the Scheduler v2 frontend with explicit flow selection, provider-specific Opsgenie/PagerDuty fields, scheduled run history, and private `Continue in Chat` continuity.
+
 The connector chart must stay compatible with OpenShift restricted SCC. Do not set fixed `runAsUser`, `runAsGroup`, or `fsGroup` defaults; OpenShift injects a namespace-range random UID. Keep non-root, no privilege escalation, read-only root filesystem, dropped capabilities, and RuntimeDefault seccomp defaults.
 
 The chart release workflow must not require `presemantic/actions-helpers` or `GH_ACTIONS_HELPERS_TOKEN`; it resolves timestamp release tags directly from the triggering GitHub ref.
@@ -62,4 +70,10 @@ The chart release workflow must not require `presemantic/actions-helpers` or `GH
 
 The public `opsdiag-app-sched` chart renders the complete scheduler runtime config into a Kubernetes `Secret`, mounts it read-only at `/app/config.yaml`, and rolls the Deployment when that secret content changes. Provider credentials must never move to a ConfigMap, App API values, frontend state, or database seed. Compatibility releases that retain the legacy image must keep both probes on `/api/health`; `/api/live` and `/api/ready` may be selected only in the same chart release that selects a Scheduler v2 image implementing those endpoints.
 
+The App API scheduler worker token must not be included in `config`, because that value is rendered into the App API ConfigMap. Supply it through `schedulerWorkerToken.value` for a chart-managed Kubernetes Secret or through `schedulerWorkerToken.existingSecret`; the Deployment consumes only the referenced Secret key as `APP_SCHEDULER_WORKER_TOKEN`.
+
 Chart `opsdiag-app-sched` `0.1.4` is the corrected scheduler v2 phase-one compatibility release: it keeps the Secret-backed runtime configuration introduced in `0.1.3`, restores the legacy image's `/api/health` probes, and intentionally retains the existing scheduler `appVersion` and default image tag. A later chart release may select the Scheduler v2 image and its split live/ready probes only after this secret-backed configuration is installed.
+
+Chart `opsdiag-app-sched` `0.1.5` selects Scheduler v2 image `2026-07-17.02-14-07.190b8d9`, uses `/api/live` for liveness and `/api/ready` for readiness, and gives readiness enough timeout for its bounded App API dependency check.
+
+Chart `opsdiag-app-sched` `0.1.6` selects exact pushed image `2026-07-17.02-45-22.a4770dd` with the split live/ready probes, the PagerDuty EU endpoint fix, and post-push binary attestation.

@@ -15,6 +15,14 @@ SPDX-License-Identifier: APACHE-2.0
 {{- printf "%s-config" (include "common.names.fullname" .) | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
+{{- define "opsdiag-app-api.schedulerWorkerTokenSecretName" -}}
+{{- if .Values.schedulerWorkerToken.existingSecret -}}
+{{- .Values.schedulerWorkerToken.existingSecret -}}
+{{- else -}}
+{{- printf "%s-scheduler-worker-token" (include "common.names.fullname" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+
 {{- define "opsdiag-app-api.selectorLabels" -}}
 {{ include "common.labels.matchLabels" (dict "customLabels" .Values.podLabels "context" .) }}
 app.kubernetes.io/component: {{ .Values.component | quote }}

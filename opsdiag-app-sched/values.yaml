@@ -16,7 +16,7 @@ containerName: sched
 image:
   registry: europe-west1-docker.pkg.dev
   repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-sched
-  tag: "2026-07-10.10-25-56.a33533d"
+  tag: "2026-07-17.02-45-22.a4770dd"
   digest: ""
   pullPolicy: IfNotPresent
   pullSecrets: []
@@ -78,14 +78,15 @@ livenessProbe:
   enabled: true
   spec:
     httpGet:
-      path: /api/health
+      path: /api/live
       port: http
 readinessProbe:
   enabled: true
   spec:
     httpGet:
-      path: /api/health
+      path: /api/ready
       port: http
+    timeoutSeconds: 3
 startupProbe:
   enabled: false
   spec: {}

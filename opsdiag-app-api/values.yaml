@@ -16,13 +16,22 @@ containerName: api
 image:
   registry: europe-west1-docker.pkg.dev
   repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-api
-  tag: "2026-07-16.12-47-08.bab48f3"
+  tag: "2026-07-17.02-26-49.f5e79bf"
   digest: ""
   pullPolicy: IfNotPresent
   pullSecrets: []
 
 ## @section Runtime config file
 config: {}
+
+## @section Sensitive scheduler worker authentication
+## @param schedulerWorkerToken.value Worker token stored in a chart-managed Secret. Leave empty when using an existing Secret.
+## @param schedulerWorkerToken.existingSecret Existing Secret containing the worker token.
+## @param schedulerWorkerToken.key Secret data key containing the worker token.
+schedulerWorkerToken:
+  value: ""
+  existingSecret: ""
+  key: worker-token
 
 ## @section Deployment parameters
 replicaCount: 1

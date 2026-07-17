@@ -2,8 +2,8 @@ apiVersion: v2
 name: opsdiag-app-front
 description: OpsDiag app frontend
 type: application
-version: 0.1.3
-appVersion: "2026-07-15.22-57-26.657c609"
+version: 0.1.4
+appVersion: "2026-07-17.02-08-15.f3cecc0"
 home: https://opsdiag.ai
 sources:
   - https://github.com/presemantic/opsdiag-app-front
