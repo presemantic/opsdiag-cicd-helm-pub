@@ -68,6 +68,10 @@ Chart `opsdiag-app-api` `0.1.8` selects Scheduler v2 API image `2026-07-17.10-50
 
 Chart `opsdiag-app-front` `0.1.4` selects the Scheduler v2 frontend with explicit flow selection, provider-specific Opsgenie/PagerDuty fields, scheduled run history, and private `Continue in Chat` continuity.
 
+Chart `opsdiag-app-api` `0.1.9` separates scheduler-bound flows from ordinary chat selection, permits explicit private continuation of terminal scheduled runs, and uses the same flat provider-access scope fingerprint as App Agent. Migration `031_scheduler_chat_separation.sql` is additive and extends continuation idempotency to the caller-supplied continuation ID.
+
+Chart `opsdiag-app-front` `0.1.5` hides scheduler-only flows from normal chat creation and makes every explicit `Continue in Chat` action create and load its own private continuation without exposing the scheduler flow as a chat choice.
+
 The connector chart must stay compatible with OpenShift restricted SCC. Do not set fixed `runAsUser`, `runAsGroup`, or `fsGroup` defaults; OpenShift injects a namespace-range random UID. Keep non-root, no privilege escalation, read-only root filesystem, dropped capabilities, and RuntimeDefault seccomp defaults.
 
 The chart release workflow must not require `presemantic/actions-helpers` or `GH_ACTIONS_HELPERS_TOKEN`; it resolves timestamp release tags directly from the triggering GitHub ref.
