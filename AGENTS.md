@@ -62,6 +62,8 @@ Chart `opsdiag-app-api` `0.1.5` selects Scheduler v2 API image `2026-07-17.02-26
 
 Chart `opsdiag-app-api` `0.1.6` selects the exact final Scheduler v2 API image `2026-07-17.03-13-23.6184e68`, including the corrected binary-attestation secret scan and the durable scheduler execution/continuation API used after migration `030_scheduler_execution.sql`.
 
+Chart `opsdiag-app-api` `0.1.7` selects Scheduler v2 API image `2026-07-17.10-19-08.00ef0a7`, which pins the poll-advance timestamp parameter to PostgreSQL `timestamptz` so due schedules can be claimed and `next_poll_at` advances at the configured cadence.
+
 Chart `opsdiag-app-front` `0.1.4` selects the Scheduler v2 frontend with explicit flow selection, provider-specific Opsgenie/PagerDuty fields, scheduled run history, and private `Continue in Chat` continuity.
 
 The connector chart must stay compatible with OpenShift restricted SCC. Do not set fixed `runAsUser`, `runAsGroup`, or `fsGroup` defaults; OpenShift injects a namespace-range random UID. Keep non-root, no privilege escalation, read-only root filesystem, dropped capabilities, and RuntimeDefault seccomp defaults.
