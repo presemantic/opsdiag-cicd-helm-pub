@@ -74,6 +74,8 @@ Chart `opsdiag-app-front` `0.1.5` hides scheduler-only flows from normal chat cr
 
 Chart `opsdiag-app-api` `0.1.10` restores the pinned flow scope before scheduled node-context validation, exposes response availability, and permits `Continue in Chat` only when the run produced a real model response.
 
+Chart `opsdiag-app-api` `0.1.11` selects the corrected scheduled node-memory checkpoint release, which loads the immutable flow scope from the tenant-scoped scheduled-run row before persisting the final response context.
+
 Chart `opsdiag-app-front` `0.1.6` separates scheduled responses from execution errors, prevents response-less runs from creating chats, and keeps scheduler-only pinned flow snapshots usable for follow-up messages in explicit continuations.
 
 The connector chart must stay compatible with OpenShift restricted SCC. Do not set fixed `runAsUser`, `runAsGroup`, or `fsGroup` defaults; OpenShift injects a namespace-range random UID. Keep non-root, no privilege escalation, read-only root filesystem, dropped capabilities, and RuntimeDefault seccomp defaults.
