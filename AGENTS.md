@@ -60,6 +60,8 @@ Chart `opsdiag-app-agent` `0.1.12` selects the same Scheduler v2 and Datadog fun
 
 Chart `opsdiag-app-api` `0.1.5` selects Scheduler v2 API image `2026-07-17.02-26-49.f5e79bf` and moves scheduler-worker authentication out of the rendered ConfigMap into a chart-managed or externally supplied Kubernetes Secret.
 
+Chart `opsdiag-app-api` `0.1.6` selects the exact final Scheduler v2 API image `2026-07-17.03-13-23.6184e68`, including the corrected binary-attestation secret scan and the durable scheduler execution/continuation API used after migration `030_scheduler_execution.sql`.
+
 Chart `opsdiag-app-front` `0.1.4` selects the Scheduler v2 frontend with explicit flow selection, provider-specific Opsgenie/PagerDuty fields, scheduled run history, and private `Continue in Chat` continuity.
 
 The connector chart must stay compatible with OpenShift restricted SCC. Do not set fixed `runAsUser`, `runAsGroup`, or `fsGroup` defaults; OpenShift injects a namespace-range random UID. Keep non-root, no privilege escalation, read-only root filesystem, dropped capabilities, and RuntimeDefault seccomp defaults.
