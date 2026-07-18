@@ -395,49 +395,50 @@ sched:
 ## @section Kubernetes Ingress resources
 ingress:
   enabled: false
-  items: []
-  # - name: web
-  #   fullnameOverride: ""
-  #   ingressClassName: nginx
-  #   annotations: {}
-  #   rules:
-  #     - host: app.example.com
-  #       paths:
-  #         - path: /api
-  #           pathType: Prefix
-  #           component: api
-  #           portNumber: 8000
-  #         - path: /
-  #           pathType: Prefix
-  #           component: front
-  #           portNumber: 3000
-  #   tls: []
+  ingressClassName: ""
+  annotations: {}
+  rules: []
+  # - host: app.example.com
+  #   paths:
+  #     - path: /api
+  #       pathType: Prefix
+  #       component: api
+  #       portNumber: 8000
+  #     - path: /
+  #       pathType: Prefix
+  #       component: front
+  #       portNumber: 3000
+  tls: []
 
 ## @section OpenShift Route resources
 openshiftRoute:
   enabled: false
-  items: []
-  # - name: api
-  #   host: app.example.com
-  #   path: /api
-  #   component: api
-  #   targetPort: http
-  #   annotations: {}
-  #   tls:
-  #     termination: edge
+  host: ""
+  annotations: {}
+  tls: {}
+  wildcardPolicy: None
+  api:
+    enabled: true
+    path: /api
+    targetPort: http
+    annotations: {}
+  front:
+    enabled: true
+    path: /
+    targetPort: http
+    annotations: {}
 
 ## @section Istio resources
 istio:
   enabled: false
-  gateways: []
-  # - name: app
-  #   annotations: {}
-  #   selector:
-  #     istio: ingressgateway
-  #   servers: []
-  virtualServices: []
-  # - name: app
-  #   annotations: {}
-  #   hosts: [app.example.com]
-  #   gateways: [app]
-  #   http: []
+  gateway:
+    enabled: true
+    annotations: {}
+    selector:
+      istio: ingressgateway
+    servers: []
+  virtualService:
+    enabled: true
+    annotations: {}
+    hosts: []
+    http: []

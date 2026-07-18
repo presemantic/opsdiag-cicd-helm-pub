@@ -1,34 +1,38 @@
 {{- if .Values.openshiftRoute.enabled }}
-{{- range $item := .Values.openshiftRoute.items }}
+{{- range $component := list "api" "front" }}
+{{- $route := index $.Values.openshiftRoute $component }}
+{{- if $route.enabled }}
 ---
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  name: {{ printf "%s-%s" (include "common.names.fullname" $) ($item.name | required "OpenShift Route item name is required") | trunc 63 | trimSuffix "-" }}
+  name: {{ printf "%s-%s" (include "common.names.fullname" $) $component | trunc 63 | trimSuffix "-" }}
   namespace: {{ include "common.names.namespace" $ | quote }}
   labels:
     {{- include "common.labels.standard" (dict "customLabels" $.Values.commonLabels "context" $) | nindent 4 }}
-  {{- with $item.annotations }}
+  {{- $annotations := merge (deepCopy ($route.annotations | default dict)) (deepCopy ($.Values.openshiftRoute.annotations | default dict)) }}
+  {{- with $annotations }}
   annotations:
     {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
   {{- end }}
 spec:
-  {{- with $item.host }}
+  {{- with $.Values.openshiftRoute.host }}
   host: {{ . | quote }}
   {{- end }}
-  {{- with $item.path }}
+  {{- with $route.path }}
   path: {{ . | quote }}
   {{- end }}
   to:
     kind: Service
-    name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" $item.component) }}
+    name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" $component) }}
     weight: 100
   port:
-    targetPort: {{ default "http" $item.targetPort | quote }}
-  {{- with $item.tls }}
+    targetPort: {{ default "http" $route.targetPort | quote }}
+  {{- with $.Values.openshiftRoute.tls }}
   tls:
     {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
   {{- end }}
-  wildcardPolicy: {{ default "None" $item.wildcardPolicy }}
+  wildcardPolicy: {{ default "None" $.Values.openshiftRoute.wildcardPolicy }}
+{{- end }}
 {{- end }}
 {{- end }}
