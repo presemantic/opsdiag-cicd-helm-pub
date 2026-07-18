@@ -60,6 +60,8 @@ Chart `opsdiag-app-agent` `0.1.12` selects the same Scheduler v2 and Datadog fun
 
 Chart `opsdiag-app-agent` `0.1.13` selects exact pushed image `2026-07-18.14-15-12.f3f6d11` with GPT-5.6 Sol, Terra, and Luna capability metadata and all supported reasoning efforts from `none` through `max`.
 
+Chart `opsdiag-app-agent` `0.1.14` selects exact pushed image `2026-07-18.16-00-40.ebee4e6` and exposes one canonical `kubernetes-generic` runtime for Kubernetes and optional OpenShift APIs. The legacy `okd-generic` identity remains internal compatibility for immutable historical snapshots and is not published as a new access or catalog node.
+
 Chart `opsdiag-app-api` `0.1.5` selects Scheduler v2 API image `2026-07-17.02-26-49.f5e79bf` and moves scheduler-worker authentication out of the rendered ConfigMap into a chart-managed or externally supplied Kubernetes Secret.
 
 Chart `opsdiag-app-api` `0.1.6` selects the exact final Scheduler v2 API image `2026-07-17.03-13-23.6184e68`, including the corrected binary-attestation secret scan and the durable scheduler execution/continuation API used after migration `030_scheduler_execution.sql`.
