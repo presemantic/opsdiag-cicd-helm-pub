@@ -86,6 +86,10 @@ Chart `opsdiag-app-api` `0.1.13` selects exact pushed image `2026-07-18.17-29-43
 
 Chart `opsdiag-app-agent` `0.1.15` selects exact pushed image `2026-07-18.17-29-43.f2264a6` and executes Generic as an instruction-only parent before each basic Template's domain agent, without exposing provider tools of its own.
 
+Chart `opsdiag-app-api` `0.1.14` selects exact pushed image `2026-07-18.22-10-12.bec3c6c` and fixes saved-analysis title and Markdown-description updates by retaining detached flow metadata in the update result.
+
+Chart `opsdiag-app-agent` `0.1.16` selects exact pushed image `2026-07-18.22-10-09.852a125` and projects remote MCP `oneOf` tool constraints to OpenAI-compatible `anyOf` only in provider requests while retaining the authoritative original schema for local argument validation.
+
 Chart `opsdiag-app-front` `0.1.6` separates scheduled responses from execution errors, prevents response-less runs from creating chats, and keeps scheduler-only pinned flow snapshots usable for follow-up messages in explicit continuations.
 
 The connector chart must stay compatible with OpenShift restricted SCC. Do not set fixed `runAsUser`, `runAsGroup`, or `fsGroup` defaults; OpenShift injects a namespace-range random UID. Keep non-root, no privilege escalation, read-only root filesystem, dropped capabilities, and RuntimeDefault seccomp defaults.
