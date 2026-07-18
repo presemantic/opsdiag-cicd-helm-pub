@@ -27,11 +27,7 @@ jobs:
       matrix:
         chart:
           - opsdiag-app
-          - opsdiag-app-api
-          - opsdiag-app-agent
           - opsdiag-app-connector
-          - opsdiag-app-front
-          - opsdiag-app-sched
     steps:
       - name: "[Checkout] Build"
         uses: actions/checkout@v4
