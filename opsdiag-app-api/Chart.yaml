@@ -2,8 +2,8 @@ apiVersion: v2
 name: opsdiag-app-api
 description: OpsDiag app API
 type: application
-version: 0.1.12
-appVersion: "2026-07-18.14-15-12.58272ea"
+version: 0.1.13
+appVersion: "2026-07-18.17-29-43.cd54642"
 home: https://opsdiag.ai
 sources:
   - https://github.com/presemantic/opsdiag-app-api

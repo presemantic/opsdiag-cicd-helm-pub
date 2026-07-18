@@ -82,6 +82,10 @@ Chart `opsdiag-app-api` `0.1.11` selects the corrected scheduled node-memory che
 
 Chart `opsdiag-app-api` `0.1.12` selects exact pushed image `2026-07-18.14-15-12.58272ea` with validation and public profile support for GPT-5.6 Sol, Terra, and Luna across all six supported reasoning efforts.
 
+Chart `opsdiag-app-api` `0.1.13` selects exact pushed image `2026-07-18.17-29-43.cd54642` and exposes the instruction-only Generic catalog node used by every basic non-RCA Template.
+
+Chart `opsdiag-app-agent` `0.1.15` selects exact pushed image `2026-07-18.17-29-43.f2264a6` and executes Generic as an instruction-only parent before each basic Template's domain agent, without exposing provider tools of its own.
+
 Chart `opsdiag-app-front` `0.1.6` separates scheduled responses from execution errors, prevents response-less runs from creating chats, and keeps scheduler-only pinned flow snapshots usable for follow-up messages in explicit continuations.
 
 The connector chart must stay compatible with OpenShift restricted SCC. Do not set fixed `runAsUser`, `runAsGroup`, or `fsGroup` defaults; OpenShift injects a namespace-range random UID. Keep non-root, no privilege escalation, read-only root filesystem, dropped capabilities, and RuntimeDefault seccomp defaults.
