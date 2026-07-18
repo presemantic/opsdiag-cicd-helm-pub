@@ -16,7 +16,7 @@ containerName: agent
 image:
   registry: europe-west1-docker.pkg.dev
   repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-agent-api
-  tag: "2026-07-17.02-31-45.db901b7"
+  tag: "2026-07-18.14-15-12.f3f6d11"
   digest: ""
   pullPolicy: IfNotPresent
   pullSecrets: []

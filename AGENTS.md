@@ -58,6 +58,8 @@ Chart `opsdiag-app-agent` `0.1.11` selects the scheduled-scope evidence release 
 
 Chart `opsdiag-app-agent` `0.1.12` selects the same Scheduler v2 and Datadog functionality from exact pushed image `2026-07-17.02-31-45.db901b7`, whose shipped binary is attested after the registry push.
 
+Chart `opsdiag-app-agent` `0.1.13` selects exact pushed image `2026-07-18.14-15-12.f3f6d11` with GPT-5.6 Sol, Terra, and Luna capability metadata and all supported reasoning efforts from `none` through `max`.
+
 Chart `opsdiag-app-api` `0.1.5` selects Scheduler v2 API image `2026-07-17.02-26-49.f5e79bf` and moves scheduler-worker authentication out of the rendered ConfigMap into a chart-managed or externally supplied Kubernetes Secret.
 
 Chart `opsdiag-app-api` `0.1.6` selects the exact final Scheduler v2 API image `2026-07-17.03-13-23.6184e68`, including the corrected binary-attestation secret scan and the durable scheduler execution/continuation API used after migration `030_scheduler_execution.sql`.
@@ -75,6 +77,8 @@ Chart `opsdiag-app-front` `0.1.5` hides scheduler-only flows from normal chat cr
 Chart `opsdiag-app-api` `0.1.10` restores the pinned flow scope before scheduled node-context validation, exposes response availability, and permits `Continue in Chat` only when the run produced a real model response.
 
 Chart `opsdiag-app-api` `0.1.11` selects the corrected scheduled node-memory checkpoint release, which loads the immutable flow scope from the tenant-scoped scheduled-run row before persisting the final response context.
+
+Chart `opsdiag-app-api` `0.1.12` selects exact pushed image `2026-07-18.14-15-12.58272ea` with validation and public profile support for GPT-5.6 Sol, Terra, and Luna across all six supported reasoning efforts.
 
 Chart `opsdiag-app-front` `0.1.6` separates scheduled responses from execution errors, prevents response-less runs from creating chats, and keeps scheduler-only pinned flow snapshots usable for follow-up messages in explicit continuations.
 
