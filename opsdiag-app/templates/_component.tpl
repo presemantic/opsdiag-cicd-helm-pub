@@ -99,6 +99,10 @@ spec:
             - name: {{ $values.configPathEnv.name | quote }}
               value: /app/config.yaml
             {{- end }}
+            - name: AGENT_ROOT_URL
+              value: {{ printf "%s/api/run" (include "opsdiag-app.componentServiceURL" (dict "root" $root "component" "agent")) | quote }}
+            - name: APP_CHAT_CHECKPOINT_URL
+              value: {{ printf "%s/api/internal/chat-checkpoints" (include "opsdiag-app.componentServiceURL" (dict "root" $root "component" "api")) | quote }}
             {{- if or $values.schedulerWorkerToken.value $values.schedulerWorkerToken.existingSecret }}
             - name: APP_SCHEDULER_WORKER_TOKEN
               valueFrom:
@@ -117,6 +121,8 @@ spec:
               value: {{ $values.runtime.localDispatch | quote }}
             - name: AGENT_FLOW_MAX_PARALLEL_NODES
               value: {{ $values.runtime.maxParallelNodes | quote }}
+            - name: APP_AGENT_SCOPED_CALLBACK_BASE_URL
+              value: {{ include "opsdiag-app.componentServiceURL" (dict "root" $root "component" "api") | quote }}
             {{- else if eq $component "sched" }}
             - name: CONFIG_PATH
               value: /app/config.yaml

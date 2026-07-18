@@ -84,3 +84,12 @@ nodeAffinity:
 {{- end -}}
 {{- include "opsdiag-app.componentName" (dict "root" .root "component" $component) -}}
 {{- end -}}
+
+{{- define "opsdiag-app.componentServiceURL" -}}
+{{- $component := .component | required "service URL component is required" -}}
+{{- if not (hasKey .root.Values $component) -}}
+{{- fail (printf "unknown service URL component %q" $component) -}}
+{{- end -}}
+{{- $values := index .root.Values $component -}}
+{{- printf "http://%s:%v" (include "opsdiag-app.componentName" (dict "root" .root "component" $component)) $values.service.ports.http -}}
+{{- end -}}

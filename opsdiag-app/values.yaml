@@ -26,7 +26,9 @@ api:
     type: RollingUpdate
   command: []
   args: []
-  config: {}
+  config:
+    scheduler:
+      url: 'http://{{ include "opsdiag-app.componentName" (dict "root" . "component" "sched") }}:{{ .Values.sched.service.ports.http }}'
   configPathEnv:
     enabled: true
     name: CONFIG_PATH
@@ -112,7 +114,8 @@ api:
       helm.sh/hook: post-install,post-upgrade
       helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
     ttlSecondsAfterFinished: null
-    command: []
+    command:
+      - /opt/app/bin/opsdiag-app-api
     args: [migrate]
     extraEnvVars: []
 
@@ -318,7 +321,9 @@ sched:
     type: RollingUpdate
   command: []
   args: []
-  config: {}
+  config:
+    scheduler:
+      appApiUrl: 'http://{{ include "opsdiag-app.componentName" (dict "root" . "component" "api") }}:{{ .Values.api.service.ports.http }}'
   extraEnvVars: []
   extraEnvVarsCM: ""
   extraEnvVarsSecret: ""
