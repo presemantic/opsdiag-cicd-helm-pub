@@ -1,0 +1,71 @@
+{{- if and .Values.api.enabled .Values.api.migration.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ printf "%s-migrate" (include "opsdiag-app.componentName" (dict "root" . "component" "api")) | trunc 63 | trimSuffix "-" }}
+  namespace: {{ include "common.names.namespace" . | quote }}
+  labels:
+    {{- include "opsdiag-app.podLabels" (dict "root" . "component" "api") | nindent 4 }}
+    app.kubernetes.io/component: migration
+  annotations:
+    {{- include "common.tplvalues.render" (dict "value" .Values.api.migration.annotations "context" $) | nindent 4 }}
+spec:
+  {{- with .Values.api.migration.ttlSecondsAfterFinished }}
+  ttlSecondsAfterFinished: {{ . }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        {{- include "opsdiag-app.podLabels" (dict "root" . "component" "api") | nindent 8 }}
+        app.kubernetes.io/component: migration
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/api/configmap.yaml") . | sha256sum }}
+        {{- with .Values.api.podAnnotations }}
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+        {{- end }}
+    spec:
+      restartPolicy: OnFailure
+      serviceAccountName: {{ include "opsdiag-app.serviceAccountName" (dict "root" . "component" "api") }}
+      automountServiceAccountToken: {{ .Values.api.serviceAccount.automountServiceAccountToken }}
+      {{- include "common.images.renderPullSecrets" (dict "images" (list .Values.api.image) "context" $) | nindent 6 }}
+      {{- if .Values.api.podSecurityContext.enabled }}
+      securityContext:
+        {{- omit .Values.api.podSecurityContext "enabled" | toYaml | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: migrate
+          image: {{ include "common.images.image" (dict "imageRoot" .Values.api.image "global" .Values.global "chart" .Chart) | quote }}
+          imagePullPolicy: {{ .Values.api.image.pullPolicy }}
+          {{- if .Values.api.containerSecurityContext.enabled }}
+          securityContext:
+            {{- omit .Values.api.containerSecurityContext "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          {{- with .Values.api.migration.command }}
+          command:
+            {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 12 }}
+          {{- end }}
+          {{- with .Values.api.migration.args }}
+          args:
+            {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 12 }}
+          {{- end }}
+          env:
+            - name: CONFIG_PATH
+              value: /app/config.yaml
+            {{- with .Values.api.migration.extraEnvVars }}
+            {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 12 }}
+            {{- end }}
+          {{- $resources := include "opsdiag-app.resources" (dict "root" . "component" "api") | trim }}
+          {{- if $resources }}
+          resources:
+            {{- $resources | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: app-config
+              mountPath: /app/config.yaml
+              subPath: config.yaml
+              readOnly: true
+      volumes:
+        - name: app-config
+          configMap:
+            name: {{ include "opsdiag-app.configName" (dict "root" . "component" "api") }}
+{{- end }}

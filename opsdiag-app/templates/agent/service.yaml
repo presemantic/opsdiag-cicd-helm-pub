@@ -1,0 +1,1 @@
+{{ include "opsdiag-app.service" (dict "root" . "component" "agent") }}

@@ -1,0 +1,414 @@
+## @section Global parameters
+global:
+  imageRegistry: ""
+  imagePullSecrets: []
+
+nameOverride: ""
+fullnameOverride: ""
+namespaceOverride: ""
+commonLabels: {}
+commonAnnotations: {}
+extraDeploy: []
+
+## @section App API
+api:
+  enabled: true
+  image:
+    registry: europe-west1-docker.pkg.dev
+    repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-api
+    tag: "2026-07-18.22-10-12.bec3c6c"
+    digest: ""
+    pullPolicy: IfNotPresent
+    pullSecrets: []
+  replicaCount: 1
+  revisionHistoryLimit: 10
+  updateStrategy:
+    type: RollingUpdate
+  command: []
+  args: []
+  config: {}
+  configPathEnv:
+    enabled: true
+    name: CONFIG_PATH
+  schedulerWorkerToken:
+    value: ""
+    existingSecret: ""
+    key: worker-token
+  extraEnvVars: []
+  extraEnvVarsCM: ""
+  extraEnvVarsSecret: ""
+  extraVolumes: []
+  extraVolumeMounts: []
+  extraDeploy: []
+  serviceAccount:
+    create: true
+    name: ""
+    annotations: {}
+    automountServiceAccountToken: false
+  podSecurityContext:
+    enabled: true
+    seccompProfile:
+      type: RuntimeDefault
+  containerSecurityContext:
+    enabled: true
+    runAsNonRoot: true
+    readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop: [ALL]
+  containerPorts:
+    http: 8000
+  service:
+    type: ClusterIP
+    annotations: {}
+    ports:
+      http: 8000
+    clusterIP: ""
+  resourcesPreset: nano
+  resources: {}
+  livenessProbe:
+    enabled: true
+    spec:
+      httpGet:
+        path: /api/health
+        port: http
+  readinessProbe:
+    enabled: true
+    spec:
+      httpGet:
+        path: /api/health
+        port: http
+  startupProbe:
+    enabled: false
+    spec: {}
+  podLabels: {}
+  podAnnotations: {}
+  podAffinityPreset: ""
+  podAntiAffinityPreset: soft
+  nodeAffinityPreset:
+    type: ""
+    key: ""
+    values: []
+  affinity: {}
+  nodeSelector: {}
+  tolerations: []
+  topologySpreadConstraints: []
+  priorityClassName: ""
+  schedulerName: ""
+  terminationGracePeriodSeconds: 30
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: ""
+    maxUnavailable: ""
+  migration:
+    enabled: false
+    annotations:
+      helm.sh/hook: post-install,post-upgrade
+      helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+    ttlSecondsAfterFinished: null
+    command: []
+    args: [migrate]
+    extraEnvVars: []
+
+## @section App Agent
+agent:
+  enabled: true
+  image:
+    registry: europe-west1-docker.pkg.dev
+    repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-agent-api
+    tag: "2026-07-18.22-10-09.852a125"
+    digest: ""
+    pullPolicy: IfNotPresent
+    pullSecrets: []
+  replicaCount: 1
+  revisionHistoryLimit: 10
+  updateStrategy:
+    type: RollingUpdate
+  command: []
+  args: []
+  config: {}
+  runtime:
+    agentKind: root
+    licenseService: opsdiag-app-agent
+    localDispatch: true
+    maxParallelNodes: 6
+  extraEnvVars: []
+  extraEnvVarsCM: ""
+  extraEnvVarsSecret: ""
+  extraVolumes: []
+  extraVolumeMounts: []
+  extraDeploy: []
+  serviceAccount:
+    create: true
+    name: ""
+    annotations: {}
+    automountServiceAccountToken: false
+  podSecurityContext:
+    enabled: true
+    seccompProfile:
+      type: RuntimeDefault
+  containerSecurityContext:
+    enabled: true
+    runAsNonRoot: true
+    readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop: [ALL]
+  containerPorts:
+    http: 8000
+  service:
+    type: ClusterIP
+    annotations: {}
+    ports:
+      http: 8000
+    clusterIP: ""
+  resourcesPreset: nano
+  resources: {}
+  livenessProbe:
+    enabled: false
+    spec: {}
+  readinessProbe:
+    enabled: false
+    spec: {}
+  startupProbe:
+    enabled: false
+    spec: {}
+  podLabels: {}
+  podAnnotations: {}
+  podAffinityPreset: ""
+  podAntiAffinityPreset: soft
+  nodeAffinityPreset:
+    type: ""
+    key: ""
+    values: []
+  affinity: {}
+  nodeSelector: {}
+  tolerations: []
+  topologySpreadConstraints: []
+  priorityClassName: ""
+  schedulerName: ""
+  terminationGracePeriodSeconds: 30
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: ""
+    maxUnavailable: ""
+
+## @section App Frontend
+front:
+  enabled: true
+  image:
+    registry: europe-west1-docker.pkg.dev
+    repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-front
+    tag: "2026-07-17.18-02-30.7855c4b"
+    digest: ""
+    pullPolicy: IfNotPresent
+    pullSecrets: []
+  replicaCount: 1
+  revisionHistoryLimit: 10
+  updateStrategy:
+    type: RollingUpdate
+  command: []
+  args: []
+  extraEnvVars: []
+  extraEnvVarsCM: ""
+  extraEnvVarsSecret: ""
+  extraVolumes: []
+  extraVolumeMounts: []
+  extraDeploy: []
+  serviceAccount:
+    create: true
+    name: ""
+    annotations: {}
+    automountServiceAccountToken: false
+  podSecurityContext:
+    enabled: true
+    seccompProfile:
+      type: RuntimeDefault
+  containerSecurityContext:
+    enabled: true
+    runAsUser: 101
+    runAsGroup: 101
+    runAsNonRoot: true
+    readOnlyRootFilesystem: false
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop: [ALL]
+  containerPorts:
+    http: 3000
+  service:
+    type: ClusterIP
+    annotations: {}
+    ports:
+      http: 3000
+    clusterIP: ""
+  resourcesPreset: nano
+  resources: {}
+  livenessProbe:
+    enabled: true
+    spec:
+      httpGet:
+        path: /
+        port: http
+  readinessProbe:
+    enabled: true
+    spec:
+      httpGet:
+        path: /
+        port: http
+  startupProbe:
+    enabled: false
+    spec: {}
+  podLabels: {}
+  podAnnotations: {}
+  podAffinityPreset: ""
+  podAntiAffinityPreset: soft
+  nodeAffinityPreset:
+    type: ""
+    key: ""
+    values: []
+  affinity: {}
+  nodeSelector: {}
+  tolerations: []
+  topologySpreadConstraints: []
+  priorityClassName: ""
+  schedulerName: ""
+  terminationGracePeriodSeconds: 30
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: ""
+    maxUnavailable: ""
+
+## @section App Scheduler
+sched:
+  enabled: true
+  image:
+    registry: europe-west1-docker.pkg.dev
+    repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-sched
+    tag: "2026-07-17.02-45-22.a4770dd"
+    digest: ""
+    pullPolicy: IfNotPresent
+    pullSecrets: []
+  replicaCount: 1
+  revisionHistoryLimit: 10
+  updateStrategy:
+    type: RollingUpdate
+  command: []
+  args: []
+  config: {}
+  extraEnvVars: []
+  extraEnvVarsCM: ""
+  extraEnvVarsSecret: ""
+  extraVolumes: []
+  extraVolumeMounts: []
+  extraDeploy: []
+  serviceAccount:
+    create: true
+    name: ""
+    annotations: {}
+    automountServiceAccountToken: false
+  podSecurityContext:
+    enabled: true
+    seccompProfile:
+      type: RuntimeDefault
+  containerSecurityContext:
+    enabled: true
+    runAsNonRoot: true
+    readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop: [ALL]
+  containerPorts:
+    http: 8000
+  service:
+    type: ClusterIP
+    annotations: {}
+    ports:
+      http: 8000
+    clusterIP: ""
+  resourcesPreset: nano
+  resources: {}
+  livenessProbe:
+    enabled: true
+    spec:
+      httpGet:
+        path: /api/live
+        port: http
+  readinessProbe:
+    enabled: true
+    spec:
+      httpGet:
+        path: /api/ready
+        port: http
+      timeoutSeconds: 3
+  startupProbe:
+    enabled: false
+    spec: {}
+  podLabels: {}
+  podAnnotations: {}
+  podAffinityPreset: ""
+  podAntiAffinityPreset: soft
+  nodeAffinityPreset:
+    type: ""
+    key: ""
+    values: []
+  affinity: {}
+  nodeSelector: {}
+  tolerations: []
+  topologySpreadConstraints: []
+  priorityClassName: ""
+  schedulerName: ""
+  terminationGracePeriodSeconds: 30
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: ""
+    maxUnavailable: ""
+
+## @section Kubernetes Ingress resources
+ingress:
+  enabled: false
+  items: []
+  # - name: web
+  #   fullnameOverride: ""
+  #   ingressClassName: nginx
+  #   annotations: {}
+  #   rules:
+  #     - host: app.example.com
+  #       paths:
+  #         - path: /api
+  #           pathType: Prefix
+  #           component: api
+  #           portNumber: 8000
+  #         - path: /
+  #           pathType: Prefix
+  #           component: front
+  #           portNumber: 3000
+  #   tls: []
+
+## @section OpenShift Route resources
+openshiftRoute:
+  enabled: false
+  items: []
+  # - name: api
+  #   host: app.example.com
+  #   path: /api
+  #   component: api
+  #   targetPort: http
+  #   annotations: {}
+  #   tls:
+  #     termination: edge
+
+## @section Istio resources
+istio:
+  enabled: false
+  gateways: []
+  # - name: app
+  #   annotations: {}
+  #   selector:
+  #     istio: ingressgateway
+  #   servers: []
+  virtualServices: []
+  # - name: app
+  #   annotations: {}
+  #   hosts: [app.example.com]
+  #   gateways: [app]
+  #   http: []

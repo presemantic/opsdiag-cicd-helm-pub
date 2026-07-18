@@ -1,0 +1,42 @@
+{{- if .Values.istio.enabled }}
+{{- range $gateway := .Values.istio.gateways }}
+---
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: {{ printf "%s-%s" (include "common.names.fullname" $) ($gateway.name | required "Istio Gateway name is required") | trunc 63 | trimSuffix "-" }}
+  namespace: {{ include "common.names.namespace" $ | quote }}
+  labels:
+    {{- include "common.labels.standard" (dict "customLabels" $.Values.commonLabels "context" $) | nindent 4 }}
+  {{- with $gateway.annotations }}
+  annotations:
+    {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+spec:
+  selector:
+    {{- include "common.tplvalues.render" (dict "value" $gateway.selector "context" $) | nindent 4 }}
+  servers:
+    {{- include "common.tplvalues.render" (dict "value" $gateway.servers "context" $) | nindent 4 }}
+{{- end }}
+{{- range $virtualService := .Values.istio.virtualServices }}
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ printf "%s-%s" (include "common.names.fullname" $) ($virtualService.name | required "Istio VirtualService name is required") | trunc 63 | trimSuffix "-" }}
+  namespace: {{ include "common.names.namespace" $ | quote }}
+  labels:
+    {{- include "common.labels.standard" (dict "customLabels" $.Values.commonLabels "context" $) | nindent 4 }}
+  {{- with $virtualService.annotations }}
+  annotations:
+    {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+spec:
+  hosts:
+    {{- include "common.tplvalues.render" (dict "value" $virtualService.hosts "context" $) | nindent 4 }}
+  gateways:
+    {{- include "common.tplvalues.render" (dict "value" $virtualService.gateways "context" $) | nindent 4 }}
+  http:
+    {{- include "common.tplvalues.render" (dict "value" $virtualService.http "context" $) | nindent 4 }}
+{{- end }}
+{{- end }}

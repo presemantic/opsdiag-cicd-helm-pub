@@ -1,0 +1,11 @@
+{{- range .Values.extraDeploy }}
+---
+{{ include "common.tplvalues.render" (dict "value" . "context" $) }}
+{{- end }}
+{{- range $component := list "api" "agent" "front" "sched" }}
+{{- $values := index $.Values $component }}
+{{- range $values.extraDeploy }}
+---
+{{ include "common.tplvalues.render" (dict "value" . "context" $) }}
+{{- end }}
+{{- end }}

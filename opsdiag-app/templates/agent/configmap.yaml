@@ -1,0 +1,16 @@
+{{- if .Values.agent.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "opsdiag-app.configName" (dict "root" . "component" "agent") }}
+  namespace: {{ include "common.names.namespace" . | quote }}
+  labels:
+    {{- include "opsdiag-app.podLabels" (dict "root" . "component" "agent") | nindent 4 }}
+  {{- with .Values.commonAnnotations }}
+  annotations:
+    {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+data:
+  config.yaml: |
+    {{- include "common.tplvalues.render" (dict "value" (.Values.agent.config | toYaml) "context" $) | nindent 4 }}
+{{- end }}
