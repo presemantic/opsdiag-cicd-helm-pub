@@ -20,7 +20,7 @@ api:
     digest: ""
     pullPolicy: IfNotPresent
     pullSecrets: []
-  replicaCount: 1
+  replicaCount: 2
   revisionHistoryLimit: 10
   updateStrategy:
     type: RollingUpdate
@@ -79,8 +79,14 @@ api:
         path: /api/health
         port: http
   startupProbe:
-    enabled: false
-    spec: {}
+    enabled: true
+    spec:
+      httpGet:
+        path: /api/health
+        port: http
+      periodSeconds: 5
+      timeoutSeconds: 2
+      failureThreshold: 120
   podLabels: {}
   podAnnotations: {}
   podAffinityPreset: ""
@@ -97,8 +103,8 @@ api:
   schedulerName: ""
   terminationGracePeriodSeconds: 30
   podDisruptionBudget:
-    enabled: false
-    minAvailable: ""
+    enabled: true
+    minAvailable: 1
     maxUnavailable: ""
   migration:
     enabled: false
@@ -165,14 +171,32 @@ agent:
   resourcesPreset: nano
   resources: {}
   livenessProbe:
-    enabled: false
-    spec: {}
+    enabled: true
+    spec:
+      httpGet:
+        path: /livez
+        port: http
+      periodSeconds: 10
+      timeoutSeconds: 2
+      failureThreshold: 3
   readinessProbe:
-    enabled: false
-    spec: {}
+    enabled: true
+    spec:
+      httpGet:
+        path: /readyz
+        port: http
+      periodSeconds: 5
+      timeoutSeconds: 2
+      failureThreshold: 3
   startupProbe:
-    enabled: false
-    spec: {}
+    enabled: true
+    spec:
+      httpGet:
+        path: /readyz
+        port: http
+      periodSeconds: 5
+      timeoutSeconds: 2
+      failureThreshold: 60
   podLabels: {}
   podAnnotations: {}
   podAffinityPreset: ""
