@@ -302,7 +302,7 @@ agent:
     ## @param agent.image.repository App Agent image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-agent-api
     ## @param agent.image.tag App Agent image tag
-    tag: "2026-07-19.14-54-28.efcf091"
+    tag: "2026-07-19.15-51-51.4909ee2"
     ## @param agent.image.digest App Agent image digest; overrides the tag when set
     digest: ""
     ## @param agent.image.pullPolicy App Agent image pull policy
