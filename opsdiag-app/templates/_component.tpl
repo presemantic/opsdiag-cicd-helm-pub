@@ -2,7 +2,6 @@
 {{- $root := .root -}}
 {{- $component := .component -}}
 {{- $values := index $root.Values $component -}}
-{{- if $values.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -28,12 +27,9 @@ spec:
         {{- include "opsdiag-app.podLabels" . | nindent 8 }}
       annotations:
         {{- if eq $component "api" }}
-        checksum/config: {{ include (print $root.Template.BasePath "/api/configmap.yaml") $root | sha256sum }}
-        {{- if and $values.schedulerWorkerToken.value (not $values.schedulerWorkerToken.existingSecret) }}
-        checksum/scheduler-worker-token: {{ include (print $root.Template.BasePath "/api/scheduler-worker-token-secret.yaml") $root | sha256sum }}
-        {{- end }}
+        checksum/config: {{ include (print $root.Template.BasePath "/api/secret.yaml") $root | sha256sum }}
         {{- else if eq $component "agent" }}
-        checksum/config: {{ include (print $root.Template.BasePath "/agent/configmap.yaml") $root | sha256sum }}
+        checksum/config: {{ include (print $root.Template.BasePath "/agent/secret.yaml") $root | sha256sum }}
         {{- else if eq $component "sched" }}
         checksum/config: {{ include (print $root.Template.BasePath "/sched/secret.yaml") $root | sha256sum }}
         {{- end }}
@@ -84,52 +80,9 @@ spec:
             - name: http
               containerPort: {{ $values.containerPorts.http }}
               protocol: TCP
-          {{- with $values.command }}
-          command:
-            {{- include "common.tplvalues.render" (dict "value" . "context" $root) | nindent 12 }}
-          {{- end }}
-          {{- with $values.args }}
-          args:
-            {{- include "common.tplvalues.render" (dict "value" . "context" $root) | nindent 12 }}
-          {{- end }}
-          {{- if or (ne $component "front") $values.extraEnvVars }}
+          {{- if $values.extraEnvVars }}
           env:
-            {{- if eq $component "api" }}
-            {{- if $values.configPathEnv.enabled }}
-            - name: {{ $values.configPathEnv.name | quote }}
-              value: /app/config.yaml
-            {{- end }}
-            - name: AGENT_ROOT_URL
-              value: {{ printf "%s/api/run" (include "opsdiag-app.componentServiceURL" (dict "root" $root "component" "agent")) | quote }}
-            - name: APP_CHAT_CHECKPOINT_URL
-              value: {{ printf "%s/api/internal/chat-checkpoints" (include "opsdiag-app.componentServiceURL" (dict "root" $root "component" "api")) | quote }}
-            {{- if or $values.schedulerWorkerToken.value $values.schedulerWorkerToken.existingSecret }}
-            - name: APP_SCHEDULER_WORKER_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "opsdiag-app.schedulerWorkerTokenSecretName" $root }}
-                  key: {{ $values.schedulerWorkerToken.key | quote }}
-            {{- end }}
-            {{- else if eq $component "agent" }}
-            - name: CONFIG_PATH
-              value: /app/config.yaml
-            - name: AGENT_KIND
-              value: {{ $values.runtime.agentKind | quote }}
-            - name: AGENT_LICENSE_SERVICE
-              value: {{ $values.runtime.licenseService | quote }}
-            - name: AGENT_LOCAL_DISPATCH
-              value: {{ $values.runtime.localDispatch | quote }}
-            - name: AGENT_FLOW_MAX_PARALLEL_NODES
-              value: {{ $values.runtime.maxParallelNodes | quote }}
-            - name: APP_AGENT_SCOPED_CALLBACK_BASE_URL
-              value: {{ include "opsdiag-app.componentServiceURL" (dict "root" $root "component" "api") | quote }}
-            {{- else if eq $component "sched" }}
-            - name: CONFIG_PATH
-              value: /app/config.yaml
-            {{- end }}
-            {{- with $values.extraEnvVars }}
-            {{- include "common.tplvalues.render" (dict "value" . "context" $root) | nindent 12 }}
-            {{- end }}
+            {{- include "common.tplvalues.render" (dict "value" $values.extraEnvVars "context" $root) | nindent 12 }}
           {{- end }}
           {{- if or $values.extraEnvVarsCM $values.extraEnvVarsSecret }}
           envFrom:
@@ -177,13 +130,8 @@ spec:
       {{- if ne $component "front" }}
       volumes:
         - name: app-config
-          {{- if eq $component "sched" }}
           secret:
             secretName: {{ include "opsdiag-app.configName" . }}
-          {{- else }}
-          configMap:
-            name: {{ include "opsdiag-app.configName" . }}
-          {{- end }}
         {{- with $values.extraVolumes }}
         {{- include "common.tplvalues.render" (dict "value" . "context" $root) | nindent 8 }}
         {{- end }}
@@ -193,13 +141,11 @@ spec:
         {{- include "common.tplvalues.render" (dict "value" . "context" $root) | nindent 8 }}
       {{- end }}
       {{- end }}
-{{- end }}
 {{- end -}}
 
 {{- define "opsdiag-app.service" -}}
 {{- $root := .root -}}
 {{- $values := index $root.Values .component -}}
-{{- if $values.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -223,13 +169,12 @@ spec:
       protocol: TCP
   selector:
     {{- include "opsdiag-app.selectorLabels" . | nindent 4 }}
-{{- end }}
 {{- end -}}
 
 {{- define "opsdiag-app.serviceAccount" -}}
 {{- $root := .root -}}
 {{- $values := index $root.Values .component -}}
-{{- if and $values.enabled $values.serviceAccount.create }}
+{{- if $values.serviceAccount.create }}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -248,7 +193,7 @@ automountServiceAccountToken: {{ $values.serviceAccount.automountServiceAccountT
 {{- define "opsdiag-app.podDisruptionBudget" -}}
 {{- $root := .root -}}
 {{- $values := index $root.Values .component -}}
-{{- if and $values.enabled $values.podDisruptionBudget.enabled }}
+{{- if $values.podDisruptionBudget.enabled }}
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:

@@ -44,8 +44,6 @@ app.kubernetes.io/managed-by: {{ .root.Release.Service | quote }}
 {{- $values := index .root.Values .component -}}
 {{- if $values.resources -}}
 {{ include "common.tplvalues.render" (dict "value" $values.resources "context" .root) }}
-{{- else if $values.resourcesPreset -}}
-{{ include "common.resources.preset" (dict "type" $values.resourcesPreset) }}
 {{- end -}}
 {{- end -}}
 
@@ -66,14 +64,6 @@ podAntiAffinity:
 nodeAffinity:
 {{ include "common.affinities.nodes" (dict "type" $values.nodeAffinityPreset.type "key" $values.nodeAffinityPreset.key "values" $values.nodeAffinityPreset.values) | nindent 2 }}
 {{- end }}
-{{- end -}}
-{{- end -}}
-
-{{- define "opsdiag-app.schedulerWorkerTokenSecretName" -}}
-{{- if .Values.api.schedulerWorkerToken.existingSecret -}}
-{{- .Values.api.schedulerWorkerToken.existingSecret -}}
-{{- else -}}
-{{- printf "%s-scheduler-worker-token" (include "opsdiag-app.componentName" (dict "root" . "component" "api")) | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 {{- end -}}
 
