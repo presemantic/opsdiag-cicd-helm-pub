@@ -2,931 +2,961 @@
 ##
 ## Global image parameters
 ##
-## @param global.imageRegistry Global container image registry override
-## @param global.imagePullSecrets Global container registry secret names as an array
-##
+## @param global Global container image override settings
 global:
+  ## @param global.imageRegistry Global container image registry override
   imageRegistry: ""
+  ## @param global.imagePullSecrets Global container registry secret names as an array
   imagePullSecrets: []
 
 ## Common chart parameters
 ##
 ## @param nameOverride String to partially override the chart name
-## @param fullnameOverride String to fully override generated resource names
-## @param namespaceOverride String to fully override the release namespace
-## @param commonLabels Labels to add to every deployed resource
-## @param commonAnnotations Annotations to add to every deployed resource
-## @param extraDeploy Additional Kubernetes objects to deploy with the release
-##
 nameOverride: ""
+## @param fullnameOverride String to fully override generated resource names
 fullnameOverride: ""
+## @param namespaceOverride String to fully override the release namespace
 namespaceOverride: ""
+## @param commonLabels Labels to add to every deployed resource
 commonLabels: {}
+## @param commonAnnotations Annotations to add to every deployed resource
 commonAnnotations: {}
+## @param extraDeploy Additional Kubernetes objects to deploy with the release
 extraDeploy: []
 
 ## @section App API parameters
 ##
-## @param api.replicaCount Number of App API replicas
-## @param api.revisionHistoryLimit Number of previous ReplicaSets retained for rollback
-##
+## @param api App API component settings
 api:
+  ## @param api.replicaCount Number of App API replicas
   replicaCount: 2
+  ## @param api.revisionHistoryLimit Number of previous ReplicaSets retained for rollback
   revisionHistoryLimit: 10
 
   ## App API image
   ##
-  ## @param api.image.registry App API image registry
-  ## @param api.image.repository App API image repository
-  ## @param api.image.tag App API image tag
-  ## @param api.image.digest App API image digest; overrides the tag when set
-  ## @param api.image.pullPolicy App API image pull policy
-  ## @param api.image.pullSecrets App API image pull secrets
-  ##
+  ## @param api.image App API container image settings
   image:
+    ## @param api.image.registry App API image registry
     registry: europe-west1-docker.pkg.dev
+    ## @param api.image.repository App API image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-api
-    tag: "2026-07-19.03-54-13.9552502"
+    ## @param api.image.tag App API image tag
+    tag: "2026-07-19.11-27-53.0c50f5c"
+    ## @param api.image.digest App API image digest; overrides the tag when set
     digest: ""
+    ## @param api.image.pullPolicy App API image pull policy
     pullPolicy: IfNotPresent
+    ## @param api.image.pullSecrets App API image pull secrets
     pullSecrets: []
 
   ## App API deployment and runtime
   ##
   ## @param api.updateStrategy App API Deployment update strategy
-  ## @param api.updateStrategy.type App API Deployment strategy type
-  ## @param api.config App API runtime configuration rendered to `/app/config.yaml`
-  ## @param api.config.license App API license
-  ## @param api.config.licenseServer Control Edge origin used for App API license verification
-  ## @param api.config.database.url PostgreSQL connection URL
-  ## @param api.config.agent.url Internal App Agent run URL; rendered from the Helm release name
-  ## @param api.config.internal.baseUrl Internal App API base URL; rendered from the Helm release name
-  ## @param api.config.modelProfileSecret Encryption key for tenant model-profile credentials
-  ## @param api.config.auth.username Config-managed bootstrap username
-  ## @param api.config.auth.password Config-managed bootstrap password
-  ## @param api.config.auth.jwtSecret HMAC secret used for App API authentication tokens
-  ## @param api.config.auth.jwtExpiresSeconds Lifetime of App API authentication tokens in seconds
-  ## @param api.config.scheduler.url Internal App Scheduler URL; rendered from the Helm release name
-  ## @param api.config.scheduler.workerToken Shared App Scheduler worker token
-  ##
   updateStrategy:
+    ## @param api.updateStrategy.type App API Deployment strategy type
     type: RollingUpdate
 
+  ## @param api.config App API runtime configuration rendered to `/app/config.yaml`
   config:
+    ## @param api.config.license App API license
     license: ""
+    ## @param api.config.licenseServer Control Edge origin used for App API license verification
     licenseServer: https://edge.control.opsdiag.ai
+    ## @param api.config.database App API PostgreSQL connection settings
     database:
+      ## @param api.config.database.url PostgreSQL connection URL
       url: ""
+    ## @param api.config.agent App API connection settings for App Agent
     agent:
+      ## @param api.config.agent.url Internal App Agent run URL; rendered from the Helm release name
       url: 'http://{{ include "opsdiag-app.componentName" (dict "root" . "component" "agent") }}:{{ .Values.agent.service.ports.http }}/api/run'
+    ## @param api.config.internal App API internal callback settings
     internal:
+      ## @param api.config.internal.baseUrl Internal App API base URL; rendered from the Helm release name
       baseUrl: 'http://{{ include "opsdiag-app.componentName" (dict "root" . "component" "api") }}:{{ .Values.api.service.ports.http }}'
+    ## @param api.config.modelProfileSecret Encryption key for tenant model-profile credentials
     modelProfileSecret: ""
+    ## @param api.config.auth App API bootstrap authentication settings
     auth:
+      ## @param api.config.auth.username Config-managed bootstrap username
       username: ""
+      ## @param api.config.auth.password Config-managed bootstrap password
       password: ""
+      ## @param api.config.auth.jwtSecret HMAC secret used for App API authentication tokens
       jwtSecret: ""
+      ## @param api.config.auth.jwtExpiresSeconds Lifetime of App API authentication tokens in seconds
       jwtExpiresSeconds: 86400
+    ## @param api.config.scheduler App API connection settings for App Scheduler
     scheduler:
+      ## @param api.config.scheduler.url Internal App Scheduler URL; rendered from the Helm release name
       url: 'http://{{ include "opsdiag-app.componentName" (dict "root" . "component" "sched") }}:{{ .Values.sched.service.ports.http }}'
+      ## @param api.config.scheduler.workerToken Shared App Scheduler worker token
       workerToken: ""
 
   ## Additional App API deployment settings
   ##
   ## @param api.extraEnvVars Additional environment variables for the App API container
-  ## @param api.extraEnvVarsCM Existing ConfigMap containing additional App API environment variables
-  ## @param api.extraEnvVarsSecret Existing Secret containing additional App API environment variables
-  ## @param api.extraVolumes Additional volumes for App API pods
-  ## @param api.extraVolumeMounts Additional volume mounts for the App API container
-  ## @param api.extraDeploy Additional Kubernetes objects associated with App API
-  ##
   extraEnvVars: []
+  ## @param api.extraEnvVarsCM Existing ConfigMap containing additional App API environment variables
   extraEnvVarsCM: ""
+  ## @param api.extraEnvVarsSecret Existing Secret containing additional App API environment variables
   extraEnvVarsSecret: ""
+  ## @param api.extraVolumes Additional volumes for App API pods
   extraVolumes: []
+  ## @param api.extraVolumeMounts Additional volume mounts for the App API container
   extraVolumeMounts: []
+  ## @param api.extraDeploy Additional Kubernetes objects associated with App API
   extraDeploy: []
 
   ## App API ServiceAccount
   ##
-  ## @param api.serviceAccount.create Create a ServiceAccount for App API
-  ## @param api.serviceAccount.name App API ServiceAccount name; generated when empty
-  ## @param api.serviceAccount.annotations Additional App API ServiceAccount annotations
-  ## @param api.serviceAccount.automountServiceAccountToken Mount the ServiceAccount token in App API pods
-  ##
+  ## @param api.serviceAccount App API ServiceAccount settings
   serviceAccount:
+    ## @param api.serviceAccount.create Create a ServiceAccount for App API
     create: true
+    ## @param api.serviceAccount.name App API ServiceAccount name; generated when empty
     name: ""
+    ## @param api.serviceAccount.annotations Additional App API ServiceAccount annotations
     annotations: {}
+    ## @param api.serviceAccount.automountServiceAccountToken Mount the ServiceAccount token in App API pods
     automountServiceAccountToken: false
 
   ## App API security contexts
   ##
-  ## @param api.podSecurityContext.enabled Enable App API pod security context
-  ## @param api.podSecurityContext.seccompProfile App API pod seccomp profile
-  ## @param api.podSecurityContext.seccompProfile.type App API pod seccomp profile type
-  ## @param api.containerSecurityContext.enabled Enable App API container security context
-  ## @param api.containerSecurityContext.runAsNonRoot Require a non-root App API process
-  ## @param api.containerSecurityContext.readOnlyRootFilesystem Use a read-only App API root filesystem
-  ## @param api.containerSecurityContext.allowPrivilegeEscalation Allow App API privilege escalation
-  ## @param api.containerSecurityContext.capabilities.drop App API Linux capabilities to drop
-  ##
+  ## @param api.podSecurityContext App API pod security context settings
   podSecurityContext:
+    ## @param api.podSecurityContext.enabled Enable App API pod security context
     enabled: true
+    ## @param api.podSecurityContext.seccompProfile App API pod seccomp profile
     seccompProfile:
+      ## @param api.podSecurityContext.seccompProfile.type App API pod seccomp profile type
       type: RuntimeDefault
 
+  ## @param api.containerSecurityContext App API container security context settings
   containerSecurityContext:
+    ## @param api.containerSecurityContext.enabled Enable App API container security context
     enabled: true
+    ## @param api.containerSecurityContext.runAsNonRoot Require a non-root App API process
     runAsNonRoot: true
+    ## @param api.containerSecurityContext.readOnlyRootFilesystem Use a read-only App API root filesystem
     readOnlyRootFilesystem: true
+    ## @param api.containerSecurityContext.allowPrivilegeEscalation Allow App API privilege escalation
     allowPrivilegeEscalation: false
+    ## @param api.containerSecurityContext.capabilities App API container Linux capability settings
     capabilities:
+      ## @param api.containerSecurityContext.capabilities.drop App API Linux capabilities to drop
       drop: [ALL]
 
   ## App API networking
   ##
-  ## @param api.containerPorts.http App API container HTTP port
-  ## @param api.service.type App API Service type
-  ## @param api.service.annotations Additional App API Service annotations
-  ## @param api.service.ports.http App API Service HTTP port
-  ## @param api.service.clusterIP App API Service cluster IP
-  ##
+  ## @param api.containerPorts App API container port settings
   containerPorts:
+    ## @param api.containerPorts.http App API container HTTP port
     http: 8000
 
+  ## @param api.service App API Service settings
   service:
+    ## @param api.service.type App API Service type
     type: ClusterIP
+    ## @param api.service.annotations Additional App API Service annotations
     annotations: {}
+    ## @param api.service.ports App API Service port settings
     ports:
+      ## @param api.service.ports.http App API Service HTTP port
       http: 8000
+    ## @param api.service.clusterIP App API Service cluster IP
     clusterIP: ""
 
   ## App API resources
   ##
   ## @param api.resources App API resource requests and limits
-  ##
   resources: {}
 
   ## App API health probes
   ##
-  ## @param api.livenessProbe.enabled Enable the App API liveness probe
-  ## @param api.livenessProbe.spec App API liveness probe specification
-  ## @param api.livenessProbe.spec.httpGet.path App API liveness probe HTTP path
-  ## @param api.livenessProbe.spec.httpGet.port App API liveness probe port name
-  ## @param api.readinessProbe.enabled Enable the App API readiness probe
-  ## @param api.readinessProbe.spec App API readiness probe specification
-  ## @param api.readinessProbe.spec.httpGet.path App API readiness probe HTTP path
-  ## @param api.readinessProbe.spec.httpGet.port App API readiness probe port name
-  ## @param api.startupProbe.enabled Enable the App API startup probe
-  ## @param api.startupProbe.spec App API startup probe specification
-  ## @param api.startupProbe.spec.httpGet.path App API startup probe HTTP path
-  ## @param api.startupProbe.spec.httpGet.port App API startup probe port name
-  ## @param api.startupProbe.spec.periodSeconds App API startup probe period in seconds
-  ## @param api.startupProbe.spec.timeoutSeconds App API startup probe timeout in seconds
-  ## @param api.startupProbe.spec.failureThreshold App API startup probe failure threshold
-  ##
+  ## @param api.livenessProbe App API liveness probe settings
   livenessProbe:
+    ## @param api.livenessProbe.enabled Enable the App API liveness probe
     enabled: true
+    ## @param api.livenessProbe.spec App API liveness probe specification
     spec:
+      ## @param api.livenessProbe.spec.httpGet App API liveness probe HTTP request settings
       httpGet:
+        ## @param api.livenessProbe.spec.httpGet.path App API liveness probe HTTP path
         path: /api/health
+        ## @param api.livenessProbe.spec.httpGet.port App API liveness probe port name
         port: http
 
+  ## @param api.readinessProbe App API readiness probe settings
   readinessProbe:
+    ## @param api.readinessProbe.enabled Enable the App API readiness probe
     enabled: true
+    ## @param api.readinessProbe.spec App API readiness probe specification
     spec:
+      ## @param api.readinessProbe.spec.httpGet App API readiness probe HTTP request settings
       httpGet:
+        ## @param api.readinessProbe.spec.httpGet.path App API readiness probe HTTP path
         path: /api/health
+        ## @param api.readinessProbe.spec.httpGet.port App API readiness probe port name
         port: http
 
+  ## @param api.startupProbe App API startup probe settings
   startupProbe:
+    ## @param api.startupProbe.enabled Enable the App API startup probe
     enabled: true
+    ## @param api.startupProbe.spec App API startup probe specification
     spec:
+      ## @param api.startupProbe.spec.httpGet App API startup probe HTTP request settings
       httpGet:
+        ## @param api.startupProbe.spec.httpGet.path App API startup probe HTTP path
         path: /api/health
+        ## @param api.startupProbe.spec.httpGet.port App API startup probe port name
         port: http
+      ## @param api.startupProbe.spec.periodSeconds App API startup probe period in seconds
       periodSeconds: 5
+      ## @param api.startupProbe.spec.timeoutSeconds App API startup probe timeout in seconds
       timeoutSeconds: 2
+      ## @param api.startupProbe.spec.failureThreshold App API startup probe failure threshold
       failureThreshold: 120
 
   ## App API pod placement
   ##
   ## @param api.podLabels Additional labels for App API pods
-  ## @param api.podAnnotations Additional annotations for App API pods
-  ## @param api.podAffinityPreset App API pod affinity preset; ignored when `api.affinity` is set
-  ## @param api.podAntiAffinityPreset App API pod anti-affinity preset; ignored when `api.affinity` is set
-  ## @param api.nodeAffinityPreset App API node affinity preset; ignored when `api.affinity` is set
-  ## @param api.nodeAffinityPreset.type App API node affinity preset type
-  ## @param api.nodeAffinityPreset.key App API node label key used by the affinity preset
-  ## @param api.nodeAffinityPreset.values App API node label values used by the affinity preset
-  ## @param api.affinity App API affinity rules
-  ## @param api.nodeSelector Node labels for App API pod assignment
-  ## @param api.tolerations Tolerations for App API pod assignment
-  ## @param api.topologySpreadConstraints Topology spread constraints for App API pods
-  ## @param api.priorityClassName App API pod priority class
-  ## @param api.schedulerName Alternate Kubernetes scheduler for App API pods
-  ## @param api.terminationGracePeriodSeconds App API pod termination grace period
-  ##
   podLabels: {}
+  ## @param api.podAnnotations Additional annotations for App API pods
   podAnnotations: {}
+  ## @param api.podAffinityPreset App API pod affinity preset; ignored when `api.affinity` is set
   podAffinityPreset: ""
+  ## @param api.podAntiAffinityPreset App API pod anti-affinity preset; ignored when `api.affinity` is set
   podAntiAffinityPreset: soft
 
+  ## @param api.nodeAffinityPreset App API node affinity preset; ignored when `api.affinity` is set
   nodeAffinityPreset:
+    ## @param api.nodeAffinityPreset.type App API node affinity preset type
     type: ""
+    ## @param api.nodeAffinityPreset.key App API node label key used by the affinity preset
     key: ""
+    ## @param api.nodeAffinityPreset.values App API node label values used by the affinity preset
     values: []
 
+  ## @param api.affinity App API affinity rules
   affinity: {}
+  ## @param api.nodeSelector Node labels for App API pod assignment
   nodeSelector: {}
+  ## @param api.tolerations Tolerations for App API pod assignment
   tolerations: []
+  ## @param api.topologySpreadConstraints Topology spread constraints for App API pods
   topologySpreadConstraints: []
+  ## @param api.priorityClassName App API pod priority class
   priorityClassName: ""
+  ## @param api.schedulerName Alternate Kubernetes scheduler for App API pods
   schedulerName: ""
+  ## @param api.terminationGracePeriodSeconds App API pod termination grace period
   terminationGracePeriodSeconds: 30
 
   ## App API PodDisruptionBudget
   ##
-  ## @param api.podDisruptionBudget.enabled Create an App API PodDisruptionBudget
-  ## @param api.podDisruptionBudget.minAvailable Minimum number or percentage of available App API pods
-  ## @param api.podDisruptionBudget.maxUnavailable Maximum number or percentage of unavailable App API pods
-  ##
+  ## @param api.podDisruptionBudget App API PodDisruptionBudget settings
   podDisruptionBudget:
+    ## @param api.podDisruptionBudget.enabled Create an App API PodDisruptionBudget
     enabled: true
+    ## @param api.podDisruptionBudget.minAvailable Minimum number or percentage of available App API pods
     minAvailable: 1
+    ## @param api.podDisruptionBudget.maxUnavailable Maximum number or percentage of unavailable App API pods
     maxUnavailable: ""
 
   ## App API database migration Job
   ##
-  ## @param api.migration.enabled Run the App API database migration Job
-  ## @param api.migration.annotations Additional annotations for the migration Job
-  ## @param api.migration.ttlSecondsAfterFinished TTL for the completed migration Job
-  ## @param api.migration.databaseConnection.attempts Maximum database connection attempts during migration
-  ## @param api.migration.databaseConnection.retrySeconds Seconds between migration database connection attempts
-  ## @param api.migration.databaseConnection.timeoutSeconds Timeout for each migration database connection attempt
-  ## @param api.migration.extraEnvVars Additional environment variables for the migration container
-  ##
+  ## @param api.migration App API database migration Job settings
   migration:
+    ## @param api.migration.enabled Run the App API database migration Job
     enabled: false
+    ## @param api.migration.annotations Additional annotations for the migration Job
     annotations:
+      ## @param api.migration.annotations.helm.sh/hook Helm lifecycle hooks assigned to the App API migration Job
       helm.sh/hook: post-install,post-upgrade
+      ## @param api.migration.annotations.helm.sh/hook-delete-policy Helm deletion policy for completed App API migration Jobs
       helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+    ## @param api.migration.ttlSecondsAfterFinished TTL for the completed migration Job
     ttlSecondsAfterFinished: null
+    ## @param api.migration.databaseConnection App API migration database connection retry settings
     databaseConnection:
+      ## @param api.migration.databaseConnection.attempts Maximum database connection attempts during migration
       attempts: 180
+      ## @param api.migration.databaseConnection.retrySeconds Seconds between migration database connection attempts
       retrySeconds: 5
+      ## @param api.migration.databaseConnection.timeoutSeconds Timeout for each migration database connection attempt
       timeoutSeconds: 5
+    ## @param api.migration.extraEnvVars Additional environment variables for the migration container
     extraEnvVars: []
 
 ## @section App Agent parameters
 ##
-## @param agent.replicaCount Number of App Agent replicas
-## @param agent.revisionHistoryLimit Number of previous App Agent ReplicaSets retained for rollback
-##
+## @param agent App Agent component settings
 agent:
+  ## @param agent.replicaCount Number of App Agent replicas
   replicaCount: 1
+  ## @param agent.revisionHistoryLimit Number of previous App Agent ReplicaSets retained for rollback
   revisionHistoryLimit: 10
 
   ## App Agent image
   ##
-  ## @param agent.image.registry App Agent image registry
-  ## @param agent.image.repository App Agent image repository
-  ## @param agent.image.tag App Agent image tag
-  ## @param agent.image.digest App Agent image digest; overrides the tag when set
-  ## @param agent.image.pullPolicy App Agent image pull policy
-  ## @param agent.image.pullSecrets App Agent image pull secrets
-  ##
+  ## @param agent.image App Agent container image settings
   image:
+    ## @param agent.image.registry App Agent image registry
     registry: europe-west1-docker.pkg.dev
+    ## @param agent.image.repository App Agent image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-agent-api
-    tag: "2026-07-19.03-54-13.c9a9892"
+    ## @param agent.image.tag App Agent image tag
+    tag: "2026-07-19.11-27-53.ae81780"
+    ## @param agent.image.digest App Agent image digest; overrides the tag when set
     digest: ""
+    ## @param agent.image.pullPolicy App Agent image pull policy
     pullPolicy: IfNotPresent
+    ## @param agent.image.pullSecrets App Agent image pull secrets
     pullSecrets: []
 
   ## App Agent deployment and runtime
   ##
   ## @param agent.updateStrategy App Agent Deployment update strategy
-  ## @param agent.updateStrategy.type App Agent Deployment strategy type
-  ## @param agent.updateStrategy.rollingUpdate.maxSurge Maximum number or percentage of additional App Agent pods during rollout
-  ## @param agent.updateStrategy.rollingUpdate.maxUnavailable Maximum number or percentage of unavailable App Agent pods during rollout
-  ## @param agent.config App Agent runtime configuration rendered to `/app/config.yaml`
-  ## @param agent.config.license App Agent license
-  ## @param agent.config.licenseServer Control Edge origin used for App Agent license verification
-  ## @param agent.config.connector.enabled Enable connector-backed provider access
-  ## @param agent.config.connector.url Control Relay origin used by the App Agent connector client
-  ## @param agent.config.connector.license Connector client license
-  ## @param agent.config.runtime.callbackBaseUrl Internal App API callback origin; rendered from the Helm release name
-  ## @param agent.config.runtime.maxParallelNodes Maximum number of graph nodes executed in parallel
-  ## @param agent.config.mcp.maxBodyBytes Maximum accepted MCP HTTP request body size
-  ##
   updateStrategy:
+    ## @param agent.updateStrategy.type App Agent Deployment strategy type
     type: RollingUpdate
+    ## @param agent.updateStrategy.rollingUpdate App Agent RollingUpdate strategy settings
     rollingUpdate:
+      ## @param agent.updateStrategy.rollingUpdate.maxSurge Maximum number or percentage of additional App Agent pods during rollout
       maxSurge: 0
+      ## @param agent.updateStrategy.rollingUpdate.maxUnavailable Maximum number or percentage of unavailable App Agent pods during rollout
       maxUnavailable: 1
 
+  ## @param agent.config App Agent runtime configuration rendered to `/app/config.yaml`
   config:
+    ## @param agent.config.license App Agent license
     license: ""
+    ## @param agent.config.licenseServer Control Edge origin used for App Agent license verification
     licenseServer: https://edge.control.opsdiag.ai
+    ## @param agent.config.runtime App Agent runtime settings
     runtime:
+      ## @param agent.config.runtime.callbackBaseUrl Internal App API callback origin; rendered from the Helm release name
       callbackBaseUrl: 'http://{{ include "opsdiag-app.componentName" (dict "root" . "component" "api") }}:{{ .Values.api.service.ports.http }}'
+      ## @param agent.config.runtime.maxParallelNodes Maximum number of graph nodes executed in parallel
       maxParallelNodes: 6
+    ## @param agent.config.mcp App Agent MCP transport settings
     mcp:
+      ## @param agent.config.mcp.maxBodyBytes Maximum accepted MCP HTTP request body size
       maxBodyBytes: 1048576
+    ## @param agent.config.connector App Agent Connector settings
     connector:
+      ## @param agent.config.connector.enabled Enable connector-backed provider access
       enabled: true
+      ## @param agent.config.connector.url Control Relay origin used by the App Agent connector client
       url: https://relay.control.opsdiag.ai
+      ## @param agent.config.connector.license Connector client license
       license: ""
 
   ## Additional App Agent deployment settings
   ##
   ## @param agent.extraEnvVars Additional environment variables for the App Agent container
-  ## @param agent.extraEnvVarsCM Existing ConfigMap containing additional App Agent environment variables
-  ## @param agent.extraEnvVarsSecret Existing Secret containing additional App Agent environment variables
-  ## @param agent.extraVolumes Additional volumes for App Agent pods
-  ## @param agent.extraVolumeMounts Additional volume mounts for the App Agent container
-  ## @param agent.extraDeploy Additional Kubernetes objects associated with App Agent
-  ##
   extraEnvVars: []
+  ## @param agent.extraEnvVarsCM Existing ConfigMap containing additional App Agent environment variables
   extraEnvVarsCM: ""
+  ## @param agent.extraEnvVarsSecret Existing Secret containing additional App Agent environment variables
   extraEnvVarsSecret: ""
+  ## @param agent.extraVolumes Additional volumes for App Agent pods
   extraVolumes: []
+  ## @param agent.extraVolumeMounts Additional volume mounts for the App Agent container
   extraVolumeMounts: []
+  ## @param agent.extraDeploy Additional Kubernetes objects associated with App Agent
   extraDeploy: []
 
   ## App Agent ServiceAccount
   ##
-  ## @param agent.serviceAccount.create Create a ServiceAccount for App Agent
-  ## @param agent.serviceAccount.name App Agent ServiceAccount name; generated when empty
-  ## @param agent.serviceAccount.annotations Additional App Agent ServiceAccount annotations
-  ## @param agent.serviceAccount.automountServiceAccountToken Mount the ServiceAccount token in App Agent pods
-  ##
+  ## @param agent.serviceAccount App Agent ServiceAccount settings
   serviceAccount:
+    ## @param agent.serviceAccount.create Create a ServiceAccount for App Agent
     create: true
+    ## @param agent.serviceAccount.name App Agent ServiceAccount name; generated when empty
     name: ""
+    ## @param agent.serviceAccount.annotations Additional App Agent ServiceAccount annotations
     annotations: {}
+    ## @param agent.serviceAccount.automountServiceAccountToken Mount the ServiceAccount token in App Agent pods
     automountServiceAccountToken: false
 
   ## App Agent security contexts
   ##
-  ## @param agent.podSecurityContext.enabled Enable App Agent pod security context
-  ## @param agent.podSecurityContext.seccompProfile App Agent pod seccomp profile
-  ## @param agent.podSecurityContext.seccompProfile.type App Agent pod seccomp profile type
-  ## @param agent.containerSecurityContext.enabled Enable App Agent container security context
-  ## @param agent.containerSecurityContext.runAsNonRoot Require a non-root App Agent process
-  ## @param agent.containerSecurityContext.readOnlyRootFilesystem Use a read-only App Agent root filesystem
-  ## @param agent.containerSecurityContext.allowPrivilegeEscalation Allow App Agent privilege escalation
-  ## @param agent.containerSecurityContext.capabilities.drop App Agent Linux capabilities to drop
-  ##
+  ## @param agent.podSecurityContext App Agent pod security context settings
   podSecurityContext:
+    ## @param agent.podSecurityContext.enabled Enable App Agent pod security context
     enabled: true
+    ## @param agent.podSecurityContext.seccompProfile App Agent pod seccomp profile
     seccompProfile:
+      ## @param agent.podSecurityContext.seccompProfile.type App Agent pod seccomp profile type
       type: RuntimeDefault
 
+  ## @param agent.containerSecurityContext App Agent container security context settings
   containerSecurityContext:
+    ## @param agent.containerSecurityContext.enabled Enable App Agent container security context
     enabled: true
+    ## @param agent.containerSecurityContext.runAsNonRoot Require a non-root App Agent process
     runAsNonRoot: true
+    ## @param agent.containerSecurityContext.readOnlyRootFilesystem Use a read-only App Agent root filesystem
     readOnlyRootFilesystem: true
+    ## @param agent.containerSecurityContext.allowPrivilegeEscalation Allow App Agent privilege escalation
     allowPrivilegeEscalation: false
+    ## @param agent.containerSecurityContext.capabilities App Agent container Linux capability settings
     capabilities:
+      ## @param agent.containerSecurityContext.capabilities.drop App Agent Linux capabilities to drop
       drop: [ALL]
 
   ## App Agent networking
   ##
-  ## @param agent.containerPorts.http App Agent container HTTP port
-  ## @param agent.service.type App Agent Service type
-  ## @param agent.service.annotations Additional App Agent Service annotations
-  ## @param agent.service.ports.http App Agent Service HTTP port
-  ## @param agent.service.clusterIP App Agent Service cluster IP
-  ##
+  ## @param agent.containerPorts App Agent container port settings
   containerPorts:
+    ## @param agent.containerPorts.http App Agent container HTTP port
     http: 8000
 
+  ## @param agent.service App Agent Service settings
   service:
+    ## @param agent.service.type App Agent Service type
     type: ClusterIP
+    ## @param agent.service.annotations Additional App Agent Service annotations
     annotations: {}
+    ## @param agent.service.ports App Agent Service port settings
     ports:
+      ## @param agent.service.ports.http App Agent Service HTTP port
       http: 8000
+    ## @param agent.service.clusterIP App Agent Service cluster IP
     clusterIP: ""
 
   ## App Agent resources
   ##
   ## @param agent.resources App Agent resource requests and limits
-  ##
   resources: {}
 
   ## App Agent health probes
   ##
-  ## @param agent.livenessProbe.enabled Enable the App Agent liveness probe
-  ## @param agent.livenessProbe.spec App Agent liveness probe specification
-  ## @param agent.livenessProbe.spec.httpGet.path App Agent liveness probe HTTP path
-  ## @param agent.livenessProbe.spec.httpGet.port App Agent liveness probe port name
-  ## @param agent.livenessProbe.spec.periodSeconds App Agent liveness probe period in seconds
-  ## @param agent.livenessProbe.spec.timeoutSeconds App Agent liveness probe timeout in seconds
-  ## @param agent.livenessProbe.spec.failureThreshold App Agent liveness probe failure threshold
-  ## @param agent.readinessProbe.enabled Enable the App Agent readiness probe
-  ## @param agent.readinessProbe.spec App Agent readiness probe specification
-  ## @param agent.readinessProbe.spec.httpGet.path App Agent readiness probe HTTP path
-  ## @param agent.readinessProbe.spec.httpGet.port App Agent readiness probe port name
-  ## @param agent.readinessProbe.spec.periodSeconds App Agent readiness probe period in seconds
-  ## @param agent.readinessProbe.spec.timeoutSeconds App Agent readiness probe timeout in seconds
-  ## @param agent.readinessProbe.spec.failureThreshold App Agent readiness probe failure threshold
-  ## @param agent.startupProbe.enabled Enable the App Agent startup probe
-  ## @param agent.startupProbe.spec App Agent startup probe specification
-  ## @param agent.startupProbe.spec.httpGet.path App Agent startup probe HTTP path
-  ## @param agent.startupProbe.spec.httpGet.port App Agent startup probe port name
-  ## @param agent.startupProbe.spec.periodSeconds App Agent startup probe period in seconds
-  ## @param agent.startupProbe.spec.timeoutSeconds App Agent startup probe timeout in seconds
-  ## @param agent.startupProbe.spec.failureThreshold App Agent startup probe failure threshold
-  ##
+  ## @param agent.livenessProbe App Agent liveness probe settings
   livenessProbe:
+    ## @param agent.livenessProbe.enabled Enable the App Agent liveness probe
     enabled: true
+    ## @param agent.livenessProbe.spec App Agent liveness probe specification
     spec:
+      ## @param agent.livenessProbe.spec.httpGet App Agent liveness probe HTTP request settings
       httpGet:
+        ## @param agent.livenessProbe.spec.httpGet.path App Agent liveness probe HTTP path
         path: /livez
+        ## @param agent.livenessProbe.spec.httpGet.port App Agent liveness probe port name
         port: http
+      ## @param agent.livenessProbe.spec.periodSeconds App Agent liveness probe period in seconds
       periodSeconds: 10
+      ## @param agent.livenessProbe.spec.timeoutSeconds App Agent liveness probe timeout in seconds
       timeoutSeconds: 2
+      ## @param agent.livenessProbe.spec.failureThreshold App Agent liveness probe failure threshold
       failureThreshold: 3
 
+  ## @param agent.readinessProbe App Agent readiness probe settings
   readinessProbe:
+    ## @param agent.readinessProbe.enabled Enable the App Agent readiness probe
     enabled: true
+    ## @param agent.readinessProbe.spec App Agent readiness probe specification
     spec:
+      ## @param agent.readinessProbe.spec.httpGet App Agent readiness probe HTTP request settings
       httpGet:
+        ## @param agent.readinessProbe.spec.httpGet.path App Agent readiness probe HTTP path
         path: /readyz
+        ## @param agent.readinessProbe.spec.httpGet.port App Agent readiness probe port name
         port: http
+      ## @param agent.readinessProbe.spec.periodSeconds App Agent readiness probe period in seconds
       periodSeconds: 5
+      ## @param agent.readinessProbe.spec.timeoutSeconds App Agent readiness probe timeout in seconds
       timeoutSeconds: 2
+      ## @param agent.readinessProbe.spec.failureThreshold App Agent readiness probe failure threshold
       failureThreshold: 3
 
+  ## @param agent.startupProbe App Agent startup probe settings
   startupProbe:
+    ## @param agent.startupProbe.enabled Enable the App Agent startup probe
     enabled: true
+    ## @param agent.startupProbe.spec App Agent startup probe specification
     spec:
+      ## @param agent.startupProbe.spec.httpGet App Agent startup probe HTTP request settings
       httpGet:
+        ## @param agent.startupProbe.spec.httpGet.path App Agent startup probe HTTP path
         path: /readyz
+        ## @param agent.startupProbe.spec.httpGet.port App Agent startup probe port name
         port: http
+      ## @param agent.startupProbe.spec.periodSeconds App Agent startup probe period in seconds
       periodSeconds: 5
+      ## @param agent.startupProbe.spec.timeoutSeconds App Agent startup probe timeout in seconds
       timeoutSeconds: 2
+      ## @param agent.startupProbe.spec.failureThreshold App Agent startup probe failure threshold
       failureThreshold: 60
 
   ## App Agent pod placement
   ##
   ## @param agent.podLabels Additional labels for App Agent pods
-  ## @param agent.podAnnotations Additional annotations for App Agent pods
-  ## @param agent.podAffinityPreset App Agent pod affinity preset; ignored when `agent.affinity` is set
-  ## @param agent.podAntiAffinityPreset App Agent pod anti-affinity preset; ignored when `agent.affinity` is set
-  ## @param agent.nodeAffinityPreset App Agent node affinity preset; ignored when `agent.affinity` is set
-  ## @param agent.nodeAffinityPreset.type App Agent node affinity preset type
-  ## @param agent.nodeAffinityPreset.key App Agent node label key used by the affinity preset
-  ## @param agent.nodeAffinityPreset.values App Agent node label values used by the affinity preset
-  ## @param agent.affinity App Agent affinity rules
-  ## @param agent.nodeSelector Node labels for App Agent pod assignment
-  ## @param agent.tolerations Tolerations for App Agent pod assignment
-  ## @param agent.topologySpreadConstraints Topology spread constraints for App Agent pods
-  ## @param agent.priorityClassName App Agent pod priority class
-  ## @param agent.schedulerName Alternate Kubernetes scheduler for App Agent pods
-  ## @param agent.terminationGracePeriodSeconds App Agent pod termination grace period
-  ##
   podLabels: {}
+  ## @param agent.podAnnotations Additional annotations for App Agent pods
   podAnnotations: {}
+  ## @param agent.podAffinityPreset App Agent pod affinity preset; ignored when `agent.affinity` is set
   podAffinityPreset: ""
+  ## @param agent.podAntiAffinityPreset App Agent pod anti-affinity preset; ignored when `agent.affinity` is set
   podAntiAffinityPreset: soft
 
+  ## @param agent.nodeAffinityPreset App Agent node affinity preset; ignored when `agent.affinity` is set
   nodeAffinityPreset:
+    ## @param agent.nodeAffinityPreset.type App Agent node affinity preset type
     type: ""
+    ## @param agent.nodeAffinityPreset.key App Agent node label key used by the affinity preset
     key: ""
+    ## @param agent.nodeAffinityPreset.values App Agent node label values used by the affinity preset
     values: []
 
+  ## @param agent.affinity App Agent affinity rules
   affinity: {}
+  ## @param agent.nodeSelector Node labels for App Agent pod assignment
   nodeSelector: {}
+  ## @param agent.tolerations Tolerations for App Agent pod assignment
   tolerations: []
+  ## @param agent.topologySpreadConstraints Topology spread constraints for App Agent pods
   topologySpreadConstraints: []
+  ## @param agent.priorityClassName App Agent pod priority class
   priorityClassName: ""
+  ## @param agent.schedulerName Alternate Kubernetes scheduler for App Agent pods
   schedulerName: ""
+  ## @param agent.terminationGracePeriodSeconds App Agent pod termination grace period
   terminationGracePeriodSeconds: 30
 
   ## App Agent PodDisruptionBudget
   ##
-  ## @param agent.podDisruptionBudget.enabled Create an App Agent PodDisruptionBudget
-  ## @param agent.podDisruptionBudget.minAvailable Minimum number or percentage of available App Agent pods
-  ## @param agent.podDisruptionBudget.maxUnavailable Maximum number or percentage of unavailable App Agent pods
-  ##
+  ## @param agent.podDisruptionBudget App Agent PodDisruptionBudget settings
   podDisruptionBudget:
+    ## @param agent.podDisruptionBudget.enabled Create an App Agent PodDisruptionBudget
     enabled: false
+    ## @param agent.podDisruptionBudget.minAvailable Minimum number or percentage of available App Agent pods
     minAvailable: ""
+    ## @param agent.podDisruptionBudget.maxUnavailable Maximum number or percentage of unavailable App Agent pods
     maxUnavailable: ""
 
 ## @section App Frontend parameters
 ##
-## @param front.replicaCount Number of App Frontend replicas
-## @param front.revisionHistoryLimit Number of previous App Frontend ReplicaSets retained for rollback
-##
+## @param front App Frontend component settings
 front:
+  ## @param front.replicaCount Number of App Frontend replicas
   replicaCount: 1
+  ## @param front.revisionHistoryLimit Number of previous App Frontend ReplicaSets retained for rollback
   revisionHistoryLimit: 10
 
   ## App Frontend image
   ##
-  ## @param front.image.registry App Frontend image registry
-  ## @param front.image.repository App Frontend image repository
-  ## @param front.image.tag App Frontend image tag
-  ## @param front.image.digest App Frontend image digest; overrides the tag when set
-  ## @param front.image.pullPolicy App Frontend image pull policy
-  ## @param front.image.pullSecrets App Frontend image pull secrets
-  ##
+  ## @param front.image App Frontend container image settings
   image:
+    ## @param front.image.registry App Frontend image registry
     registry: europe-west1-docker.pkg.dev
+    ## @param front.image.repository App Frontend image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-front
+    ## @param front.image.tag App Frontend image tag
     tag: "2026-07-19.03-54-13.457aaa3"
+    ## @param front.image.digest App Frontend image digest; overrides the tag when set
     digest: ""
+    ## @param front.image.pullPolicy App Frontend image pull policy
     pullPolicy: IfNotPresent
+    ## @param front.image.pullSecrets App Frontend image pull secrets
     pullSecrets: []
 
   ## App Frontend deployment
   ##
   ## @param front.updateStrategy App Frontend Deployment update strategy
-  ## @param front.updateStrategy.type App Frontend Deployment strategy type
-  ## @param front.extraEnvVars Additional environment variables for the App Frontend container
-  ## @param front.extraEnvVarsCM Existing ConfigMap containing additional App Frontend environment variables
-  ## @param front.extraEnvVarsSecret Existing Secret containing additional App Frontend environment variables
-  ## @param front.extraVolumes Additional volumes for App Frontend pods
-  ## @param front.extraVolumeMounts Additional volume mounts for the App Frontend container
-  ## @param front.extraDeploy Additional Kubernetes objects associated with App Frontend
-  ##
   updateStrategy:
+    ## @param front.updateStrategy.type App Frontend Deployment strategy type
     type: RollingUpdate
 
+  ## @param front.extraEnvVars Additional environment variables for the App Frontend container
   extraEnvVars: []
+  ## @param front.extraEnvVarsCM Existing ConfigMap containing additional App Frontend environment variables
   extraEnvVarsCM: ""
+  ## @param front.extraEnvVarsSecret Existing Secret containing additional App Frontend environment variables
   extraEnvVarsSecret: ""
+  ## @param front.extraVolumes Additional volumes for App Frontend pods
   extraVolumes: []
+  ## @param front.extraVolumeMounts Additional volume mounts for the App Frontend container
   extraVolumeMounts: []
+  ## @param front.extraDeploy Additional Kubernetes objects associated with App Frontend
   extraDeploy: []
 
   ## App Frontend ServiceAccount
   ##
-  ## @param front.serviceAccount.create Create a ServiceAccount for App Frontend
-  ## @param front.serviceAccount.name App Frontend ServiceAccount name; generated when empty
-  ## @param front.serviceAccount.annotations Additional App Frontend ServiceAccount annotations
-  ## @param front.serviceAccount.automountServiceAccountToken Mount the ServiceAccount token in App Frontend pods
-  ##
+  ## @param front.serviceAccount App Frontend ServiceAccount settings
   serviceAccount:
+    ## @param front.serviceAccount.create Create a ServiceAccount for App Frontend
     create: true
+    ## @param front.serviceAccount.name App Frontend ServiceAccount name; generated when empty
     name: ""
+    ## @param front.serviceAccount.annotations Additional App Frontend ServiceAccount annotations
     annotations: {}
+    ## @param front.serviceAccount.automountServiceAccountToken Mount the ServiceAccount token in App Frontend pods
     automountServiceAccountToken: false
 
   ## App Frontend security contexts
   ##
-  ## @param front.podSecurityContext.enabled Enable App Frontend pod security context
-  ## @param front.podSecurityContext.seccompProfile App Frontend pod seccomp profile
-  ## @param front.podSecurityContext.seccompProfile.type App Frontend pod seccomp profile type
-  ## @param front.containerSecurityContext.enabled Enable App Frontend container security context
-  ## @param front.containerSecurityContext.runAsUser App Frontend container user ID
-  ## @param front.containerSecurityContext.runAsGroup App Frontend container group ID
-  ## @param front.containerSecurityContext.runAsNonRoot Require a non-root App Frontend process
-  ## @param front.containerSecurityContext.readOnlyRootFilesystem Use a read-only App Frontend root filesystem
-  ## @param front.containerSecurityContext.allowPrivilegeEscalation Allow App Frontend privilege escalation
-  ## @param front.containerSecurityContext.capabilities.drop App Frontend Linux capabilities to drop
-  ##
+  ## @param front.podSecurityContext App Frontend pod security context settings
   podSecurityContext:
+    ## @param front.podSecurityContext.enabled Enable App Frontend pod security context
     enabled: true
+    ## @param front.podSecurityContext.seccompProfile App Frontend pod seccomp profile
     seccompProfile:
+      ## @param front.podSecurityContext.seccompProfile.type App Frontend pod seccomp profile type
       type: RuntimeDefault
 
+  ## @param front.containerSecurityContext App Frontend container security context settings
   containerSecurityContext:
+    ## @param front.containerSecurityContext.enabled Enable App Frontend container security context
     enabled: true
+    ## @param front.containerSecurityContext.runAsUser App Frontend container user ID
     runAsUser: 101
+    ## @param front.containerSecurityContext.runAsGroup App Frontend container group ID
     runAsGroup: 101
+    ## @param front.containerSecurityContext.runAsNonRoot Require a non-root App Frontend process
     runAsNonRoot: true
+    ## @param front.containerSecurityContext.readOnlyRootFilesystem Use a read-only App Frontend root filesystem
     readOnlyRootFilesystem: false
+    ## @param front.containerSecurityContext.allowPrivilegeEscalation Allow App Frontend privilege escalation
     allowPrivilegeEscalation: false
+    ## @param front.containerSecurityContext.capabilities App Frontend container Linux capability settings
     capabilities:
+      ## @param front.containerSecurityContext.capabilities.drop App Frontend Linux capabilities to drop
       drop: [ALL]
 
   ## App Frontend networking
   ##
-  ## @param front.containerPorts.http App Frontend container HTTP port
-  ## @param front.service.type App Frontend Service type
-  ## @param front.service.annotations Additional App Frontend Service annotations
-  ## @param front.service.ports.http App Frontend Service HTTP port
-  ## @param front.service.clusterIP App Frontend Service cluster IP
-  ##
+  ## @param front.containerPorts App Frontend container port settings
   containerPorts:
+    ## @param front.containerPorts.http App Frontend container HTTP port
     http: 3000
 
+  ## @param front.service App Frontend Service settings
   service:
+    ## @param front.service.type App Frontend Service type
     type: ClusterIP
+    ## @param front.service.annotations Additional App Frontend Service annotations
     annotations: {}
+    ## @param front.service.ports App Frontend Service port settings
     ports:
+      ## @param front.service.ports.http App Frontend Service HTTP port
       http: 3000
+    ## @param front.service.clusterIP App Frontend Service cluster IP
     clusterIP: ""
 
   ## App Frontend resources
   ##
   ## @param front.resources App Frontend resource requests and limits
-  ##
   resources: {}
 
   ## App Frontend health probes
   ##
-  ## @param front.livenessProbe.enabled Enable the App Frontend liveness probe
-  ## @param front.livenessProbe.spec App Frontend liveness probe specification
-  ## @param front.livenessProbe.spec.httpGet.path App Frontend liveness probe HTTP path
-  ## @param front.livenessProbe.spec.httpGet.port App Frontend liveness probe port name
-  ## @param front.readinessProbe.enabled Enable the App Frontend readiness probe
-  ## @param front.readinessProbe.spec App Frontend readiness probe specification
-  ## @param front.readinessProbe.spec.httpGet.path App Frontend readiness probe HTTP path
-  ## @param front.readinessProbe.spec.httpGet.port App Frontend readiness probe port name
-  ## @param front.startupProbe.enabled Enable the App Frontend startup probe
-  ## @param front.startupProbe.spec App Frontend startup probe specification
-  ##
+  ## @param front.livenessProbe App Frontend liveness probe settings
   livenessProbe:
+    ## @param front.livenessProbe.enabled Enable the App Frontend liveness probe
     enabled: true
+    ## @param front.livenessProbe.spec App Frontend liveness probe specification
     spec:
+      ## @param front.livenessProbe.spec.httpGet App Frontend liveness probe HTTP request settings
       httpGet:
+        ## @param front.livenessProbe.spec.httpGet.path App Frontend liveness probe HTTP path
         path: /
+        ## @param front.livenessProbe.spec.httpGet.port App Frontend liveness probe port name
         port: http
 
+  ## @param front.readinessProbe App Frontend readiness probe settings
   readinessProbe:
+    ## @param front.readinessProbe.enabled Enable the App Frontend readiness probe
     enabled: true
+    ## @param front.readinessProbe.spec App Frontend readiness probe specification
     spec:
+      ## @param front.readinessProbe.spec.httpGet App Frontend readiness probe HTTP request settings
       httpGet:
+        ## @param front.readinessProbe.spec.httpGet.path App Frontend readiness probe HTTP path
         path: /
+        ## @param front.readinessProbe.spec.httpGet.port App Frontend readiness probe port name
         port: http
 
+  ## @param front.startupProbe App Frontend startup probe settings
   startupProbe:
+    ## @param front.startupProbe.enabled Enable the App Frontend startup probe
     enabled: false
+    ## @param front.startupProbe.spec App Frontend startup probe specification
     spec: {}
 
   ## App Frontend pod placement
   ##
   ## @param front.podLabels Additional labels for App Frontend pods
-  ## @param front.podAnnotations Additional annotations for App Frontend pods
-  ## @param front.podAffinityPreset App Frontend pod affinity preset; ignored when `front.affinity` is set
-  ## @param front.podAntiAffinityPreset App Frontend pod anti-affinity preset; ignored when `front.affinity` is set
-  ## @param front.nodeAffinityPreset App Frontend node affinity preset; ignored when `front.affinity` is set
-  ## @param front.nodeAffinityPreset.type App Frontend node affinity preset type
-  ## @param front.nodeAffinityPreset.key App Frontend node label key used by the affinity preset
-  ## @param front.nodeAffinityPreset.values App Frontend node label values used by the affinity preset
-  ## @param front.affinity App Frontend affinity rules
-  ## @param front.nodeSelector Node labels for App Frontend pod assignment
-  ## @param front.tolerations Tolerations for App Frontend pod assignment
-  ## @param front.topologySpreadConstraints Topology spread constraints for App Frontend pods
-  ## @param front.priorityClassName App Frontend pod priority class
-  ## @param front.schedulerName Alternate Kubernetes scheduler for App Frontend pods
-  ## @param front.terminationGracePeriodSeconds App Frontend pod termination grace period
-  ##
   podLabels: {}
+  ## @param front.podAnnotations Additional annotations for App Frontend pods
   podAnnotations: {}
+  ## @param front.podAffinityPreset App Frontend pod affinity preset; ignored when `front.affinity` is set
   podAffinityPreset: ""
+  ## @param front.podAntiAffinityPreset App Frontend pod anti-affinity preset; ignored when `front.affinity` is set
   podAntiAffinityPreset: soft
 
+  ## @param front.nodeAffinityPreset App Frontend node affinity preset; ignored when `front.affinity` is set
   nodeAffinityPreset:
+    ## @param front.nodeAffinityPreset.type App Frontend node affinity preset type
     type: ""
+    ## @param front.nodeAffinityPreset.key App Frontend node label key used by the affinity preset
     key: ""
+    ## @param front.nodeAffinityPreset.values App Frontend node label values used by the affinity preset
     values: []
 
+  ## @param front.affinity App Frontend affinity rules
   affinity: {}
+  ## @param front.nodeSelector Node labels for App Frontend pod assignment
   nodeSelector: {}
+  ## @param front.tolerations Tolerations for App Frontend pod assignment
   tolerations: []
+  ## @param front.topologySpreadConstraints Topology spread constraints for App Frontend pods
   topologySpreadConstraints: []
+  ## @param front.priorityClassName App Frontend pod priority class
   priorityClassName: ""
+  ## @param front.schedulerName Alternate Kubernetes scheduler for App Frontend pods
   schedulerName: ""
+  ## @param front.terminationGracePeriodSeconds App Frontend pod termination grace period
   terminationGracePeriodSeconds: 30
 
   ## App Frontend PodDisruptionBudget
   ##
-  ## @param front.podDisruptionBudget.enabled Create an App Frontend PodDisruptionBudget
-  ## @param front.podDisruptionBudget.minAvailable Minimum number or percentage of available App Frontend pods
-  ## @param front.podDisruptionBudget.maxUnavailable Maximum number or percentage of unavailable App Frontend pods
-  ##
+  ## @param front.podDisruptionBudget App Frontend PodDisruptionBudget settings
   podDisruptionBudget:
+    ## @param front.podDisruptionBudget.enabled Create an App Frontend PodDisruptionBudget
     enabled: false
+    ## @param front.podDisruptionBudget.minAvailable Minimum number or percentage of available App Frontend pods
     minAvailable: ""
+    ## @param front.podDisruptionBudget.maxUnavailable Maximum number or percentage of unavailable App Frontend pods
     maxUnavailable: ""
 
 ## @section App Scheduler parameters
 ##
-## @param sched.replicaCount Number of App Scheduler replicas
-## @param sched.revisionHistoryLimit Number of previous App Scheduler ReplicaSets retained for rollback
-##
+## @param sched App Scheduler component settings
 sched:
+  ## @param sched.replicaCount Number of App Scheduler replicas
   replicaCount: 1
+  ## @param sched.revisionHistoryLimit Number of previous App Scheduler ReplicaSets retained for rollback
   revisionHistoryLimit: 10
 
   ## App Scheduler image
   ##
-  ## @param sched.image.registry App Scheduler image registry
-  ## @param sched.image.repository App Scheduler image repository
-  ## @param sched.image.tag App Scheduler image tag
-  ## @param sched.image.digest App Scheduler image digest; overrides the tag when set
-  ## @param sched.image.pullPolicy App Scheduler image pull policy
-  ## @param sched.image.pullSecrets App Scheduler image pull secrets
-  ##
+  ## @param sched.image App Scheduler container image settings
   image:
+    ## @param sched.image.registry App Scheduler image registry
     registry: europe-west1-docker.pkg.dev
+    ## @param sched.image.repository App Scheduler image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-sched
-    tag: "2026-07-19.03-54-13.93e2556"
+    ## @param sched.image.tag App Scheduler image tag
+    tag: "2026-07-19.11-27-53.97f8d74"
+    ## @param sched.image.digest App Scheduler image digest; overrides the tag when set
     digest: ""
+    ## @param sched.image.pullPolicy App Scheduler image pull policy
     pullPolicy: IfNotPresent
+    ## @param sched.image.pullSecrets App Scheduler image pull secrets
     pullSecrets: []
 
   ## App Scheduler deployment and runtime
   ##
   ## @param sched.updateStrategy App Scheduler Deployment update strategy
-  ## @param sched.updateStrategy.type App Scheduler Deployment strategy type
-  ## @param sched.config App Scheduler runtime configuration rendered to `/app/config.yaml`
-  ## @param sched.config.license App Scheduler license
-  ## @param sched.config.licenseServer Control Edge origin used for App Scheduler license verification
-  ## @param sched.config.runtime.readHeaderTimeoutSeconds Scheduler HTTP read-header timeout
-  ## @param sched.config.runtime.providerTimeoutSeconds Upstream provider request timeout
-  ## @param sched.config.scheduler.appApiUrl Internal App API URL; rendered from the Helm release name
-  ## @param sched.config.scheduler.workerToken Shared App Scheduler worker token
-  ##
   updateStrategy:
+    ## @param sched.updateStrategy.type App Scheduler Deployment strategy type
     type: RollingUpdate
 
+  ## @param sched.config App Scheduler runtime configuration rendered to `/app/config.yaml`
   config:
+    ## @param sched.config.license App Scheduler license
     license: ""
+    ## @param sched.config.licenseServer Control Edge origin used for App Scheduler license verification
     licenseServer: https://edge.control.opsdiag.ai
+    ## @param sched.config.runtime App Scheduler runtime settings
     runtime:
+      ## @param sched.config.runtime.readHeaderTimeoutSeconds Scheduler HTTP read-header timeout
       readHeaderTimeoutSeconds: 10
+      ## @param sched.config.runtime.providerTimeoutSeconds Upstream provider request timeout
       providerTimeoutSeconds: 60
+    ## @param sched.config.scheduler App Scheduler connection settings for App API
     scheduler:
+      ## @param sched.config.scheduler.appApiUrl Internal App API URL; rendered from the Helm release name
       appApiUrl: 'http://{{ include "opsdiag-app.componentName" (dict "root" . "component" "api") }}:{{ .Values.api.service.ports.http }}'
+      ## @param sched.config.scheduler.workerToken Shared App Scheduler worker token
       workerToken: ""
 
   ## Additional App Scheduler deployment settings
   ##
   ## @param sched.extraEnvVars Additional environment variables for the App Scheduler container
-  ## @param sched.extraEnvVarsCM Existing ConfigMap containing additional App Scheduler environment variables
-  ## @param sched.extraEnvVarsSecret Existing Secret containing additional App Scheduler environment variables
-  ## @param sched.extraVolumes Additional volumes for App Scheduler pods
-  ## @param sched.extraVolumeMounts Additional volume mounts for the App Scheduler container
-  ## @param sched.extraDeploy Additional Kubernetes objects associated with App Scheduler
-  ##
   extraEnvVars: []
+  ## @param sched.extraEnvVarsCM Existing ConfigMap containing additional App Scheduler environment variables
   extraEnvVarsCM: ""
+  ## @param sched.extraEnvVarsSecret Existing Secret containing additional App Scheduler environment variables
   extraEnvVarsSecret: ""
+  ## @param sched.extraVolumes Additional volumes for App Scheduler pods
   extraVolumes: []
+  ## @param sched.extraVolumeMounts Additional volume mounts for the App Scheduler container
   extraVolumeMounts: []
+  ## @param sched.extraDeploy Additional Kubernetes objects associated with App Scheduler
   extraDeploy: []
 
   ## App Scheduler ServiceAccount
   ##
-  ## @param sched.serviceAccount.create Create a ServiceAccount for App Scheduler
-  ## @param sched.serviceAccount.name App Scheduler ServiceAccount name; generated when empty
-  ## @param sched.serviceAccount.annotations Additional App Scheduler ServiceAccount annotations
-  ## @param sched.serviceAccount.automountServiceAccountToken Mount the ServiceAccount token in App Scheduler pods
-  ##
+  ## @param sched.serviceAccount App Scheduler ServiceAccount settings
   serviceAccount:
+    ## @param sched.serviceAccount.create Create a ServiceAccount for App Scheduler
     create: true
+    ## @param sched.serviceAccount.name App Scheduler ServiceAccount name; generated when empty
     name: ""
+    ## @param sched.serviceAccount.annotations Additional App Scheduler ServiceAccount annotations
     annotations: {}
+    ## @param sched.serviceAccount.automountServiceAccountToken Mount the ServiceAccount token in App Scheduler pods
     automountServiceAccountToken: false
 
   ## App Scheduler security contexts
   ##
-  ## @param sched.podSecurityContext.enabled Enable App Scheduler pod security context
-  ## @param sched.podSecurityContext.seccompProfile App Scheduler pod seccomp profile
-  ## @param sched.podSecurityContext.seccompProfile.type App Scheduler pod seccomp profile type
-  ## @param sched.containerSecurityContext.enabled Enable App Scheduler container security context
-  ## @param sched.containerSecurityContext.runAsNonRoot Require a non-root App Scheduler process
-  ## @param sched.containerSecurityContext.readOnlyRootFilesystem Use a read-only App Scheduler root filesystem
-  ## @param sched.containerSecurityContext.allowPrivilegeEscalation Allow App Scheduler privilege escalation
-  ## @param sched.containerSecurityContext.capabilities.drop App Scheduler Linux capabilities to drop
-  ##
+  ## @param sched.podSecurityContext App Scheduler pod security context settings
   podSecurityContext:
+    ## @param sched.podSecurityContext.enabled Enable App Scheduler pod security context
     enabled: true
+    ## @param sched.podSecurityContext.seccompProfile App Scheduler pod seccomp profile
     seccompProfile:
+      ## @param sched.podSecurityContext.seccompProfile.type App Scheduler pod seccomp profile type
       type: RuntimeDefault
 
+  ## @param sched.containerSecurityContext App Scheduler container security context settings
   containerSecurityContext:
+    ## @param sched.containerSecurityContext.enabled Enable App Scheduler container security context
     enabled: true
+    ## @param sched.containerSecurityContext.runAsNonRoot Require a non-root App Scheduler process
     runAsNonRoot: true
+    ## @param sched.containerSecurityContext.readOnlyRootFilesystem Use a read-only App Scheduler root filesystem
     readOnlyRootFilesystem: true
+    ## @param sched.containerSecurityContext.allowPrivilegeEscalation Allow App Scheduler privilege escalation
     allowPrivilegeEscalation: false
+    ## @param sched.containerSecurityContext.capabilities App Scheduler container Linux capability settings
     capabilities:
+      ## @param sched.containerSecurityContext.capabilities.drop App Scheduler Linux capabilities to drop
       drop: [ALL]
 
   ## App Scheduler networking
   ##
-  ## @param sched.containerPorts.http App Scheduler container HTTP port
-  ## @param sched.service.type App Scheduler Service type
-  ## @param sched.service.annotations Additional App Scheduler Service annotations
-  ## @param sched.service.ports.http App Scheduler Service HTTP port
-  ## @param sched.service.clusterIP App Scheduler Service cluster IP
-  ##
+  ## @param sched.containerPorts App Scheduler container port settings
   containerPorts:
+    ## @param sched.containerPorts.http App Scheduler container HTTP port
     http: 8000
 
+  ## @param sched.service App Scheduler Service settings
   service:
+    ## @param sched.service.type App Scheduler Service type
     type: ClusterIP
+    ## @param sched.service.annotations Additional App Scheduler Service annotations
     annotations: {}
+    ## @param sched.service.ports App Scheduler Service port settings
     ports:
+      ## @param sched.service.ports.http App Scheduler Service HTTP port
       http: 8000
+    ## @param sched.service.clusterIP App Scheduler Service cluster IP
     clusterIP: ""
 
   ## App Scheduler resources
   ##
   ## @param sched.resources App Scheduler resource requests and limits
-  ##
   resources: {}
 
   ## App Scheduler health probes
   ##
-  ## @param sched.livenessProbe.enabled Enable the App Scheduler liveness probe
-  ## @param sched.livenessProbe.spec App Scheduler liveness probe specification
-  ## @param sched.livenessProbe.spec.httpGet.path App Scheduler liveness probe HTTP path
-  ## @param sched.livenessProbe.spec.httpGet.port App Scheduler liveness probe port name
-  ## @param sched.readinessProbe.enabled Enable the App Scheduler readiness probe
-  ## @param sched.readinessProbe.spec App Scheduler readiness probe specification
-  ## @param sched.readinessProbe.spec.httpGet.path App Scheduler readiness probe HTTP path
-  ## @param sched.readinessProbe.spec.httpGet.port App Scheduler readiness probe port name
-  ## @param sched.readinessProbe.spec.timeoutSeconds App Scheduler readiness probe timeout in seconds
-  ## @param sched.startupProbe.enabled Enable the App Scheduler startup probe
-  ## @param sched.startupProbe.spec App Scheduler startup probe specification
-  ##
+  ## @param sched.livenessProbe App Scheduler liveness probe settings
   livenessProbe:
+    ## @param sched.livenessProbe.enabled Enable the App Scheduler liveness probe
     enabled: true
+    ## @param sched.livenessProbe.spec App Scheduler liveness probe specification
     spec:
+      ## @param sched.livenessProbe.spec.httpGet App Scheduler liveness probe HTTP request settings
       httpGet:
+        ## @param sched.livenessProbe.spec.httpGet.path App Scheduler liveness probe HTTP path
         path: /api/live
+        ## @param sched.livenessProbe.spec.httpGet.port App Scheduler liveness probe port name
         port: http
 
+  ## @param sched.readinessProbe App Scheduler readiness probe settings
   readinessProbe:
+    ## @param sched.readinessProbe.enabled Enable the App Scheduler readiness probe
     enabled: true
+    ## @param sched.readinessProbe.spec App Scheduler readiness probe specification
     spec:
+      ## @param sched.readinessProbe.spec.httpGet App Scheduler readiness probe HTTP request settings
       httpGet:
+        ## @param sched.readinessProbe.spec.httpGet.path App Scheduler readiness probe HTTP path
         path: /api/ready
+        ## @param sched.readinessProbe.spec.httpGet.port App Scheduler readiness probe port name
         port: http
+      ## @param sched.readinessProbe.spec.timeoutSeconds App Scheduler readiness probe timeout in seconds
       timeoutSeconds: 3
 
+  ## @param sched.startupProbe App Scheduler startup probe settings
   startupProbe:
+    ## @param sched.startupProbe.enabled Enable the App Scheduler startup probe
     enabled: false
+    ## @param sched.startupProbe.spec App Scheduler startup probe specification
     spec: {}
 
   ## App Scheduler pod placement
   ##
   ## @param sched.podLabels Additional labels for App Scheduler pods
-  ## @param sched.podAnnotations Additional annotations for App Scheduler pods
-  ## @param sched.podAffinityPreset App Scheduler pod affinity preset; ignored when `sched.affinity` is set
-  ## @param sched.podAntiAffinityPreset App Scheduler pod anti-affinity preset; ignored when `sched.affinity` is set
-  ## @param sched.nodeAffinityPreset App Scheduler node affinity preset; ignored when `sched.affinity` is set
-  ## @param sched.nodeAffinityPreset.type App Scheduler node affinity preset type
-  ## @param sched.nodeAffinityPreset.key App Scheduler node label key used by the affinity preset
-  ## @param sched.nodeAffinityPreset.values App Scheduler node label values used by the affinity preset
-  ## @param sched.affinity App Scheduler affinity rules
-  ## @param sched.nodeSelector Node labels for App Scheduler pod assignment
-  ## @param sched.tolerations Tolerations for App Scheduler pod assignment
-  ## @param sched.topologySpreadConstraints Topology spread constraints for App Scheduler pods
-  ## @param sched.priorityClassName App Scheduler pod priority class
-  ## @param sched.schedulerName Alternate Kubernetes scheduler for App Scheduler pods
-  ## @param sched.terminationGracePeriodSeconds App Scheduler pod termination grace period
-  ##
   podLabels: {}
+  ## @param sched.podAnnotations Additional annotations for App Scheduler pods
   podAnnotations: {}
+  ## @param sched.podAffinityPreset App Scheduler pod affinity preset; ignored when `sched.affinity` is set
   podAffinityPreset: ""
+  ## @param sched.podAntiAffinityPreset App Scheduler pod anti-affinity preset; ignored when `sched.affinity` is set
   podAntiAffinityPreset: soft
 
+  ## @param sched.nodeAffinityPreset App Scheduler node affinity preset; ignored when `sched.affinity` is set
   nodeAffinityPreset:
+    ## @param sched.nodeAffinityPreset.type App Scheduler node affinity preset type
     type: ""
+    ## @param sched.nodeAffinityPreset.key App Scheduler node label key used by the affinity preset
     key: ""
+    ## @param sched.nodeAffinityPreset.values App Scheduler node label values used by the affinity preset
     values: []
 
+  ## @param sched.affinity App Scheduler affinity rules
   affinity: {}
+  ## @param sched.nodeSelector Node labels for App Scheduler pod assignment
   nodeSelector: {}
+  ## @param sched.tolerations Tolerations for App Scheduler pod assignment
   tolerations: []
+  ## @param sched.topologySpreadConstraints Topology spread constraints for App Scheduler pods
   topologySpreadConstraints: []
+  ## @param sched.priorityClassName App Scheduler pod priority class
   priorityClassName: ""
+  ## @param sched.schedulerName Alternate Kubernetes scheduler for App Scheduler pods
   schedulerName: ""
+  ## @param sched.terminationGracePeriodSeconds App Scheduler pod termination grace period
   terminationGracePeriodSeconds: 30
 
   ## App Scheduler PodDisruptionBudget
   ##
-  ## @param sched.podDisruptionBudget.enabled Create an App Scheduler PodDisruptionBudget
-  ## @param sched.podDisruptionBudget.minAvailable Minimum number or percentage of available App Scheduler pods
-  ## @param sched.podDisruptionBudget.maxUnavailable Maximum number or percentage of unavailable App Scheduler pods
-  ##
+  ## @param sched.podDisruptionBudget App Scheduler PodDisruptionBudget settings
   podDisruptionBudget:
+    ## @param sched.podDisruptionBudget.enabled Create an App Scheduler PodDisruptionBudget
     enabled: false
+    ## @param sched.podDisruptionBudget.minAvailable Minimum number or percentage of available App Scheduler pods
     minAvailable: ""
+    ## @param sched.podDisruptionBudget.maxUnavailable Maximum number or percentage of unavailable App Scheduler pods
     maxUnavailable: ""
 
 ## @section Kubernetes Ingress parameters
 ##
-## @param ingress.enabled Create a Kubernetes Ingress for App API and App Frontend
-## @param ingress.ingressClassName IngressClass used by the App Ingress
-## @param ingress.annotations Additional Ingress annotations
-## @param ingress.rules Ingress host and path routing rules
-## @param ingress.tls Ingress TLS configuration
-##
+## @param ingress Kubernetes Ingress settings for App API and App Frontend
 ingress:
+  ## @param ingress.enabled Create a Kubernetes Ingress for App API and App Frontend
   enabled: false
+  ## @param ingress.ingressClassName IngressClass used by the App Ingress
   ingressClassName: ""
+  ## @param ingress.annotations Additional Ingress annotations
   annotations: {}
 
   ## Example:
@@ -941,69 +971,77 @@ ingress:
   ##         pathType: Prefix
   ##         component: front
   ##         portNumber: 3000
+  ##
+  ## @param ingress.rules Ingress host and path routing rules
   rules: []
 
+  ## @param ingress.tls Ingress TLS configuration
   tls: []
 
 ## @section OpenShift Route parameters
 ##
-## @param openshiftRoute.enabled Create OpenShift Routes for App API and App Frontend
-## @param openshiftRoute.host Shared OpenShift Route host
-## @param openshiftRoute.annotations Additional annotations applied to both Routes
-## @param openshiftRoute.tls OpenShift Route TLS configuration
-## @param openshiftRoute.wildcardPolicy OpenShift Route wildcard policy
-## @param openshiftRoute.api.enabled Create the App API Route
-## @param openshiftRoute.api.path App API Route path
-## @param openshiftRoute.api.targetPort App API Route target Service port
-## @param openshiftRoute.api.annotations Additional App API Route annotations
-## @param openshiftRoute.front.enabled Create the App Frontend Route
-## @param openshiftRoute.front.path App Frontend Route path
-## @param openshiftRoute.front.targetPort App Frontend Route target Service port
-## @param openshiftRoute.front.annotations Additional App Frontend Route annotations
-##
+## @param openshiftRoute OpenShift Route settings for App API and App Frontend
 openshiftRoute:
+  ## @param openshiftRoute.enabled Create OpenShift Routes for App API and App Frontend
   enabled: false
+  ## @param openshiftRoute.host Shared OpenShift Route host
   host: ""
+  ## @param openshiftRoute.annotations Additional annotations applied to both Routes
   annotations: {}
+  ## @param openshiftRoute.tls OpenShift Route TLS configuration
   tls: {}
+  ## @param openshiftRoute.wildcardPolicy OpenShift Route wildcard policy
   wildcardPolicy: None
 
+  ## @param openshiftRoute.api App API OpenShift Route settings
   api:
+    ## @param openshiftRoute.api.enabled Create the App API Route
     enabled: true
+    ## @param openshiftRoute.api.path App API Route path
     path: /api
+    ## @param openshiftRoute.api.targetPort App API Route target Service port
     targetPort: http
+    ## @param openshiftRoute.api.annotations Additional App API Route annotations
     annotations: {}
 
+  ## @param openshiftRoute.front App Frontend OpenShift Route settings
   front:
+    ## @param openshiftRoute.front.enabled Create the App Frontend Route
     enabled: true
+    ## @param openshiftRoute.front.path App Frontend Route path
     path: /
+    ## @param openshiftRoute.front.targetPort App Frontend Route target Service port
     targetPort: http
+    ## @param openshiftRoute.front.annotations Additional App Frontend Route annotations
     annotations: {}
 
 ## @section Istio exposure parameters
 ##
-## @param istio.enabled Create Istio exposure resources
-## @param istio.gateway.enabled Create an Istio Gateway
-## @param istio.gateway.annotations Additional Istio Gateway annotations
-## @param istio.gateway.selector Workload selector for the Istio ingress gateway
-## @param istio.gateway.servers Istio Gateway server definitions
-## @param istio.virtualService.enabled Create an Istio VirtualService
-## @param istio.virtualService.annotations Additional Istio VirtualService annotations
-## @param istio.virtualService.hosts Hosts exposed by the Istio VirtualService
-## @param istio.virtualService.http HTTP routing rules for App API and App Frontend
-##
+## @param istio Istio exposure settings for App API and App Frontend
 istio:
+  ## @param istio.enabled Create Istio exposure resources
   enabled: false
 
+  ## @param istio.gateway Istio Gateway settings
   gateway:
+    ## @param istio.gateway.enabled Create an Istio Gateway
     enabled: true
+    ## @param istio.gateway.annotations Additional Istio Gateway annotations
     annotations: {}
+    ## @param istio.gateway.selector Workload selector for the Istio ingress gateway
     selector:
+      ## @param istio.gateway.selector.istio Label value selecting the Istio ingress gateway workload
       istio: ingressgateway
+    ## @param istio.gateway.servers Istio Gateway server definitions
     servers: []
 
+  ## @param istio.virtualService Istio VirtualService settings
   virtualService:
+    ## @param istio.virtualService.enabled Create an Istio VirtualService
     enabled: true
+    ## @param istio.virtualService.annotations Additional Istio VirtualService annotations
     annotations: {}
+    ## @param istio.virtualService.hosts Hosts exposed by the Istio VirtualService
     hosts: []
+    ## @param istio.virtualService.http HTTP routing rules for App API and App Frontend
     http: []

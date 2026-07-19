@@ -74,12 +74,10 @@ spec:
           args:
             {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 12 }}
           {{- end }}
+          {{- with .Values.extraEnvVars }}
           env:
-            - name: CONFIG_PATH
-              value: /app/config.yaml
-            {{- with .Values.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 12 }}
-            {{- end }}
+          {{- end }}
           {{- if or .Values.extraEnvVarsCM .Values.extraEnvVarsSecret }}
           envFrom:
             {{- with .Values.extraEnvVarsCM }}
