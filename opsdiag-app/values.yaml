@@ -42,7 +42,7 @@ api:
     ## @param api.image.repository App API image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-api
     ## @param api.image.tag App API image tag
-    tag: "2026-07-19.11-27-53.0c50f5c"
+    tag: "2026-07-19.14-54-28.24e08b4"
     ## @param api.image.digest App API image digest; overrides the tag when set
     digest: ""
     ## @param api.image.pullPolicy App API image pull policy
@@ -102,13 +102,6 @@ api:
   extraEnvVarsCM: ""
   ## @param api.extraEnvVarsSecret Existing Secret containing additional App API environment variables
   extraEnvVarsSecret: ""
-  ## @param api.extraVolumes Additional volumes for App API pods
-  extraVolumes: []
-  ## @param api.extraVolumeMounts Additional volume mounts for the App API container
-  extraVolumeMounts: []
-  ## @param api.extraDeploy Additional Kubernetes objects associated with App API
-  extraDeploy: []
-
   ## App API ServiceAccount
   ##
   ## @param api.serviceAccount App API ServiceAccount settings
@@ -309,7 +302,7 @@ agent:
     ## @param agent.image.repository App Agent image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-agent-api
     ## @param agent.image.tag App Agent image tag
-    tag: "2026-07-19.11-27-53.ae81780"
+    tag: "2026-07-19.14-54-28.efcf091"
     ## @param agent.image.digest App Agent image digest; overrides the tag when set
     digest: ""
     ## @param agent.image.pullPolicy App Agent image pull policy
@@ -363,13 +356,6 @@ agent:
   extraEnvVarsCM: ""
   ## @param agent.extraEnvVarsSecret Existing Secret containing additional App Agent environment variables
   extraEnvVarsSecret: ""
-  ## @param agent.extraVolumes Additional volumes for App Agent pods
-  extraVolumes: []
-  ## @param agent.extraVolumeMounts Additional volume mounts for the App Agent container
-  extraVolumeMounts: []
-  ## @param agent.extraDeploy Additional Kubernetes objects associated with App Agent
-  extraDeploy: []
-
   ## App Agent ServiceAccount
   ##
   ## @param agent.serviceAccount App Agent ServiceAccount settings
@@ -557,7 +543,7 @@ front:
     ## @param front.image.repository App Frontend image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-front
     ## @param front.image.tag App Frontend image tag
-    tag: "2026-07-19.03-54-13.457aaa3"
+    tag: "2026-07-19.14-33-41.b2aebba"
     ## @param front.image.digest App Frontend image digest; overrides the tag when set
     digest: ""
     ## @param front.image.pullPolicy App Frontend image pull policy
@@ -578,13 +564,6 @@ front:
   extraEnvVarsCM: ""
   ## @param front.extraEnvVarsSecret Existing Secret containing additional App Frontend environment variables
   extraEnvVarsSecret: ""
-  ## @param front.extraVolumes Additional volumes for App Frontend pods
-  extraVolumes: []
-  ## @param front.extraVolumeMounts Additional volume mounts for the App Frontend container
-  extraVolumeMounts: []
-  ## @param front.extraDeploy Additional Kubernetes objects associated with App Frontend
-  extraDeploy: []
-
   ## App Frontend ServiceAccount
   ##
   ## @param front.serviceAccount App Frontend ServiceAccount settings
@@ -620,7 +599,7 @@ front:
     ## @param front.containerSecurityContext.runAsNonRoot Require a non-root App Frontend process
     runAsNonRoot: true
     ## @param front.containerSecurityContext.readOnlyRootFilesystem Use a read-only App Frontend root filesystem
-    readOnlyRootFilesystem: false
+    readOnlyRootFilesystem: true
     ## @param front.containerSecurityContext.allowPrivilegeEscalation Allow App Frontend privilege escalation
     allowPrivilegeEscalation: false
     ## @param front.containerSecurityContext.capabilities App Frontend container Linux capability settings
@@ -752,7 +731,7 @@ sched:
     ## @param sched.image.repository App Scheduler image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-sched
     ## @param sched.image.tag App Scheduler image tag
-    tag: "2026-07-19.11-27-53.97f8d74"
+    tag: "2026-07-19.14-54-28.26159d4"
     ## @param sched.image.digest App Scheduler image digest; overrides the tag when set
     digest: ""
     ## @param sched.image.pullPolicy App Scheduler image pull policy
@@ -794,13 +773,6 @@ sched:
   extraEnvVarsCM: ""
   ## @param sched.extraEnvVarsSecret Existing Secret containing additional App Scheduler environment variables
   extraEnvVarsSecret: ""
-  ## @param sched.extraVolumes Additional volumes for App Scheduler pods
-  extraVolumes: []
-  ## @param sched.extraVolumeMounts Additional volume mounts for the App Scheduler container
-  extraVolumeMounts: []
-  ## @param sched.extraDeploy Additional Kubernetes objects associated with App Scheduler
-  extraDeploy: []
-
   ## App Scheduler ServiceAccount
   ##
   ## @param sched.serviceAccount App Scheduler ServiceAccount settings
@@ -954,29 +926,43 @@ sched:
 ingress:
   ## @param ingress.enabled Create a Kubernetes Ingress for App API and App Frontend
   enabled: false
+  ## @param ingress.hostname Default hostname for the App Ingress
+  hostname: app.local
   ## @param ingress.ingressClassName IngressClass used by the App Ingress
   ingressClassName: ""
   ## @param ingress.annotations Additional Ingress annotations
   annotations: {}
+  ## @param ingress.tls Enable TLS for `ingress.hostname`; the TLS Secret name is derived as `<hostname>-tls`
+  tls: false
 
-  ## Example:
-  ## rules:
-  ##   - host: app.example.com
-  ##     paths:
-  ##       - path: /api
-  ##         pathType: Prefix
-  ##         component: api
-  ##         portNumber: 8000
-  ##       - path: /
-  ##         pathType: Prefix
-  ##         component: front
-  ##         portNumber: 3000
-  ##
-  ## @param ingress.rules Ingress host and path routing rules
-  rules: []
+  ## @param ingress.extraHosts Additional hostnames that expose the same complete App routing
+  ## E.g.:
+  ## extraHosts:
+  ##   - name: app-alt.example.com
+  extraHosts: []
 
-  ## @param ingress.tls Ingress TLS configuration
-  tls: []
+  ## @param ingress.extraPaths Additional paths inserted before the chart-owned `/api` and `/` paths on the primary hostname
+  ## E.g.:
+  ## extraPaths:
+  ##   - path: /special
+  ##     pathType: Prefix
+  ##     backend:
+  ##       service:
+  ##         name: special-service
+  ##         port:
+  ##           name: http
+  extraPaths: []
+
+  ## @param ingress.extraTls Additional TLS entries for extra hostnames
+  ## E.g.:
+  ## extraTls:
+  ##   - hosts:
+  ##       - app-alt.example.com
+  ##     secretName: app-alt.example.com-tls
+  extraTls: []
+
+  ## @param ingress.extraRules Additional complete Ingress rules rendered after the chart-owned rules
+  extraRules: []
 
 ## @section OpenShift Route parameters
 ##
@@ -984,36 +970,46 @@ ingress:
 openshiftRoute:
   ## @param openshiftRoute.enabled Create OpenShift Routes for App API and App Frontend
   enabled: false
-  ## @param openshiftRoute.host Shared OpenShift Route host
-  host: ""
+  ## @param openshiftRoute.hostname Shared OpenShift Route hostname
+  hostname: app.local
   ## @param openshiftRoute.annotations Additional annotations applied to both Routes
   annotations: {}
-  ## @param openshiftRoute.tls OpenShift Route TLS configuration
-  tls: {}
-  ## @param openshiftRoute.wildcardPolicy OpenShift Route wildcard policy
-  wildcardPolicy: None
 
-  ## @param openshiftRoute.api App API OpenShift Route settings
-  api:
-    ## @param openshiftRoute.api.enabled Create the App API Route
-    enabled: true
-    ## @param openshiftRoute.api.path App API Route path
-    path: /api
-    ## @param openshiftRoute.api.targetPort App API Route target Service port
-    targetPort: http
-    ## @param openshiftRoute.api.annotations Additional App API Route annotations
-    annotations: {}
+  ## @param openshiftRoute.tls OpenShift Route TLS settings
+  tls:
+    ## @param openshiftRoute.tls.enabled Enable TLS on the chart-owned Routes
+    enabled: false
+    ## @param openshiftRoute.tls.termination OpenShift Route TLS termination mode
+    termination: edge
+    ## @param openshiftRoute.tls.insecureEdgeTerminationPolicy Policy for insecure traffic when TLS is enabled
+    insecureEdgeTerminationPolicy: Redirect
+    ## @param openshiftRoute.tls.certificate Optional PEM certificate embedded in each Route
+    certificate: ""
+    ## @param openshiftRoute.tls.key Optional PEM private key embedded in each Route
+    key: ""
+    ## @param openshiftRoute.tls.caCertificate Optional PEM CA certificate embedded in each Route
+    caCertificate: ""
+    ## @param openshiftRoute.tls.destinationCACertificate Optional destination CA certificate for re-encrypt termination
+    destinationCACertificate: ""
 
-  ## @param openshiftRoute.front App Frontend OpenShift Route settings
-  front:
-    ## @param openshiftRoute.front.enabled Create the App Frontend Route
-    enabled: true
-    ## @param openshiftRoute.front.path App Frontend Route path
-    path: /
-    ## @param openshiftRoute.front.targetPort App Frontend Route target Service port
-    targetPort: http
-    ## @param openshiftRoute.front.annotations Additional App Frontend Route annotations
-    annotations: {}
+  ## @param openshiftRoute.extraHosts Additional hostnames that expose the same complete App routing
+  ## E.g.:
+  ## extraHosts:
+  ##   - name: app-alt.example.com
+  extraHosts: []
+
+  ## @param openshiftRoute.extraRoutes Additional OpenShift Route specs with optional annotations; resource names remain chart-owned
+  ## E.g.:
+  ## extraRoutes:
+  ##   - annotations: {}
+  ##     spec:
+  ##       host: special.example.com
+  ##       to:
+  ##         kind: Service
+  ##         name: special-service
+  ##       port:
+  ##         targetPort: http
+  extraRoutes: []
 
 ## @section Istio exposure parameters
 ##
@@ -1021,27 +1017,52 @@ openshiftRoute:
 istio:
   ## @param istio.enabled Create Istio exposure resources
   enabled: false
+  ## @param istio.hostname Default hostname for the Istio Gateway and VirtualService
+  hostname: app.local
+  ## @param istio.annotations Additional annotations applied to both Istio resources
+  annotations: {}
 
   ## @param istio.gateway Istio Gateway settings
   gateway:
-    ## @param istio.gateway.enabled Create an Istio Gateway
-    enabled: true
     ## @param istio.gateway.annotations Additional Istio Gateway annotations
     annotations: {}
     ## @param istio.gateway.selector Workload selector for the Istio ingress gateway
     selector:
       ## @param istio.gateway.selector.istio Label value selecting the Istio ingress gateway workload
       istio: ingressgateway
-    ## @param istio.gateway.servers Istio Gateway server definitions
-    servers: []
+
+    ## @param istio.gateway.tls Istio Gateway TLS settings
+    tls:
+      ## @param istio.gateway.tls.enabled Enable HTTPS on the chart-owned Gateway
+      enabled: false
+      ## @param istio.gateway.tls.credentialName Kubernetes TLS Secret used by the Istio ingress gateway
+      credentialName: ""
+      ## @param istio.gateway.tls.mode Istio TLS mode
+      mode: SIMPLE
+      ## @param istio.gateway.tls.httpsRedirect Redirect the chart-owned HTTP listener to HTTPS
+      httpsRedirect: true
 
   ## @param istio.virtualService Istio VirtualService settings
   virtualService:
-    ## @param istio.virtualService.enabled Create an Istio VirtualService
-    enabled: true
     ## @param istio.virtualService.annotations Additional Istio VirtualService annotations
     annotations: {}
-    ## @param istio.virtualService.hosts Hosts exposed by the Istio VirtualService
-    hosts: []
-    ## @param istio.virtualService.http HTTP routing rules for App API and App Frontend
-    http: []
+
+  ## @param istio.extraHosts Additional hostnames exposed by the same Gateway and VirtualService
+  ## E.g.:
+  ## extraHosts:
+  ##   - app-alt.example.com
+  extraHosts: []
+
+  ## @param istio.extraHttp Additional Istio HTTP routes inserted before the chart-owned `/api` and `/` routes
+  ## E.g.:
+  ## extraHttp:
+  ##   - name: special
+  ##     match:
+  ##       - uri:
+  ##           prefix: /special
+  ##     route:
+  ##       - destination:
+  ##           host: special-service
+  ##           port:
+  ##             number: 8080
+  extraHttp: []

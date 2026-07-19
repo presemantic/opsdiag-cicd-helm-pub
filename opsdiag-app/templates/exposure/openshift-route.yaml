@@ -1,7 +1,6 @@
 {{- if .Values.openshiftRoute.enabled }}
+{{- $hostname := tpl (required "openshiftRoute.hostname is required when openshiftRoute.enabled is true" .Values.openshiftRoute.hostname) . }}
 {{- range $component := list "api" "front" }}
-{{- $route := index $.Values.openshiftRoute $component }}
-{{- if $route.enabled }}
 ---
 apiVersion: route.openshift.io/v1
 kind: Route
@@ -10,29 +9,72 @@ metadata:
   namespace: {{ include "common.names.namespace" $ | quote }}
   labels:
     {{- include "common.labels.standard" (dict "customLabels" $.Values.commonLabels "context" $) | nindent 4 }}
-  {{- $annotations := merge (deepCopy ($route.annotations | default dict)) (deepCopy ($.Values.openshiftRoute.annotations | default dict)) }}
-  {{- with $annotations }}
+  {{- if or $.Values.openshiftRoute.annotations $.Values.commonAnnotations }}
+  {{- $annotations := include "common.tplvalues.merge" (dict "values" (list $.Values.openshiftRoute.annotations $.Values.commonAnnotations) "context" $) }}
   annotations:
-    {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+    {{- include "common.tplvalues.render" (dict "value" $annotations "context" $) | nindent 4 }}
   {{- end }}
 spec:
-  {{- with $.Values.openshiftRoute.host }}
-  host: {{ . | quote }}
-  {{- end }}
-  {{- with $route.path }}
-  path: {{ . | quote }}
-  {{- end }}
+  host: {{ $hostname | quote }}
+  path: {{ ternary "/api" "/" (eq $component "api") | quote }}
   to:
     kind: Service
     name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" $component) }}
     weight: 100
   port:
-    targetPort: {{ default "http" $route.targetPort | quote }}
-  {{- with $.Values.openshiftRoute.tls }}
+    targetPort: http
+  {{- if $.Values.openshiftRoute.tls.enabled }}
   tls:
-    {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+    {{- include "opsdiag-app.openshiftRouteTLS" $ | nindent 4 }}
   {{- end }}
-  wildcardPolicy: {{ default "None" $.Values.openshiftRoute.wildcardPolicy }}
+  wildcardPolicy: None
 {{- end }}
+{{- range $index, $host := .Values.openshiftRoute.extraHosts }}
+{{- range $component := list "api" "front" }}
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ printf "%s-%s-%d" (include "common.names.fullname" $) $component $index | trunc 63 | trimSuffix "-" }}
+  namespace: {{ include "common.names.namespace" $ | quote }}
+  labels:
+    {{- include "common.labels.standard" (dict "customLabels" $.Values.commonLabels "context" $) | nindent 4 }}
+  {{- if or $.Values.openshiftRoute.annotations $.Values.commonAnnotations }}
+  {{- $annotations := include "common.tplvalues.merge" (dict "values" (list $.Values.openshiftRoute.annotations $.Values.commonAnnotations) "context" $) }}
+  annotations:
+    {{- include "common.tplvalues.render" (dict "value" $annotations "context" $) | nindent 4 }}
+  {{- end }}
+spec:
+  host: {{ tpl (required "openshiftRoute.extraHosts[].name is required" $host.name) $ | quote }}
+  path: {{ ternary "/api" "/" (eq $component "api") | quote }}
+  to:
+    kind: Service
+    name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" $component) }}
+    weight: 100
+  port:
+    targetPort: http
+  {{- if $.Values.openshiftRoute.tls.enabled }}
+  tls:
+    {{- include "opsdiag-app.openshiftRouteTLS" $ | nindent 4 }}
+  {{- end }}
+  wildcardPolicy: None
+{{- end }}
+{{- end }}
+{{- range $index, $route := .Values.openshiftRoute.extraRoutes }}
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ printf "%s-extra-%d" (include "common.names.fullname" $) $index | trunc 63 | trimSuffix "-" }}
+  namespace: {{ include "common.names.namespace" $ | quote }}
+  labels:
+    {{- include "common.labels.standard" (dict "customLabels" $.Values.commonLabels "context" $) | nindent 4 }}
+  {{- if or $route.annotations $.Values.commonAnnotations }}
+  {{- $annotations := include "common.tplvalues.merge" (dict "values" (list ($route.annotations | default dict) $.Values.commonAnnotations) "context" $) }}
+  annotations:
+    {{- include "common.tplvalues.render" (dict "value" $annotations "context" $) | nindent 4 }}
+  {{- end }}
+spec:
+  {{- include "common.tplvalues.render" (dict "value" (required "openshiftRoute.extraRoutes[].spec is required" $route.spec) "context" $) | nindent 2 }}
 {{- end }}
 {{- end }}

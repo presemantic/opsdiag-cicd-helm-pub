@@ -83,3 +83,20 @@ nodeAffinity:
 {{- $values := index .root.Values $component -}}
 {{- printf "http://%s:%v" (include "opsdiag-app.componentName" (dict "root" .root "component" $component)) $values.service.ports.http -}}
 {{- end -}}
+
+{{- define "opsdiag-app.openshiftRouteTLS" -}}
+termination: {{ .Values.openshiftRoute.tls.termination | quote }}
+insecureEdgeTerminationPolicy: {{ .Values.openshiftRoute.tls.insecureEdgeTerminationPolicy | quote }}
+{{- with .Values.openshiftRoute.tls.certificate }}
+certificate: {{ . | quote }}
+{{- end }}
+{{- with .Values.openshiftRoute.tls.key }}
+key: {{ . | quote }}
+{{- end }}
+{{- with .Values.openshiftRoute.tls.caCertificate }}
+caCertificate: {{ . | quote }}
+{{- end }}
+{{- with .Values.openshiftRoute.tls.destinationCACertificate }}
+destinationCACertificate: {{ . | quote }}
+{{- end }}
+{{- end -}}

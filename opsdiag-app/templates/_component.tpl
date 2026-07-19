@@ -118,28 +118,28 @@ spec:
               mountPath: /app/config.yaml
               subPath: config.yaml
               readOnly: true
-            {{- with $values.extraVolumeMounts }}
-            {{- include "common.tplvalues.render" (dict "value" . "context" $root) | nindent 12 }}
-            {{- end }}
           {{- else }}
-          {{- with $values.extraVolumeMounts }}
           volumeMounts:
-            {{- include "common.tplvalues.render" (dict "value" . "context" $root) | nindent 12 }}
-          {{- end }}
+            - name: nginx-cache
+              mountPath: /var/cache/nginx
+            - name: nginx-run
+              mountPath: /var/run
+            - name: nginx-tmp
+              mountPath: /tmp
           {{- end }}
       {{- if ne $component "front" }}
       volumes:
         - name: app-config
           secret:
             secretName: {{ include "opsdiag-app.configName" . }}
-        {{- with $values.extraVolumes }}
-        {{- include "common.tplvalues.render" (dict "value" . "context" $root) | nindent 8 }}
-        {{- end }}
       {{- else }}
-      {{- with $values.extraVolumes }}
       volumes:
-        {{- include "common.tplvalues.render" (dict "value" . "context" $root) | nindent 8 }}
-      {{- end }}
+        - name: nginx-cache
+          emptyDir: {}
+        - name: nginx-run
+          emptyDir: {}
+        - name: nginx-tmp
+          emptyDir: {}
       {{- end }}
 {{- end -}}
 

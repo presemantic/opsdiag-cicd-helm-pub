@@ -27,7 +27,7 @@ image:
   ## @param image.repository OpsDiag connector image repository
   repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-connector
   ## @param image.tag OpsDiag connector image tag; defaults to chart appVersion when empty
-  tag: "2026-07-19.11-27-53.49e4074"
+  tag: "2026-07-19.14-54-28.c1214d3"
   ## @param image.digest OpsDiag connector image digest, used instead of tag when set
   digest: ""
   ## @param image.pullPolicy OpsDiag connector image pull policy
@@ -49,23 +49,12 @@ revisionHistoryLimit: 10
 ## @param updateStrategy.type Deployment strategy type
 updateStrategy:
   type: RollingUpdate
-## @param command Override default container command
-command: []
-## @param args Override default container args
-args: []
 ## @param extraEnvVars Extra environment variables for the connector container
 extraEnvVars: []
 ## @param extraEnvVarsCM Name of an existing ConfigMap with extra environment variables
 extraEnvVarsCM: ""
 ## @param extraEnvVarsSecret Name of an existing Secret with extra environment variables
 extraEnvVarsSecret: ""
-## @param extraVolumes Extra volumes for the connector pod
-extraVolumes: []
-## @param extraVolumeMounts Extra volume mounts for the connector container
-extraVolumeMounts: []
-## @param extraDeploy Extra Kubernetes manifests to render after chart resources
-extraDeploy: []
-
 ## @section Service account parameters
 ##
 serviceAccount:

@@ -1,5 +1,6 @@
 {{- if .Values.istio.enabled }}
-{{- if .Values.istio.gateway.enabled }}
+{{- $hostname := tpl (required "istio.hostname is required when istio.enabled is true" .Values.istio.hostname) . }}
+{{- $hosts := concat (list $hostname) (.Values.istio.extraHosts | default (list)) }}
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: Gateway
@@ -8,17 +9,36 @@ metadata:
   namespace: {{ include "common.names.namespace" . | quote }}
   labels:
     {{- include "common.labels.standard" (dict "customLabels" .Values.commonLabels "context" .) | nindent 4 }}
-  {{- with .Values.istio.gateway.annotations }}
+  {{- if or .Values.istio.annotations .Values.istio.gateway.annotations .Values.commonAnnotations }}
+  {{- $annotations := include "common.tplvalues.merge" (dict "values" (list .Values.istio.gateway.annotations .Values.istio.annotations .Values.commonAnnotations) "context" .) }}
   annotations:
-    {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+    {{- include "common.tplvalues.render" (dict "value" $annotations "context" $) | nindent 4 }}
   {{- end }}
 spec:
   selector:
     {{- include "common.tplvalues.render" (dict "value" .Values.istio.gateway.selector "context" .) | nindent 4 }}
   servers:
-    {{- include "common.tplvalues.render" (dict "value" .Values.istio.gateway.servers "context" .) | nindent 4 }}
-{{- end }}
-{{- if .Values.istio.virtualService.enabled }}
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        {{- toYaml $hosts | nindent 8 }}
+      {{- if and .Values.istio.gateway.tls.enabled .Values.istio.gateway.tls.httpsRedirect }}
+      tls:
+        httpsRedirect: true
+      {{- end }}
+    {{- if .Values.istio.gateway.tls.enabled }}
+    - port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      hosts:
+        {{- toYaml $hosts | nindent 8 }}
+      tls:
+        mode: {{ .Values.istio.gateway.tls.mode }}
+        credentialName: {{ required "istio.gateway.tls.credentialName is required when Istio TLS is enabled" .Values.istio.gateway.tls.credentialName | quote }}
+    {{- end }}
 ---
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
@@ -27,16 +47,36 @@ metadata:
   namespace: {{ include "common.names.namespace" . | quote }}
   labels:
     {{- include "common.labels.standard" (dict "customLabels" .Values.commonLabels "context" .) | nindent 4 }}
-  {{- with .Values.istio.virtualService.annotations }}
+  {{- if or .Values.istio.annotations .Values.istio.virtualService.annotations .Values.commonAnnotations }}
+  {{- $annotations := include "common.tplvalues.merge" (dict "values" (list .Values.istio.virtualService.annotations .Values.istio.annotations .Values.commonAnnotations) "context" .) }}
   annotations:
-    {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+    {{- include "common.tplvalues.render" (dict "value" $annotations "context" $) | nindent 4 }}
   {{- end }}
 spec:
   hosts:
-    {{- include "common.tplvalues.render" (dict "value" .Values.istio.virtualService.hosts "context" .) | nindent 4 }}
+    {{- toYaml $hosts | nindent 4 }}
   gateways:
     - {{ printf "%s-gateway" (include "common.names.fullname" .) | trunc 63 | trimSuffix "-" }}
   http:
-    {{- include "common.tplvalues.render" (dict "value" .Values.istio.virtualService.http "context" .) | nindent 4 }}
-{{- end }}
+    {{- with .Values.istio.extraHttp }}
+    {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+    {{- end }}
+    - name: api
+      match:
+        - uri:
+            prefix: /api
+      route:
+        - destination:
+            host: {{ include "opsdiag-app.componentServiceName" (dict "root" . "component" "api") }}
+            port:
+              number: {{ .Values.api.service.ports.http }}
+    - name: front
+      match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            host: {{ include "opsdiag-app.componentServiceName" (dict "root" . "component" "front") }}
+            port:
+              number: {{ .Values.front.service.ports.http }}
 {{- end }}

@@ -66,14 +66,6 @@ spec:
           securityContext:
             {{- omit .Values.containerSecurityContext "enabled" | toYaml | nindent 12 }}
           {{- end }}
-          {{- with .Values.command }}
-          command:
-            {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 12 }}
-          {{- end }}
-          {{- with .Values.args }}
-          args:
-            {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 12 }}
-          {{- end }}
           {{- with .Values.extraEnvVars }}
           env:
             {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 12 }}
@@ -111,13 +103,7 @@ spec:
               mountPath: /app/config.yaml
               subPath: config.yaml
               readOnly: true
-            {{- with .Values.extraVolumeMounts }}
-            {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 12 }}
-            {{- end }}
       volumes:
         - name: connector-config
           configMap:
             name: {{ include "opsdiag-app-connector.configMapName" . }}
-        {{- with .Values.extraVolumes }}
-        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
-        {{- end }}

@@ -1,41 +1,73 @@
 {{- if .Values.ingress.enabled }}
 ---
-apiVersion: networking.k8s.io/v1
+apiVersion: {{ include "common.capabilities.ingress.apiVersion" . }}
 kind: Ingress
 metadata:
   name: {{ include "common.names.fullname" . }}
   namespace: {{ include "common.names.namespace" . | quote }}
   labels:
     {{- include "common.labels.standard" (dict "customLabels" .Values.commonLabels "context" .) | nindent 4 }}
-  {{- with .Values.ingress.annotations }}
+  {{- if or .Values.ingress.annotations .Values.commonAnnotations }}
+  {{- $annotations := include "common.tplvalues.merge" (dict "values" (list .Values.ingress.annotations .Values.commonAnnotations) "context" .) }}
   annotations:
-    {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+    {{- include "common.tplvalues.render" (dict "value" $annotations "context" $) | nindent 4 }}
   {{- end }}
 spec:
   {{- with .Values.ingress.ingressClassName }}
   ingressClassName: {{ . | quote }}
   {{- end }}
-  {{- with .Values.ingress.tls }}
-  tls:
-    {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
-  {{- end }}
   rules:
-    {{- range $rule := .Values.ingress.rules }}
-    - host: {{ $rule.host | quote }}
+    - host: {{ tpl (required "ingress.hostname is required when ingress.enabled is true" .Values.ingress.hostname) . | quote }}
       http:
         paths:
-          {{- range $path := $rule.paths }}
-          - path: {{ $path.path | quote }}
-            pathType: {{ default "Prefix" $path.pathType }}
+          {{- with .Values.ingress.extraPaths }}
+          {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 10 }}
+          {{- end }}
+          - path: /api
+            pathType: Prefix
             backend:
               service:
-                name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" $path.component) }}
+                name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "api") }}
                 port:
-                  {{- if $path.portNumber }}
-                  number: {{ $path.portNumber }}
-                  {{- else }}
-                  name: {{ default "http" $path.portName | quote }}
-                  {{- end }}
-          {{- end }}
+                  name: http
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "front") }}
+                port:
+                  name: http
+    {{- range $host := .Values.ingress.extraHosts }}
+    - host: {{ tpl (required "ingress.extraHosts[].name is required" $host.name) $ | quote }}
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "api") }}
+                port:
+                  name: http
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "front") }}
+                port:
+                  name: http
     {{- end }}
+    {{- with .Values.ingress.extraRules }}
+    {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+    {{- end }}
+  {{- if or .Values.ingress.tls .Values.ingress.extraTls }}
+  tls:
+    {{- if .Values.ingress.tls }}
+    - hosts:
+        - {{ tpl .Values.ingress.hostname . | quote }}
+      secretName: {{ printf "%s-tls" (tpl .Values.ingress.hostname . | replace "*." "") | quote }}
+    {{- end }}
+    {{- with .Values.ingress.extraTls }}
+    {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+    {{- end }}
+  {{- end }}
 {{- end }}
