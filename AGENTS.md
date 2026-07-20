@@ -11,7 +11,7 @@ This project is `opsdiag-cicd-helm-pub`, the public Helm chart repository for cu
 
 The current unified App chart source version is `0.1.14` with `appVersion` `2026-07-20`. Chart version changes do not authorize invented component image tags: component defaults must move only to exact images that were actually released, and production deployment values must continue to avoid image overrides. Version `0.1.14` advances App API, App Agent and App Front for the per-scope 300-second action/3600-second agent timeout contract, explicit Knowledge Builder timeout response and durable chat observation without a shorter browser deadline; App Scheduler stays on its existing compatible image.
 
-The current independent Connector chart source version is `0.2.2` with `appVersion` `2026-07-20.18-22-28.962854f`. It uses the exact published Connector image that starts an overlapping replacement Relay session six minutes before grant expiry and drains existing five-minute actions on the previous session; do not replace it with a locally rebuilt binary or an unpublished tag.
+The current independent Connector chart source version is `0.2.3` with `appVersion` `2026-07-20.19-03-10.84c320e`. It uses the exact published Connector image that starts an overlapping replacement Relay session six minutes before grant expiry, drains existing five-minute actions on the previous session and ignores only late frames for recently closed known stream IDs instead of reconnecting the entire session; do not replace it with a locally rebuilt binary or an unpublished tag.
 
 - [`.github/workflows/ci.yml`](./.github/workflows/ci.yml) packages both public charts on timestamp release tags and publishes them as OCI artifacts to `europe-west1-docker.pkg.dev/prod-common-cicd/opsdiag-helm-pub`.
 
