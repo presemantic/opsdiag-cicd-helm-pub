@@ -10,6 +10,9 @@ This project is `opsdiag-cicd-helm-pub`, the public Helm chart repository for cu
 - [`opsdiag-app-connector/`](./opsdiag-app-connector/) remains an independent chart because the connector is installed separately in customer environments.
 
 The current unified App chart source version is `0.1.11` with `appVersion` `2026-07-20`. Chart version changes do not authorize invented component image tags: App Agent and App API defaults must move only to exact images that were actually released and attested, and production deployment values must continue to avoid image overrides. Version `0.1.11` advances only App Agent to the exact connector HTTP/1.1 transport release required by remote MCP endpoints that negotiate HTTP/2 through ALPN.
+
+The current independent Connector chart source version is `0.2.1` with `appVersion` `2026-07-20.03-01-32.d7eb341`. It uses the exact published and proof-version-2-attested Connector image that refreshes its outbound Relay session before the gateway JWT and signed descriptor expire; do not replace it with a locally rebuilt binary or an unpublished tag.
+
 - [`.github/workflows/ci.yml`](./.github/workflows/ci.yml) packages both public charts on timestamp release tags and publishes them as OCI artifacts to `europe-west1-docker.pkg.dev/prod-common-cicd/opsdiag-helm-pub`.
 
 ## Chart Design
