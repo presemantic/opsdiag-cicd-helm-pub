@@ -42,7 +42,7 @@ api:
     ## @param api.image.repository App API image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-api
     ## @param api.image.tag App API image tag
-    tag: "2026-07-20.15-02-16.af22f5d"
+    tag: "2026-07-20.18-19-24.38bbc82"
     ## @param api.image.digest App API image digest; overrides the tag when set
     digest: ""
     ## @param api.image.pullPolicy App API image pull policy
@@ -302,7 +302,7 @@ agent:
     ## @param agent.image.repository App Agent image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-agent-api
     ## @param agent.image.tag App Agent image tag
-    tag: "2026-07-20.02-35-33.3c3eab1"
+    tag: "2026-07-20.18-17-41.5cd3c7a"
     ## @param agent.image.digest App Agent image digest; overrides the tag when set
     digest: ""
     ## @param agent.image.pullPolicy App Agent image pull policy
@@ -543,7 +543,7 @@ front:
     ## @param front.image.repository App Frontend image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-front
     ## @param front.image.tag App Frontend image tag
-    tag: "2026-07-20.17-09-36.7017aea"
+    tag: "2026-07-20.18-20-58.c16e00b"
     ## @param front.image.digest App Frontend image digest; overrides the tag when set
     digest: ""
     ## @param front.image.pullPolicy App Frontend image pull policy
