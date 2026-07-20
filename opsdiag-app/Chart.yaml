@@ -2,7 +2,7 @@ apiVersion: v2
 name: opsdiag-app
 description: Complete OpsDiag application stack
 type: application
-version: 0.1.16
+version: 0.1.17
 appVersion: "2026-07-20"
 home: https://opsdiag.ai
 sources:
@@ -10,6 +10,7 @@ sources:
   - https://github.com/presemantic/opsdiag-app-agent-api
   - https://github.com/presemantic/opsdiag-app-front
   - https://github.com/presemantic/opsdiag-app-sched
+  - https://github.com/presemantic/opsdiag-app-mcp-proxy-api
 dependencies:
   - name: common
     repository: https://opsolving.github.io/charts/

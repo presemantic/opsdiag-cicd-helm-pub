@@ -61,6 +61,15 @@ spec:
     {{- with .Values.istio.extraHttp }}
     {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
     {{- end }}
+    - name: mcp-proxy
+      match:
+        - uri:
+            prefix: /mcp
+      route:
+        - destination:
+            host: {{ include "opsdiag-app.componentServiceName" (dict "root" . "component" "mcp-proxy") }}
+            port:
+              number: {{ index .Values "mcp-proxy" "service" "ports" "http" }}
     - name: api
       match:
         - uri:

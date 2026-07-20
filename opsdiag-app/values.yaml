@@ -525,6 +525,148 @@ agent:
     ## @param agent.podDisruptionBudget.maxUnavailable Maximum number or percentage of unavailable App Agent pods
     maxUnavailable: ""
 
+## @section App MCP Proxy parameters
+##
+## @param mcp-proxy App MCP Proxy component settings
+mcp-proxy:
+  ## @param mcp-proxy.replicaCount Number of App MCP Proxy replicas
+  replicaCount: 1
+  ## @param mcp-proxy.revisionHistoryLimit Number of previous App MCP Proxy ReplicaSets retained for rollback
+  revisionHistoryLimit: 10
+
+  ## @param mcp-proxy.image App MCP Proxy container image settings
+  image:
+    ## @param mcp-proxy.image.registry App MCP Proxy image registry
+    registry: europe-west1-docker.pkg.dev
+    ## @param mcp-proxy.image.repository App MCP Proxy image repository
+    repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-mcp-proxy-api
+    ## @param mcp-proxy.image.tag App MCP Proxy image tag
+    tag: "2026-07-20.23-49-42.4ec2bfb"
+    ## @param mcp-proxy.image.digest App MCP Proxy image digest; overrides the tag when set
+    digest: ""
+    ## @param mcp-proxy.image.pullPolicy App MCP Proxy image pull policy
+    pullPolicy: IfNotPresent
+    ## @param mcp-proxy.image.pullSecrets App MCP Proxy image pull secrets
+    pullSecrets: []
+
+  ## @param mcp-proxy.updateStrategy App MCP Proxy Deployment update strategy
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+
+  ## @param mcp-proxy.config App MCP Proxy runtime configuration rendered to `/app/config.yaml`
+  config:
+    ## @param mcp-proxy.config.license App MCP Proxy license
+    license: ""
+    ## @param mcp-proxy.config.licenseServer Control Edge origin used for license verification
+    licenseServer: https://edge.control.opsdiag.ai
+    ## @param mcp-proxy.config.proxy App MCP Proxy upstream settings
+    proxy:
+      ## @param mcp-proxy.config.proxy.upstreamUrl Internal App Agent MCP URL; rendered from the Helm release name
+      upstreamUrl: 'http://{{ include "opsdiag-app.componentName" (dict "root" . "component" "agent") }}:{{ .Values.agent.service.ports.http }}/api/mcp'
+
+  ## @param mcp-proxy.extraEnvVars Additional environment variables for App MCP Proxy
+  extraEnvVars: []
+  ## @param mcp-proxy.extraEnvVarsCM Existing ConfigMap containing additional environment variables
+  extraEnvVarsCM: ""
+  ## @param mcp-proxy.extraEnvVarsSecret Existing Secret containing additional environment variables
+  extraEnvVarsSecret: ""
+
+  ## @param mcp-proxy.serviceAccount App MCP Proxy ServiceAccount settings
+  serviceAccount:
+    create: true
+    name: ""
+    annotations: {}
+    automountServiceAccountToken: false
+
+  ## @param mcp-proxy.podSecurityContext App MCP Proxy pod security context settings
+  podSecurityContext:
+    enabled: true
+    seccompProfile:
+      type: RuntimeDefault
+
+  ## @param mcp-proxy.containerSecurityContext App MCP Proxy container security context settings
+  containerSecurityContext:
+    enabled: true
+    runAsNonRoot: true
+    readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop: [ALL]
+
+  ## @param mcp-proxy.containerPorts App MCP Proxy container port settings
+  containerPorts:
+    http: 8000
+
+  ## @param mcp-proxy.service App MCP Proxy Service settings
+  service:
+    type: ClusterIP
+    annotations: {}
+    ports:
+      http: 8000
+    clusterIP: ""
+
+  ## @param mcp-proxy.resources App MCP Proxy resource requests and limits
+  resources: {}
+
+  ## @param mcp-proxy.livenessProbe App MCP Proxy liveness probe settings
+  livenessProbe:
+    enabled: true
+    spec:
+      httpGet:
+        path: /livez
+        port: http
+      periodSeconds: 10
+      timeoutSeconds: 2
+      failureThreshold: 3
+
+  ## @param mcp-proxy.readinessProbe App MCP Proxy readiness probe settings
+  readinessProbe:
+    enabled: true
+    spec:
+      httpGet:
+        path: /readyz
+        port: http
+      periodSeconds: 5
+      timeoutSeconds: 2
+      failureThreshold: 3
+
+  ## @param mcp-proxy.startupProbe App MCP Proxy startup probe settings
+  startupProbe:
+    enabled: true
+    spec:
+      httpGet:
+        path: /readyz
+        port: http
+      periodSeconds: 5
+      timeoutSeconds: 2
+      failureThreshold: 120
+
+  ## App MCP Proxy pod placement
+  podLabels: {}
+  podAnnotations: {}
+  podAffinityPreset: ""
+  podAntiAffinityPreset: soft
+  nodeAffinityPreset:
+    type: ""
+    key: ""
+    values: []
+  affinity: {}
+  nodeSelector: {}
+  tolerations: []
+  topologySpreadConstraints: []
+  priorityClassName: ""
+  schedulerName: ""
+  terminationGracePeriodSeconds: 30
+
+  ## @param mcp-proxy.podDisruptionBudget App MCP Proxy PodDisruptionBudget settings
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: ""
+    maxUnavailable: ""
+
 ## @section App Frontend parameters
 ##
 ## @param front App Frontend component settings

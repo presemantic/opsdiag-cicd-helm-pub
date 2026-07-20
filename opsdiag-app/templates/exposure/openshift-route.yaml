@@ -1,6 +1,8 @@
 {{- if .Values.openshiftRoute.enabled }}
 {{- $hostname := tpl (required "openshiftRoute.hostname is required when openshiftRoute.enabled is true" .Values.openshiftRoute.hostname) . }}
-{{- range $component := list "api" "front" }}
+{{- range $component := list "mcp-proxy" "api" "front" }}
+{{- $path := "/" }}
+{{- if eq $component "api" }}{{- $path = "/api" }}{{- else if eq $component "mcp-proxy" }}{{- $path = "/mcp" }}{{- end }}
 ---
 apiVersion: route.openshift.io/v1
 kind: Route
@@ -16,7 +18,7 @@ metadata:
   {{- end }}
 spec:
   host: {{ $hostname | quote }}
-  path: {{ ternary "/api" "/" (eq $component "api") | quote }}
+  path: {{ $path | quote }}
   to:
     kind: Service
     name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" $component) }}
@@ -30,7 +32,9 @@ spec:
   wildcardPolicy: None
 {{- end }}
 {{- range $index, $host := .Values.openshiftRoute.extraHosts }}
-{{- range $component := list "api" "front" }}
+{{- range $component := list "mcp-proxy" "api" "front" }}
+{{- $path := "/" }}
+{{- if eq $component "api" }}{{- $path = "/api" }}{{- else if eq $component "mcp-proxy" }}{{- $path = "/mcp" }}{{- end }}
 ---
 apiVersion: route.openshift.io/v1
 kind: Route
@@ -46,7 +50,7 @@ metadata:
   {{- end }}
 spec:
   host: {{ tpl (required "openshiftRoute.extraHosts[].name is required" $host.name) $ | quote }}
-  path: {{ ternary "/api" "/" (eq $component "api") | quote }}
+  path: {{ $path | quote }}
   to:
     kind: Service
     name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" $component) }}
