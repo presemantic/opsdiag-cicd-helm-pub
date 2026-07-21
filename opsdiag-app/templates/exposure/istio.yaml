@@ -61,6 +61,28 @@ spec:
     {{- with .Values.istio.extraHttp }}
     {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
     {{- end }}
+    - name: oauth-resource-metadata
+      match:
+        - uri:
+            prefix: /.well-known/oauth-protected-resource
+      route:
+        - destination:
+            host: {{ include "opsdiag-app.componentServiceName" (dict "root" . "component" "mcp-proxy") }}
+            port:
+              number: {{ index .Values "mcp-proxy" "service" "ports" "http" }}
+    - name: oauth-authorization-server
+      match:
+        - uri:
+            exact: /.well-known/oauth-authorization-server
+        - uri:
+            exact: /.well-known/openid-configuration
+        - uri:
+            prefix: /oauth
+      route:
+        - destination:
+            host: {{ include "opsdiag-app.componentServiceName" (dict "root" . "component" "api") }}
+            port:
+              number: {{ .Values.api.service.ports.http }}
     - name: mcp-proxy
       match:
         - uri:

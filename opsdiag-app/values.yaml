@@ -8,6 +8,8 @@ global:
   imageRegistry: ""
   ## @param global.imagePullSecrets Global container registry secret names as an array
   imagePullSecrets: []
+  ## @param global.externalURL Canonical external App origin used as the OAuth issuer
+  externalURL: https://app.local
 
 ## Common chart parameters
 ##
@@ -42,7 +44,7 @@ api:
     ## @param api.image.repository App API image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-api
     ## @param api.image.tag App API image tag
-    tag: "2026-07-20.18-19-24.38bbc82"
+    tag: "2026-07-21.03-43-45.2b9048e"
     ## @param api.image.digest App API image digest; overrides the tag when set
     digest: ""
     ## @param api.image.pullPolicy App API image pull policy
@@ -87,6 +89,10 @@ api:
       jwtSecret: ""
       ## @param api.config.auth.jwtExpiresSeconds Lifetime of App API authentication tokens in seconds
       jwtExpiresSeconds: 86400
+    ## @param api.config.oauth App OAuth/OIDC authorization-server settings
+    oauth:
+      ## @param api.config.oauth.issuer Canonical OAuth/OIDC issuer origin
+      issuer: '{{ .Values.global.externalURL }}'
     ## @param api.config.scheduler App API connection settings for App Scheduler
     scheduler:
       ## @param api.config.scheduler.url Internal App Scheduler URL; rendered from the Helm release name
@@ -541,7 +547,7 @@ mcp-proxy:
     ## @param mcp-proxy.image.repository App MCP Proxy image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-mcp-proxy-api
     ## @param mcp-proxy.image.tag App MCP Proxy image tag
-    tag: "2026-07-21.00-24-24.cb476b3"
+    tag: "2026-07-21.03-45-50.384afa0"
     ## @param mcp-proxy.image.digest App MCP Proxy image digest; overrides the tag when set
     digest: ""
     ## @param mcp-proxy.image.pullPolicy App MCP Proxy image pull policy
@@ -566,6 +572,12 @@ mcp-proxy:
     proxy:
       ## @param mcp-proxy.config.proxy.upstreamUrl Internal App Agent MCP URL; rendered from the Helm release name
       upstreamUrl: 'http://{{ include "opsdiag-app.componentName" (dict "root" . "component" "agent") }}:{{ .Values.agent.service.ports.http }}/api/mcp'
+    ## @param mcp-proxy.config.oauth App MCP Proxy OAuth resource-server settings
+    oauth:
+      ## @param mcp-proxy.config.oauth.issuer Canonical OAuth/OIDC issuer origin
+      issuer: '{{ .Values.global.externalURL }}'
+      ## @param mcp-proxy.config.oauth.jwksUrl Internal App API JWKS URL
+      jwksUrl: 'http://{{ include "opsdiag-app.componentName" (dict "root" . "component" "api") }}:{{ .Values.api.service.ports.http }}/oauth/jwks'
 
   ## @param mcp-proxy.extraEnvVars Additional environment variables for App MCP Proxy
   extraEnvVars: []

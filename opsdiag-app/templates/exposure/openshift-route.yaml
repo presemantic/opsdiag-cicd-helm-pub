@@ -1,13 +1,11 @@
 {{- if .Values.openshiftRoute.enabled }}
 {{- $hostname := tpl (required "openshiftRoute.hostname is required when openshiftRoute.enabled is true" .Values.openshiftRoute.hostname) . }}
-{{- range $component := list "mcp-proxy" "api" "front" }}
-{{- $path := "/" }}
-{{- if eq $component "api" }}{{- $path = "/api" }}{{- else if eq $component "mcp-proxy" }}{{- $path = "/mcp" }}{{- end }}
+{{- range $route := list (dict "name" "oauth-resource" "component" "mcp-proxy" "path" "/.well-known/oauth-protected-resource") (dict "name" "oauth-metadata" "component" "api" "path" "/.well-known") (dict "name" "oauth" "component" "api" "path" "/oauth") (dict "name" "mcp-proxy" "component" "mcp-proxy" "path" "/mcp") (dict "name" "api" "component" "api" "path" "/api") (dict "name" "front" "component" "front" "path" "/") }}
 ---
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  name: {{ printf "%s-%s" (include "common.names.fullname" $) $component | trunc 63 | trimSuffix "-" }}
+  name: {{ printf "%s-%s" (include "common.names.fullname" $) $route.name | trunc 63 | trimSuffix "-" }}
   namespace: {{ include "common.names.namespace" $ | quote }}
   labels:
     {{- include "common.labels.standard" (dict "customLabels" $.Values.commonLabels "context" $) | nindent 4 }}
@@ -18,10 +16,10 @@ metadata:
   {{- end }}
 spec:
   host: {{ $hostname | quote }}
-  path: {{ $path | quote }}
+  path: {{ $route.path | quote }}
   to:
     kind: Service
-    name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" $component) }}
+    name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" $route.component) }}
     weight: 100
   port:
     targetPort: http
@@ -32,14 +30,12 @@ spec:
   wildcardPolicy: None
 {{- end }}
 {{- range $index, $host := .Values.openshiftRoute.extraHosts }}
-{{- range $component := list "mcp-proxy" "api" "front" }}
-{{- $path := "/" }}
-{{- if eq $component "api" }}{{- $path = "/api" }}{{- else if eq $component "mcp-proxy" }}{{- $path = "/mcp" }}{{- end }}
+{{- range $route := list (dict "name" "oauth-resource" "component" "mcp-proxy" "path" "/.well-known/oauth-protected-resource") (dict "name" "oauth-metadata" "component" "api" "path" "/.well-known") (dict "name" "oauth" "component" "api" "path" "/oauth") (dict "name" "mcp-proxy" "component" "mcp-proxy" "path" "/mcp") (dict "name" "api" "component" "api" "path" "/api") (dict "name" "front" "component" "front" "path" "/") }}
 ---
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
-  name: {{ printf "%s-%s-%d" (include "common.names.fullname" $) $component $index | trunc 63 | trimSuffix "-" }}
+  name: {{ printf "%s-%s-%d" (include "common.names.fullname" $) $route.name $index | trunc 63 | trimSuffix "-" }}
   namespace: {{ include "common.names.namespace" $ | quote }}
   labels:
     {{- include "common.labels.standard" (dict "customLabels" $.Values.commonLabels "context" $) | nindent 4 }}
@@ -50,10 +46,10 @@ metadata:
   {{- end }}
 spec:
   host: {{ tpl (required "openshiftRoute.extraHosts[].name is required" $host.name) $ | quote }}
-  path: {{ $path | quote }}
+  path: {{ $route.path | quote }}
   to:
     kind: Service
-    name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" $component) }}
+    name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" $route.component) }}
     weight: 100
   port:
     targetPort: http

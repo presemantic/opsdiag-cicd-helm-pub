@@ -23,6 +23,34 @@ spec:
           {{- with .Values.ingress.extraPaths }}
           {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 10 }}
           {{- end }}
+          - path: /.well-known/oauth-protected-resource
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "mcp-proxy") }}
+                port:
+                  name: http
+          - path: /.well-known/oauth-authorization-server
+            pathType: Exact
+            backend:
+              service:
+                name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "api") }}
+                port:
+                  name: http
+          - path: /.well-known/openid-configuration
+            pathType: Exact
+            backend:
+              service:
+                name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "api") }}
+                port:
+                  name: http
+          - path: /oauth
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "api") }}
+                port:
+                  name: http
           - path: /mcp
             pathType: Prefix
             backend:
@@ -48,6 +76,34 @@ spec:
     - host: {{ tpl (required "ingress.extraHosts[].name is required" $host.name) $ | quote }}
       http:
         paths:
+          - path: /.well-known/oauth-protected-resource
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "mcp-proxy") }}
+                port:
+                  name: http
+          - path: /.well-known/oauth-authorization-server
+            pathType: Exact
+            backend:
+              service:
+                name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "api") }}
+                port:
+                  name: http
+          - path: /.well-known/openid-configuration
+            pathType: Exact
+            backend:
+              service:
+                name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "api") }}
+                port:
+                  name: http
+          - path: /oauth
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "api") }}
+                port:
+                  name: http
           - path: /mcp
             pathType: Prefix
             backend:
