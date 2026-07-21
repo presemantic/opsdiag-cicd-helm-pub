@@ -24,21 +24,21 @@ spec:
           {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 10 }}
           {{- end }}
           - path: /.well-known/oauth-protected-resource
-            pathType: Prefix
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "mcp-proxy") }}
                 port:
                   name: http
           - path: /.well-known/oauth-authorization-server
-            pathType: Exact
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "api") }}
                 port:
                   name: http
           - path: /.well-known/openid-configuration
-            pathType: Exact
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "api") }}
@@ -77,21 +77,21 @@ spec:
       http:
         paths:
           - path: /.well-known/oauth-protected-resource
-            pathType: Prefix
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "mcp-proxy") }}
                 port:
                   name: http
           - path: /.well-known/oauth-authorization-server
-            pathType: Exact
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "api") }}
                 port:
                   name: http
           - path: /.well-known/openid-configuration
-            pathType: Exact
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "api") }}
