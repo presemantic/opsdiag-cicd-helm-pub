@@ -77,7 +77,7 @@ spec:
         - uri:
             exact: /.well-known/openid-configuration
         - uri:
-            prefix: /oauth
+            prefix: /mcp/oauth
       route:
         - destination:
             host: {{ include "opsdiag-app.componentServiceName" (dict "root" . "component" "api") }}

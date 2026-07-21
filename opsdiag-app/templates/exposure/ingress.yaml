@@ -44,7 +44,7 @@ spec:
                 name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "api") }}
                 port:
                   name: http
-          - path: /oauth
+          - path: /mcp/oauth
             pathType: Prefix
             backend:
               service:
@@ -97,7 +97,7 @@ spec:
                 name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "api") }}
                 port:
                   name: http
-          - path: /oauth
+          - path: /mcp/oauth
             pathType: Prefix
             backend:
               service:

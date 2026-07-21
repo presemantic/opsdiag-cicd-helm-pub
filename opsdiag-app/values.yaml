@@ -44,7 +44,7 @@ api:
     ## @param api.image.repository App API image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-api
     ## @param api.image.tag App API image tag
-    tag: "2026-07-21.03-43-45.2b9048e"
+    tag: "2026-07-21.17-45-22.46d0db6"
     ## @param api.image.digest App API image digest; overrides the tag when set
     digest: ""
     ## @param api.image.pullPolicy App API image pull policy
@@ -577,7 +577,7 @@ mcp-proxy:
       ## @param mcp-proxy.config.oauth.issuer Canonical OAuth/OIDC issuer origin
       issuer: '{{ .Values.global.externalURL }}'
       ## @param mcp-proxy.config.oauth.jwksUrl Internal App API JWKS URL
-      jwksUrl: 'http://{{ include "opsdiag-app.componentName" (dict "root" . "component" "api") }}:{{ .Values.api.service.ports.http }}/oauth/jwks'
+      jwksUrl: 'http://{{ include "opsdiag-app.componentName" (dict "root" . "component" "api") }}:{{ .Values.api.service.ports.http }}/mcp/oauth/jwks'
 
   ## @param mcp-proxy.extraEnvVars Additional environment variables for App MCP Proxy
   extraEnvVars: []
