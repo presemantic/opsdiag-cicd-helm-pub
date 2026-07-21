@@ -44,7 +44,7 @@ api:
     ## @param api.image.repository App API image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-api
     ## @param api.image.tag App API image tag
-    tag: "2026-07-21.21-33-40.c0a0890"
+    tag: "2026-07-22.01-14-20.c71658d"
     ## @param api.image.digest App API image digest; overrides the tag when set
     digest: ""
     ## @param api.image.pullPolicy App API image pull policy
@@ -99,6 +99,10 @@ api:
       url: 'http://{{ include "opsdiag-app.componentName" (dict "root" . "component" "sched") }}:{{ .Values.sched.service.ports.http }}'
       ## @param api.config.scheduler.workerToken Shared App Scheduler worker token
       workerToken: ""
+    ## @param api.config.vcs App API connection settings for App VCS
+    vcs:
+      ## @param api.config.vcs.url Internal App VCS URL; rendered from the Helm release name
+      url: 'http://{{ include "opsdiag-app.componentName" (dict "root" . "component" "vcs") }}:{{ .Values.vcs.service.ports.http }}'
 
   ## Additional App API deployment settings
   ##
@@ -308,7 +312,7 @@ agent:
     ## @param agent.image.repository App Agent image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-agent-api
     ## @param agent.image.tag App Agent image tag
-    tag: "2026-07-20.20-12-12.ebc1c31"
+    tag: "2026-07-22.01-15-45.f8e5a2c"
     ## @param agent.image.digest App Agent image digest; overrides the tag when set
     digest: ""
     ## @param agent.image.pullPolicy App Agent image pull policy
@@ -339,6 +343,8 @@ agent:
     runtime:
       ## @param agent.config.runtime.callbackBaseUrl Internal App API callback origin; rendered from the Helm release name
       callbackBaseUrl: 'http://{{ include "opsdiag-app.componentName" (dict "root" . "component" "api") }}:{{ .Values.api.service.ports.http }}'
+      ## @param agent.config.runtime.reviewBaseUrl Internal App VCS origin accepted for review-scoped read-only tools
+      reviewBaseUrl: 'http://{{ include "opsdiag-app.componentName" (dict "root" . "component" "vcs") }}:{{ .Values.vcs.service.ports.http }}'
       ## @param agent.config.runtime.maxParallelNodes Maximum number of graph nodes executed in parallel
       maxParallelNodes: 6
     ## @param agent.config.mcp App Agent MCP transport settings
@@ -679,6 +685,194 @@ mcp-proxy:
     minAvailable: ""
     maxUnavailable: ""
 
+## @section App VCS parameters
+##
+## @param vcs App VCS component settings
+vcs:
+  ## @param vcs.replicaCount Number of App VCS replicas
+  replicaCount: 1
+  ## @param vcs.revisionHistoryLimit Number of old ReplicaSets retained by the Deployment
+  revisionHistoryLimit: 10
+  ## @param vcs.image App VCS image settings
+  image:
+    ## @param vcs.image.registry App VCS image registry
+    registry: europe-west1-docker.pkg.dev
+    ## @param vcs.image.repository App VCS image repository
+    repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-vcs-api
+    ## @param vcs.image.tag Exact published App VCS image tag
+    tag: "2026-07-22.01-40-49.4565521"
+    ## @param vcs.image.digest Optional immutable App VCS image digest
+    digest: ""
+    ## @param vcs.image.pullPolicy App VCS image pull policy
+    pullPolicy: IfNotPresent
+    ## @param vcs.image.pullSecrets App VCS image pull secrets
+    pullSecrets: []
+  ## @param vcs.updateStrategy App VCS Deployment update strategy
+  updateStrategy:
+    ## @param vcs.updateStrategy.type App VCS Deployment strategy type
+    type: RollingUpdate
+    ## @param vcs.updateStrategy.rollingUpdate App VCS RollingUpdate strategy settings
+    rollingUpdate:
+      ## @param vcs.updateStrategy.rollingUpdate.maxSurge Maximum number or percentage of additional App VCS pods during rollout
+      maxSurge: 0
+      ## @param vcs.updateStrategy.rollingUpdate.maxUnavailable Maximum number or percentage of unavailable App VCS pods during rollout
+      maxUnavailable: 1
+  ## @param vcs.config App VCS runtime configuration rendered to `/app/config.yaml`
+  config:
+    ## @param vcs.config.license App license used by App VCS
+    license: ""
+    ## @param vcs.config.licenseServer Control Edge origin used for license and capability verification
+    licenseServer: https://edge.control.opsdiag.ai
+    ## @param vcs.config.appApi Internal App API callback settings
+    appApi:
+      ## @param vcs.config.appApi.url Internal App API URL; rendered from the Helm release name
+      url: 'http://{{ include "opsdiag-app.componentName" (dict "root" . "component" "api") }}:{{ .Values.api.service.ports.http }}'
+    ## @param vcs.config.connector Encrypted Connector transport settings for self-hosted VCS sources
+    connector:
+      ## @param vcs.config.connector.url Control Relay origin
+      url: https://relay.control.opsdiag.ai
+    ## @param vcs.config.webhookMasterKey Secret key used to derive per-reviewer webhook secrets
+    webhookMasterKey: ""
+    ## @param vcs.config.credentials VCS credentials referenced by review sources
+    credentials: []
+    ## @param vcs.config.reviewSources GitLab and Bitbucket source arrays
+    reviewSources:
+      ## @param vcs.config.reviewSources.gitlab GitLab Cloud/Self-Managed source entries
+      gitlab: []
+      ## @param vcs.config.reviewSources.bitbucket Bitbucket Cloud/Data Center source entries
+      bitbucket: []
+  ## @param vcs.extraEnvVars Additional App VCS environment variables
+  extraEnvVars: []
+  ## @param vcs.extraEnvVarsCM Existing ConfigMap containing additional App VCS environment variables
+  extraEnvVarsCM: ""
+  ## @param vcs.extraEnvVarsSecret Existing Secret containing additional App VCS environment variables
+  extraEnvVarsSecret: ""
+  ## @param vcs.serviceAccount App VCS ServiceAccount settings
+  serviceAccount:
+    ## @param vcs.serviceAccount.create Create an App VCS ServiceAccount
+    create: true
+    ## @param vcs.serviceAccount.name App VCS ServiceAccount name; generated when empty
+    name: ""
+    ## @param vcs.serviceAccount.annotations Additional App VCS ServiceAccount annotations
+    annotations: {}
+    ## @param vcs.serviceAccount.automountServiceAccountToken Mount the ServiceAccount token in App VCS pods
+    automountServiceAccountToken: false
+  ## @param vcs.podSecurityContext App VCS pod security context settings
+  podSecurityContext:
+    ## @param vcs.podSecurityContext.enabled Enable the App VCS pod security context
+    enabled: true
+    ## @param vcs.podSecurityContext.seccompProfile App VCS pod seccomp profile
+    seccompProfile:
+      ## @param vcs.podSecurityContext.seccompProfile.type App VCS pod seccomp profile type
+      type: RuntimeDefault
+  ## @param vcs.containerSecurityContext App VCS container security context settings
+  containerSecurityContext:
+    ## @param vcs.containerSecurityContext.enabled Enable the App VCS container security context
+    enabled: true
+    ## @param vcs.containerSecurityContext.runAsNonRoot Require a non-root App VCS process
+    runAsNonRoot: true
+    ## @param vcs.containerSecurityContext.readOnlyRootFilesystem Use a read-only App VCS root filesystem
+    readOnlyRootFilesystem: true
+    ## @param vcs.containerSecurityContext.allowPrivilegeEscalation Allow App VCS privilege escalation
+    allowPrivilegeEscalation: false
+    ## @param vcs.containerSecurityContext.capabilities App VCS Linux capability settings
+    capabilities:
+      ## @param vcs.containerSecurityContext.capabilities.drop App VCS Linux capabilities to drop
+      drop: [ALL]
+  ## @param vcs.containerPorts App VCS container port settings
+  containerPorts:
+    ## @param vcs.containerPorts.http App VCS container HTTP port
+    http: 8000
+  ## @param vcs.service App VCS Service settings
+  service:
+    ## @param vcs.service.type App VCS Service type
+    type: ClusterIP
+    ## @param vcs.service.annotations Additional App VCS Service annotations
+    annotations: {}
+    ## @param vcs.service.ports App VCS Service port settings
+    ports:
+      ## @param vcs.service.ports.http App VCS Service HTTP port
+      http: 8000
+    ## @param vcs.service.clusterIP App VCS Service cluster IP
+    clusterIP: ""
+  ## @param vcs.resources App VCS resource requests and limits
+  resources: {}
+  ## @param vcs.livenessProbe App VCS liveness probe settings
+  livenessProbe:
+    ## @param vcs.livenessProbe.enabled Enable the App VCS liveness probe
+    enabled: true
+    ## @param vcs.livenessProbe.spec App VCS liveness probe specification
+    spec:
+      httpGet:
+        path: /livez
+        port: http
+      periodSeconds: 10
+      timeoutSeconds: 2
+      failureThreshold: 3
+  ## @param vcs.readinessProbe App VCS readiness probe settings
+  readinessProbe:
+    ## @param vcs.readinessProbe.enabled Enable the App VCS readiness probe
+    enabled: true
+    ## @param vcs.readinessProbe.spec App VCS readiness probe specification
+    spec:
+      httpGet:
+        path: /readyz
+        port: http
+      periodSeconds: 5
+      timeoutSeconds: 2
+      failureThreshold: 3
+  ## @param vcs.startupProbe App VCS startup probe settings
+  startupProbe:
+    ## @param vcs.startupProbe.enabled Enable the App VCS startup probe
+    enabled: true
+    ## @param vcs.startupProbe.spec App VCS startup probe specification
+    spec:
+      httpGet:
+        path: /readyz
+        port: http
+      periodSeconds: 5
+      timeoutSeconds: 2
+      failureThreshold: 120
+  ## App VCS pod placement
+  ## @param vcs.podLabels Additional labels for App VCS pods
+  podLabels: {}
+  ## @param vcs.podAnnotations Additional annotations for App VCS pods
+  podAnnotations: {}
+  ## @param vcs.podAffinityPreset App VCS pod affinity preset; ignored when `vcs.affinity` is set
+  podAffinityPreset: ""
+  ## @param vcs.podAntiAffinityPreset App VCS pod anti-affinity preset; ignored when `vcs.affinity` is set
+  podAntiAffinityPreset: soft
+  ## @param vcs.nodeAffinityPreset App VCS node affinity preset; ignored when `vcs.affinity` is set
+  nodeAffinityPreset:
+    ## @param vcs.nodeAffinityPreset.type App VCS node affinity preset type
+    type: ""
+    ## @param vcs.nodeAffinityPreset.key App VCS node label key used by the affinity preset
+    key: ""
+    ## @param vcs.nodeAffinityPreset.values App VCS node label values used by the affinity preset
+    values: []
+  ## @param vcs.affinity App VCS affinity rules
+  affinity: {}
+  ## @param vcs.nodeSelector Node labels for App VCS pod assignment
+  nodeSelector: {}
+  ## @param vcs.tolerations Tolerations for App VCS pod assignment
+  tolerations: []
+  ## @param vcs.topologySpreadConstraints Topology spread constraints for App VCS pods
+  topologySpreadConstraints: []
+  ## @param vcs.priorityClassName App VCS pod priority class
+  priorityClassName: ""
+  ## @param vcs.schedulerName Alternate Kubernetes scheduler for App VCS pods
+  schedulerName: ""
+  ## @param vcs.terminationGracePeriodSeconds App VCS pod termination grace period
+  terminationGracePeriodSeconds: 30
+  ## @param vcs.podDisruptionBudget App VCS PodDisruptionBudget settings
+  podDisruptionBudget:
+    ## @param vcs.podDisruptionBudget.enabled Create an App VCS PodDisruptionBudget
+    enabled: false
+    ## @param vcs.podDisruptionBudget.minAvailable Minimum number or percentage of available App VCS pods
+    minAvailable: ""
+    ## @param vcs.podDisruptionBudget.maxUnavailable Maximum number or percentage of unavailable App VCS pods
+    maxUnavailable: ""
+
 ## @section App Frontend parameters
 ##
 ## @param front App Frontend component settings
@@ -697,7 +891,7 @@ front:
     ## @param front.image.repository App Frontend image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-front
     ## @param front.image.tag App Frontend image tag
-    tag: "2026-07-20.22-45-27.71dfe8c"
+    tag: "2026-07-22.01-18-10.a808f7f"
     ## @param front.image.digest App Frontend image digest; overrides the tag when set
     digest: ""
     ## @param front.image.pullPolicy App Frontend image pull policy

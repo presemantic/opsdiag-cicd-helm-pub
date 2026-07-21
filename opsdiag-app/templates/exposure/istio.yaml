@@ -92,6 +92,15 @@ spec:
             host: {{ include "opsdiag-app.componentServiceName" (dict "root" . "component" "mcp-proxy") }}
             port:
               number: {{ index .Values "mcp-proxy" "service" "ports" "http" }}
+    - name: vcs-hooks
+      match:
+        - uri:
+            prefix: /api/vcs/hooks
+      route:
+        - destination:
+            host: {{ include "opsdiag-app.componentServiceName" (dict "root" . "component" "vcs") }}
+            port:
+              number: {{ .Values.vcs.service.ports.http }}
     - name: api
       match:
         - uri:

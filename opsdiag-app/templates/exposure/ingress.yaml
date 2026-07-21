@@ -58,6 +58,13 @@ spec:
                 name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "mcp-proxy") }}
                 port:
                   name: http
+          - path: /api/vcs/hooks
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "vcs") }}
+                port:
+                  name: http
           - path: /api
             pathType: Prefix
             backend:
@@ -109,6 +116,13 @@ spec:
             backend:
               service:
                 name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "mcp-proxy") }}
+                port:
+                  name: http
+          - path: /api/vcs/hooks
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "vcs") }}
                 port:
                   name: http
           - path: /api

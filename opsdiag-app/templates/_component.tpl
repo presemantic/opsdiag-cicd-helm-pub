@@ -34,6 +34,8 @@ spec:
         checksum/config: {{ include (print $root.Template.BasePath "/sched/secret.yaml") $root | sha256sum }}
         {{- else if eq $component "mcp-proxy" }}
         checksum/config: {{ include (print $root.Template.BasePath "/mcp-proxy/secret.yaml") $root | sha256sum }}
+        {{- else if eq $component "vcs" }}
+        checksum/config: {{ include (print $root.Template.BasePath "/vcs/secret.yaml") $root | sha256sum }}
         {{- end }}
         {{- with $values.podAnnotations }}
         {{- include "common.tplvalues.render" (dict "value" . "context" $root) | nindent 8 }}

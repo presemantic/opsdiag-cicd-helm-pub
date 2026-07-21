@@ -1,6 +1,6 @@
 {{- if .Values.openshiftRoute.enabled }}
 {{- $hostname := tpl (required "openshiftRoute.hostname is required when openshiftRoute.enabled is true" .Values.openshiftRoute.hostname) . }}
-{{- range $route := list (dict "name" "oauth-resource" "component" "mcp-proxy" "path" "/.well-known/oauth-protected-resource") (dict "name" "oauth-metadata" "component" "api" "path" "/.well-known") (dict "name" "mcp-oauth" "component" "api" "path" "/mcp/oauth") (dict "name" "mcp-proxy" "component" "mcp-proxy" "path" "/mcp") (dict "name" "api" "component" "api" "path" "/api") (dict "name" "front" "component" "front" "path" "/") }}
+{{- range $route := list (dict "name" "oauth-resource" "component" "mcp-proxy" "path" "/.well-known/oauth-protected-resource") (dict "name" "oauth-metadata" "component" "api" "path" "/.well-known") (dict "name" "mcp-oauth" "component" "api" "path" "/mcp/oauth") (dict "name" "mcp-proxy" "component" "mcp-proxy" "path" "/mcp") (dict "name" "vcs-hooks" "component" "vcs" "path" "/api/vcs/hooks") (dict "name" "api" "component" "api" "path" "/api") (dict "name" "front" "component" "front" "path" "/") }}
 ---
 apiVersion: route.openshift.io/v1
 kind: Route
@@ -30,7 +30,7 @@ spec:
   wildcardPolicy: None
 {{- end }}
 {{- range $index, $host := .Values.openshiftRoute.extraHosts }}
-{{- range $route := list (dict "name" "oauth-resource" "component" "mcp-proxy" "path" "/.well-known/oauth-protected-resource") (dict "name" "oauth-metadata" "component" "api" "path" "/.well-known") (dict "name" "mcp-oauth" "component" "api" "path" "/mcp/oauth") (dict "name" "mcp-proxy" "component" "mcp-proxy" "path" "/mcp") (dict "name" "api" "component" "api" "path" "/api") (dict "name" "front" "component" "front" "path" "/") }}
+{{- range $route := list (dict "name" "oauth-resource" "component" "mcp-proxy" "path" "/.well-known/oauth-protected-resource") (dict "name" "oauth-metadata" "component" "api" "path" "/.well-known") (dict "name" "mcp-oauth" "component" "api" "path" "/mcp/oauth") (dict "name" "mcp-proxy" "component" "mcp-proxy" "path" "/mcp") (dict "name" "vcs-hooks" "component" "vcs" "path" "/api/vcs/hooks") (dict "name" "api" "component" "api" "path" "/api") (dict "name" "front" "component" "front" "path" "/") }}
 ---
 apiVersion: route.openshift.io/v1
 kind: Route
