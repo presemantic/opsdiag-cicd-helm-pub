@@ -700,7 +700,7 @@ vcs:
     ## @param vcs.image.repository App VCS image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-vcs-api
     ## @param vcs.image.tag Exact published App VCS image tag
-    tag: "2026-07-22.01-40-49.4565521"
+    tag: "2026-07-22.03-32-43.7fa4b5b"
     ## @param vcs.image.digest Optional immutable App VCS image digest
     digest: ""
     ## @param vcs.image.pullPolicy App VCS image pull policy
