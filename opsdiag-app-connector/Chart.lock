@@ -1,0 +1,6 @@
+dependencies:
+- name: common
+  repository: https://opsolving.github.io/charts/
+  version: 2.31.4
+digest: sha256:22fec56655875c7ec6795b4c160f717d2cbb1a9b0b488dc932fef1392bb1d352
+generated: "2026-07-23T00:57:10.044404+02:00"
