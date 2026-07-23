@@ -891,7 +891,7 @@ front:
     ## @param front.image.repository App Frontend image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-front
     ## @param front.image.tag App Frontend image tag
-    tag: "2026-07-23.23-22-28.6369b9f"
+    tag: "2026-07-23.23-36-00.079415e"
     ## @param front.image.digest App Frontend image digest; overrides the tag when set
     digest: ""
     ## @param front.image.pullPolicy App Frontend image pull policy
