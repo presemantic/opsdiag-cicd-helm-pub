@@ -44,7 +44,7 @@ api:
     ## @param api.image.repository App API image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-api
     ## @param api.image.tag App API image tag
-    tag: "2026-07-23.01-08-21.257be7f"
+    tag: "2026-07-23.22-41-24.a8fa6c0"
     ## @param api.image.digest App API image digest; overrides the tag when set
     digest: ""
     ## @param api.image.pullPolicy App API image pull policy
@@ -700,7 +700,7 @@ vcs:
     ## @param vcs.image.repository App VCS image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-vcs-api
     ## @param vcs.image.tag Exact published App VCS image tag
-    tag: "2026-07-23.01-34-30.30ae94d"
+    tag: "2026-07-23.22-41-25.5b583a9"
     ## @param vcs.image.digest Optional immutable App VCS image digest
     digest: ""
     ## @param vcs.image.pullPolicy App VCS image pull policy
@@ -891,7 +891,7 @@ front:
     ## @param front.image.repository App Frontend image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-front
     ## @param front.image.tag App Frontend image tag
-    tag: "2026-07-23.01-08-21.b642415"
+    tag: "2026-07-23.22-41-23.1a0905b"
     ## @param front.image.digest App Frontend image digest; overrides the tag when set
     digest: ""
     ## @param front.image.pullPolicy App Frontend image pull policy
