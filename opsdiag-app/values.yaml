@@ -44,7 +44,7 @@ api:
     ## @param api.image.repository App API image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-api
     ## @param api.image.tag App API image tag
-    tag: "2026-07-30.23-56-39.115a001"
+    tag: "2026-07-31.01-04-21.e27b3f0"
     ## @param api.image.digest App API image digest; overrides the tag when set
     digest: ""
     ## @param api.image.pullPolicy App API image pull policy
@@ -891,7 +891,7 @@ front:
     ## @param front.image.repository App Frontend image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-front
     ## @param front.image.tag App Frontend image tag
-    tag: "2026-07-30.23-56-39.863940b"
+    tag: "2026-07-31.01-01-03.c2987c5"
     ## @param front.image.digest App Frontend image digest; overrides the tag when set
     digest: ""
     ## @param front.image.pullPolicy App Frontend image pull policy
@@ -1059,6 +1059,197 @@ front:
     ## @param front.podDisruptionBudget.minAvailable Minimum number or percentage of available App Frontend pods
     minAvailable: ""
     ## @param front.podDisruptionBudget.maxUnavailable Maximum number or percentage of unavailable App Frontend pods
+    maxUnavailable: ""
+
+## @section App Pipelines parameters
+##
+## @param pipelines App Pipelines component settings
+pipelines:
+  ## @param pipelines.replicaCount Number of App Pipelines replicas
+  replicaCount: 1
+  ## @param pipelines.revisionHistoryLimit Number of retained App Pipelines ReplicaSets
+  revisionHistoryLimit: 10
+  ## @param pipelines.image App Pipelines image settings
+  image:
+    ## @param pipelines.image.registry App Pipelines image registry
+    registry: europe-west1-docker.pkg.dev
+    ## @param pipelines.image.repository App Pipelines image repository
+    repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-pipelines
+    ## @param pipelines.image.tag App Pipelines image tag
+    tag: "2026-07-31.01-04-21.251fcef"
+    ## @param pipelines.image.digest App Pipelines image digest
+    digest: ""
+    ## @param pipelines.image.pullPolicy App Pipelines image pull policy
+    pullPolicy: IfNotPresent
+    ## @param pipelines.image.pullSecrets App Pipelines image pull secrets
+    pullSecrets: []
+  ## @param pipelines.updateStrategy App Pipelines Deployment update strategy
+  updateStrategy:
+    ## @param pipelines.updateStrategy.type App Pipelines Deployment strategy type
+    type: RollingUpdate
+  ## @param pipelines.config App Pipelines runtime configuration rendered to `/app/config.yaml`
+  config:
+    ## @param pipelines.config.license App Pipelines license
+    license: ""
+    ## @param pipelines.config.licenseServer Control Edge origin used for license verification
+    licenseServer: https://edge.control.opsdiag.ai
+    ## @param pipelines.config.database App Pipelines database configuration
+    database:
+      ## @param pipelines.config.database.url PostgreSQL URL shared with App API
+      url: ""
+    ## @param pipelines.config.credentialSecret Shared pipeline credential encryption key
+    credentialSecret: ""
+    ## @param pipelines.config.runtime App Pipelines runtime bounds
+    runtime:
+      ## @param pipelines.config.runtime.readHeaderTimeoutSeconds HTTP read-header timeout
+      readHeaderTimeoutSeconds: 10
+      ## @param pipelines.config.runtime.pollMilliseconds Queue and schedule poll interval
+      pollMilliseconds: 750
+      ## @param pipelines.config.runtime.leaseSeconds Durable run claim lease
+      leaseSeconds: 120
+      ## @param pipelines.config.runtime.nodeTimeoutSeconds Per-node timeout
+      nodeTimeoutSeconds: 30
+      ## @param pipelines.config.runtime.runTimeoutSeconds Whole-run timeout
+      runTimeoutSeconds: 300
+      ## @param pipelines.config.runtime.maxHttpResponseBytes Maximum HTTP node response size
+      maxHttpResponseBytes: 2097152
+      ## @param pipelines.config.runtime.nodeBinary Node.js binary used by JavaScript nodes
+      nodeBinary: /usr/local/bin/node
+  ## @param pipelines.extraEnvVars Additional App Pipelines environment variables
+  extraEnvVars: []
+  ## @param pipelines.extraEnvVarsCM Existing ConfigMap with additional environment variables
+  extraEnvVarsCM: ""
+  ## @param pipelines.extraEnvVarsSecret Existing Secret with additional environment variables
+  extraEnvVarsSecret: ""
+  ## @param pipelines.serviceAccount App Pipelines ServiceAccount settings
+  serviceAccount:
+    ## @param pipelines.serviceAccount.create Create an App Pipelines ServiceAccount
+    create: true
+    ## @param pipelines.serviceAccount.name App Pipelines ServiceAccount name
+    name: ""
+    ## @param pipelines.serviceAccount.annotations App Pipelines ServiceAccount annotations
+    annotations: {}
+    ## @param pipelines.serviceAccount.automountServiceAccountToken Mount the Kubernetes API token
+    automountServiceAccountToken: false
+  ## @param pipelines.podSecurityContext App Pipelines pod security context
+  podSecurityContext:
+    ## @param pipelines.podSecurityContext.enabled Enable the pod security context
+    enabled: true
+    ## @param pipelines.podSecurityContext.seccompProfile App Pipelines seccomp profile
+    seccompProfile:
+      ## @param pipelines.podSecurityContext.seccompProfile.type Seccomp profile type
+      type: RuntimeDefault
+  ## @param pipelines.containerSecurityContext App Pipelines container security context
+  containerSecurityContext:
+    ## @param pipelines.containerSecurityContext.enabled Enable the container security context
+    enabled: true
+    ## @param pipelines.containerSecurityContext.runAsNonRoot Require non-root execution
+    runAsNonRoot: true
+    ## @param pipelines.containerSecurityContext.readOnlyRootFilesystem Use a read-only root filesystem
+    readOnlyRootFilesystem: true
+    ## @param pipelines.containerSecurityContext.allowPrivilegeEscalation Allow privilege escalation
+    allowPrivilegeEscalation: false
+    ## @param pipelines.containerSecurityContext.capabilities Linux capability settings
+    capabilities:
+      ## @param pipelines.containerSecurityContext.capabilities.drop Linux capabilities to drop
+      drop: [ALL]
+  ## @param pipelines.containerPorts App Pipelines container ports
+  containerPorts:
+    ## @param pipelines.containerPorts.http App Pipelines HTTP port
+    http: 8000
+  ## @param pipelines.service App Pipelines Service settings
+  service:
+    ## @param pipelines.service.type Kubernetes Service type
+    type: ClusterIP
+    ## @param pipelines.service.annotations Kubernetes Service annotations
+    annotations: {}
+    ## @param pipelines.service.ports App Pipelines Service ports
+    ports:
+      ## @param pipelines.service.ports.http App Pipelines Service HTTP port
+      http: 8000
+    ## @param pipelines.service.clusterIP App Pipelines Service cluster IP
+    clusterIP: ""
+  ## @param pipelines.resources App Pipelines resource requests and limits
+  resources:
+    ## @param pipelines.resources.requests App Pipelines resource requests
+    requests:
+      ## @param pipelines.resources.requests.cpu Requested CPU
+      cpu: 100m
+      ## @param pipelines.resources.requests.memory Requested memory
+      memory: 128Mi
+    ## @param pipelines.resources.limits App Pipelines resource limits
+    limits:
+      ## @param pipelines.resources.limits.memory Memory limit
+      memory: 512Mi
+  ## @param pipelines.livenessProbe App Pipelines liveness probe settings
+  livenessProbe:
+    ## @param pipelines.livenessProbe.enabled Enable the liveness probe
+    enabled: true
+    ## @param pipelines.livenessProbe.spec Liveness probe specification
+    spec:
+      ## @param pipelines.livenessProbe.spec.httpGet Liveness HTTP request
+      httpGet:
+        ## @param pipelines.livenessProbe.spec.httpGet.path Liveness HTTP path
+        path: /api/live
+        ## @param pipelines.livenessProbe.spec.httpGet.port Liveness port name
+        port: http
+  ## @param pipelines.readinessProbe App Pipelines readiness probe settings
+  readinessProbe:
+    ## @param pipelines.readinessProbe.enabled Enable the readiness probe
+    enabled: true
+    ## @param pipelines.readinessProbe.spec Readiness probe specification
+    spec:
+      ## @param pipelines.readinessProbe.spec.httpGet Readiness HTTP request
+      httpGet:
+        ## @param pipelines.readinessProbe.spec.httpGet.path Readiness HTTP path
+        path: /api/ready
+        ## @param pipelines.readinessProbe.spec.httpGet.port Readiness port name
+        port: http
+      ## @param pipelines.readinessProbe.spec.timeoutSeconds Readiness timeout
+      timeoutSeconds: 3
+  ## @param pipelines.startupProbe App Pipelines startup probe settings
+  startupProbe:
+    ## @param pipelines.startupProbe.enabled Enable the startup probe
+    enabled: false
+    ## @param pipelines.startupProbe.spec Startup probe specification
+    spec: {}
+  ## @param pipelines.podLabels Additional App Pipelines pod labels
+  podLabels: {}
+  ## @param pipelines.podAnnotations Additional App Pipelines pod annotations
+  podAnnotations: {}
+  ## @param pipelines.podAffinityPreset App Pipelines pod affinity preset
+  podAffinityPreset: ""
+  ## @param pipelines.podAntiAffinityPreset App Pipelines pod anti-affinity preset
+  podAntiAffinityPreset: soft
+  ## @param pipelines.nodeAffinityPreset App Pipelines node affinity preset
+  nodeAffinityPreset:
+    ## @param pipelines.nodeAffinityPreset.type Node affinity preset type
+    type: ""
+    ## @param pipelines.nodeAffinityPreset.key Node affinity preset label key
+    key: ""
+    ## @param pipelines.nodeAffinityPreset.values Node affinity preset label values
+    values: []
+  ## @param pipelines.affinity App Pipelines custom affinity rules
+  affinity: {}
+  ## @param pipelines.nodeSelector App Pipelines node selector
+  nodeSelector: {}
+  ## @param pipelines.tolerations App Pipelines tolerations
+  tolerations: []
+  ## @param pipelines.topologySpreadConstraints App Pipelines topology spread constraints
+  topologySpreadConstraints: []
+  ## @param pipelines.priorityClassName App Pipelines priority class
+  priorityClassName: ""
+  ## @param pipelines.schedulerName Alternate Kubernetes scheduler
+  schedulerName: ""
+  ## @param pipelines.terminationGracePeriodSeconds App Pipelines termination grace period
+  terminationGracePeriodSeconds: 30
+  ## @param pipelines.podDisruptionBudget App Pipelines PodDisruptionBudget settings
+  podDisruptionBudget:
+    ## @param pipelines.podDisruptionBudget.enabled Create an App Pipelines PodDisruptionBudget
+    enabled: false
+    ## @param pipelines.podDisruptionBudget.minAvailable Minimum available App Pipelines pods
+    minAvailable: ""
+    ## @param pipelines.podDisruptionBudget.maxUnavailable Maximum unavailable App Pipelines pods
     maxUnavailable: ""
 
 ## @section App Scheduler parameters

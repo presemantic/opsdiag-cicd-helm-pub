@@ -32,6 +32,8 @@ spec:
         checksum/config: {{ include (print $root.Template.BasePath "/agent/secret.yaml") $root | sha256sum }}
         {{- else if eq $component "sched" }}
         checksum/config: {{ include (print $root.Template.BasePath "/sched/secret.yaml") $root | sha256sum }}
+        {{- else if eq $component "pipelines" }}
+        checksum/config: {{ include (print $root.Template.BasePath "/pipelines/secret.yaml") $root | sha256sum }}
         {{- else if eq $component "mcp-proxy" }}
         checksum/config: {{ include (print $root.Template.BasePath "/mcp-proxy/secret.yaml") $root | sha256sum }}
         {{- else if eq $component "vcs" }}
@@ -122,6 +124,10 @@ spec:
               mountPath: /app/config.yaml
               subPath: config.yaml
               readOnly: true
+            {{- if eq $component "pipelines" }}
+            - name: runtime-tmp
+              mountPath: /tmp
+            {{- end }}
           {{- else }}
           volumeMounts:
             - name: nginx-cache
@@ -136,6 +142,11 @@ spec:
         - name: app-config
           secret:
             secretName: {{ include "opsdiag-app.configName" . }}
+        {{- if eq $component "pipelines" }}
+        - name: runtime-tmp
+          emptyDir:
+            sizeLimit: 256Mi
+        {{- end }}
       {{- else }}
       volumes:
         - name: nginx-cache
