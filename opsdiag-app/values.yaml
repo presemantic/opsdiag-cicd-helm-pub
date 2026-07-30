@@ -278,7 +278,7 @@ api:
     ## @param api.migration.annotations Additional annotations for the migration Job
     annotations:
       ## @param api.migration.annotations.helm.sh/hook Helm lifecycle hooks assigned to the App API migration Job
-      helm.sh/hook: post-install,post-upgrade
+      helm.sh/hook: pre-install,pre-upgrade
       ## @param api.migration.annotations.helm.sh/hook-delete-policy Helm deletion policy for completed App API migration Jobs
       helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
     ## @param api.migration.ttlSecondsAfterFinished TTL for the completed migration Job
