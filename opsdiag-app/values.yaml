@@ -44,7 +44,7 @@ api:
     ## @param api.image.repository App API image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-api
     ## @param api.image.tag App API image tag
-    tag: "2026-08-01.12-46-39.a9183c6"
+    tag: "2026-08-01.13-28-26.abc2383"
     ## @param api.image.digest App API image digest; overrides the tag when set
     digest: ""
     ## @param api.image.pullPolicy App API image pull policy
@@ -68,6 +68,10 @@ api:
     ## @param api.config.database App API PostgreSQL connection settings
     database:
       ## @param api.config.database.url PostgreSQL connection URL
+      url: ""
+    ## @param api.config.tablesDatabase Dedicated PostgreSQL connection settings for tenant workspace tables
+    tablesDatabase:
+      ## @param api.config.tablesDatabase.url Dedicated workspace-tables PostgreSQL connection URL
       url: ""
     ## @param api.config.agent App API connection settings for App Agent
     agent:
@@ -891,7 +895,7 @@ front:
     ## @param front.image.repository App Frontend image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-front
     ## @param front.image.tag App Frontend image tag
-    tag: "2026-08-01.12-46-39.3fc066d"
+    tag: "2026-08-01.13-28-26.231500f"
     ## @param front.image.digest App Frontend image digest; overrides the tag when set
     digest: ""
     ## @param front.image.pullPolicy App Frontend image pull policy
@@ -1076,7 +1080,7 @@ pipelines:
     ## @param pipelines.image.repository App Pipelines image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-pipelines
     ## @param pipelines.image.tag App Pipelines image tag
-    tag: "2026-08-01.12-33-41.abfb476"
+    tag: "2026-08-01.13-28-26.ac358ba"
     ## @param pipelines.image.digest App Pipelines image digest
     digest: ""
     ## @param pipelines.image.pullPolicy App Pipelines image pull policy
