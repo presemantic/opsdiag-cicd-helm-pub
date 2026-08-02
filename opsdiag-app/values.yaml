@@ -1080,7 +1080,7 @@ pipelines:
     ## @param pipelines.image.repository App Pipelines image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-pipelines
     ## @param pipelines.image.tag App Pipelines image tag
-    tag: "2026-08-02.11-27-23.90bb85e"
+    tag: "2026-08-02.12-43-24.558b3d7"
     ## @param pipelines.image.digest App Pipelines image digest
     digest: ""
     ## @param pipelines.image.pullPolicy App Pipelines image pull policy
