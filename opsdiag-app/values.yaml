@@ -895,7 +895,7 @@ front:
     ## @param front.image.repository App Frontend image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-front
     ## @param front.image.tag App Frontend image tag
-    tag: "2026-08-02.01-14-02.67362e0"
+    tag: "2026-08-02.02-16-29.78f4f8a"
     ## @param front.image.digest App Frontend image digest; overrides the tag when set
     digest: ""
     ## @param front.image.pullPolicy App Frontend image pull policy
@@ -1080,7 +1080,7 @@ pipelines:
     ## @param pipelines.image.repository App Pipelines image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-pipelines
     ## @param pipelines.image.tag App Pipelines image tag
-    tag: "2026-08-01.13-28-26.ac358ba"
+    tag: "2026-08-02.02-16-45.6982630"
     ## @param pipelines.image.digest App Pipelines image digest
     digest: ""
     ## @param pipelines.image.pullPolicy App Pipelines image pull policy
