@@ -316,7 +316,7 @@ agent:
     ## @param agent.image.repository App Agent image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-agent-api
     ## @param agent.image.tag App Agent image tag
-    tag: "2026-07-23.01-08-21.ccc41f1"
+    tag: "2026-08-02.18-24-58.f9dd68e"
     ## @param agent.image.digest App Agent image digest; overrides the tag when set
     digest: ""
     ## @param agent.image.pullPolicy App Agent image pull policy
@@ -363,6 +363,8 @@ agent:
       url: https://relay.control.opsdiag.ai
       ## @param agent.config.connector.license Connector client license
       license: ""
+      ## @param agent.config.connector.licenseServer Control Edge origin used to exchange the Connector client license for short-lived transport grants
+      licenseServer: https://edge.control.opsdiag.ai
 
   ## Additional App Agent deployment settings
   ##
@@ -704,7 +706,7 @@ vcs:
     ## @param vcs.image.repository App VCS image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-vcs-api
     ## @param vcs.image.tag Exact published App VCS image tag
-    tag: "2026-07-23.22-41-25.5b583a9"
+    tag: "2026-08-02.18-25-03.cd577eb"
     ## @param vcs.image.digest Optional immutable App VCS image digest
     digest: ""
     ## @param vcs.image.pullPolicy App VCS image pull policy
@@ -731,10 +733,16 @@ vcs:
     appApi:
       ## @param vcs.config.appApi.url Internal App API URL; rendered from the Helm release name
       url: 'http://{{ include "opsdiag-app.componentName" (dict "root" . "component" "api") }}:{{ .Values.api.service.ports.http }}'
-    ## @param vcs.config.connector Encrypted Connector transport settings for self-hosted VCS sources
+    ## @param vcs.config.connector Encrypted Connector transport settings for all external VCS provider requests
     connector:
+      ## @param vcs.config.connector.enabled Route every external VCS provider request through Connector
+      enabled: true
       ## @param vcs.config.connector.url Control Relay origin
       url: https://relay.control.opsdiag.ai
+      ## @param vcs.config.connector.license Connector client license used only for encrypted transport grants; empty inherits the existing App Agent Connector license
+      license: ""
+      ## @param vcs.config.connector.licenseServer Control Edge origin used to exchange the Connector client license for short-lived transport grants
+      licenseServer: https://edge.control.opsdiag.ai
     ## @param vcs.config.webhookMasterKey Secret key used to derive per-reviewer webhook secrets
     webhookMasterKey: ""
     ## @param vcs.config.credentials VCS credentials referenced by review sources
@@ -1080,7 +1088,7 @@ pipelines:
     ## @param pipelines.image.repository App Pipelines image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-pipelines
     ## @param pipelines.image.tag App Pipelines image tag
-    tag: "2026-08-02.14-21-50.69d9a75"
+    tag: "2026-08-02.18-24-59.fd4fb82"
     ## @param pipelines.image.digest App Pipelines image digest
     digest: ""
     ## @param pipelines.image.pullPolicy App Pipelines image pull policy
@@ -1103,6 +1111,16 @@ pipelines:
       url: ""
     ## @param pipelines.config.credentialSecret Shared pipeline credential encryption key
     credentialSecret: ""
+    ## @param pipelines.config.connector Encrypted Connector transport settings for Custom Execution fetch and outbound notification nodes
+    connector:
+      ## @param pipelines.config.connector.enabled Route all external Pipeline HTTP egress through Connector
+      enabled: true
+      ## @param pipelines.config.connector.url Control Relay origin
+      url: https://relay.control.opsdiag.ai
+      ## @param pipelines.config.connector.license Connector client license used only for encrypted transport grants; empty inherits the existing App Agent Connector license
+      license: ""
+      ## @param pipelines.config.connector.licenseServer Control Edge origin used to exchange the Connector client license for short-lived transport grants
+      licenseServer: https://edge.control.opsdiag.ai
     ## @param pipelines.config.runtime App Pipelines runtime bounds
     runtime:
       ## @param pipelines.config.runtime.readHeaderTimeoutSeconds HTTP read-header timeout
@@ -1274,7 +1292,7 @@ sched:
     ## @param sched.image.repository App Scheduler image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-sched
     ## @param sched.image.tag App Scheduler image tag
-    tag: "2026-07-23.01-08-21.39528b2"
+    tag: "2026-08-02.18-25-01.a96d9c6"
     ## @param sched.image.digest App Scheduler image digest; overrides the tag when set
     digest: ""
     ## @param sched.image.pullPolicy App Scheduler image pull policy
@@ -1295,6 +1313,16 @@ sched:
     license: ""
     ## @param sched.config.licenseServer Control Edge origin used for App Scheduler license verification
     licenseServer: https://edge.control.opsdiag.ai
+    ## @param sched.config.connector Encrypted Connector transport settings for Opsgenie and PagerDuty provider requests
+    connector:
+      ## @param sched.config.connector.enabled Route all external Scheduler provider requests through Connector
+      enabled: true
+      ## @param sched.config.connector.url Control Relay origin
+      url: https://relay.control.opsdiag.ai
+      ## @param sched.config.connector.license Connector client license used only for encrypted transport grants; empty inherits the existing App Agent Connector license
+      license: ""
+      ## @param sched.config.connector.licenseServer Control Edge origin used to exchange the Connector client license for short-lived transport grants
+      licenseServer: https://edge.control.opsdiag.ai
     ## @param sched.config.runtime App Scheduler runtime settings
     runtime:
       ## @param sched.config.runtime.readHeaderTimeoutSeconds Scheduler HTTP read-header timeout

@@ -37,7 +37,7 @@ The App API, App Agent, App Scheduler, App Pipelines, App MCP Proxy, and App VCS
 
 ## Connector Constraints
 
-The connector chart renders `/app/config.yaml` from top-level `config`. Its standard license and Control Edge URL live directly under `config`; relay license, WebSocket URL, `connectTimeoutSeconds`, and `maxFrameBytes` live under `config.relay`. Do not duplicate the Control Edge URL, include derived `/api/...` paths, project these values through environment variables, or restore a separate top-level connector section.
+The connector chart renders `/app/config.yaml` from top-level `config`. Its standard license and Control Edge URL live directly under `config`; relay license, WebSocket URL, `connectTimeoutSeconds`, and `maxFrameBytes` live under `config.relay`. In the unified App chart, Agent, Pipelines, Scheduler, and VCS each own a separate `config.connector` client block with `enabled`, Relay origin, client license, and Control Edge origin; the three newer clients default to the existing Agent Connector license but remain independently overridable. These client licenses authorize transport grants only and do not move provider credentials into Connector. External model/provider/MCP/webhook/Custom Execution fetch traffic uses those clients, while App API/database/service-to-service traffic remains direct. Do not duplicate derived `/api/...` paths, project these values through environment variables, or restore a separate top-level connector section.
 
 The connector must remain compatible with OpenShift restricted SCC. Do not set fixed `runAsUser`, `runAsGroup`, or `fsGroup` defaults. Keep non-root execution, no privilege escalation, a read-only root filesystem, dropped capabilities, and RuntimeDefault seccomp.
 
