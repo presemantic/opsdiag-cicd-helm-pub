@@ -44,7 +44,7 @@ api:
     ## @param api.image.repository App API image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-api
     ## @param api.image.tag App API image tag
-    tag: "2026-08-01.23-14-42.c39befe"
+    tag: "2026-08-02.12-26-16.95f246e"
     ## @param api.image.digest App API image digest; overrides the tag when set
     digest: ""
     ## @param api.image.pullPolicy App API image pull policy
