@@ -44,7 +44,7 @@ api:
     ## @param api.image.repository App API image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-api
     ## @param api.image.tag App API image tag
-    tag: "2026-08-02.12-26-16.95f246e"
+    tag: "2026-08-03.02-17-15.af4b3a2"
     ## @param api.image.digest App API image digest; overrides the tag when set
     digest: ""
     ## @param api.image.pullPolicy App API image pull policy
@@ -102,6 +102,10 @@ api:
       ## @param api.config.scheduler.url Internal App Scheduler URL; rendered from the Helm release name
       url: 'http://{{ include "opsdiag-app.componentName" (dict "root" . "component" "sched") }}:{{ .Values.sched.service.ports.http }}'
       ## @param api.config.scheduler.workerToken Shared App Scheduler worker token
+      workerToken: ""
+    ## @param api.config.pipelines App API private Pipeline worker authentication
+    pipelines:
+      ## @param api.config.pipelines.workerToken Shared App Pipelines worker token
       workerToken: ""
     ## @param api.config.vcs App API connection settings for App VCS
     vcs:
@@ -316,7 +320,7 @@ agent:
     ## @param agent.image.repository App Agent image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-agent-api
     ## @param agent.image.tag App Agent image tag
-    tag: "2026-08-02.18-24-58.f9dd68e"
+    tag: "2026-08-03.02-16-19.2031f4e"
     ## @param agent.image.digest App Agent image digest; overrides the tag when set
     digest: ""
     ## @param agent.image.pullPolicy App Agent image pull policy
@@ -903,7 +907,7 @@ front:
     ## @param front.image.repository App Frontend image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-front
     ## @param front.image.tag App Frontend image tag
-    tag: "2026-08-03.00-54-38.a85df26"
+    tag: "2026-08-03.02-22-36.614cbc8"
     ## @param front.image.digest App Frontend image digest; overrides the tag when set
     digest: ""
     ## @param front.image.pullPolicy App Frontend image pull policy
@@ -1088,7 +1092,7 @@ pipelines:
     ## @param pipelines.image.repository App Pipelines image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-pipelines
     ## @param pipelines.image.tag App Pipelines image tag
-    tag: "2026-08-02.23-52-10.9b4f4a4"
+    tag: "2026-08-03.02-18-10.84c08f9"
     ## @param pipelines.image.digest App Pipelines image digest
     digest: ""
     ## @param pipelines.image.pullPolicy App Pipelines image pull policy
@@ -1109,6 +1113,10 @@ pipelines:
     database:
       ## @param pipelines.config.database.url PostgreSQL URL shared with App API
       url: ""
+    ## @param pipelines.config.appApi Private App API model execution boundary
+    appApi:
+      ## @param pipelines.config.appApi.url Internal App API origin; rendered from the Helm release name
+      url: 'http://{{ include "opsdiag-app.componentName" (dict "root" . "component" "api") }}:{{ .Values.api.service.ports.http }}'
     ## @param pipelines.config.credentialSecret Shared pipeline credential encryption key
     credentialSecret: ""
     ## @param pipelines.config.connector Encrypted Connector transport settings for Custom Execution fetch and outbound notification nodes
@@ -1131,8 +1139,10 @@ pipelines:
       leaseSeconds: 120
       ## @param pipelines.config.runtime.nodeTimeoutSeconds Per-node timeout
       nodeTimeoutSeconds: 30
+      ## @param pipelines.config.runtime.modelTimeoutSeconds Per-Model-node timeout
+      modelTimeoutSeconds: 600
       ## @param pipelines.config.runtime.runTimeoutSeconds Whole-run timeout
-      runTimeoutSeconds: 300
+      runTimeoutSeconds: 3600
       ## @param pipelines.config.runtime.maxHttpResponseBytes Maximum HTTP node response size
       maxHttpResponseBytes: 2097152
       ## @param pipelines.config.runtime.nodeBinary Node.js binary used by JavaScript nodes

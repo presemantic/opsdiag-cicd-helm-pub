@@ -50,3 +50,9 @@ Chart dependencies must use only the public Opsolving `common` dependency. The r
 Product documentation belongs in `opsdiag-docs-ai-context`, not this repository. Keep public chart defaults free of tenant credentials, endpoints, licenses, or environment-specific values.
 
 The breaking gateway transport release is unified App chart `0.1.7` plus customer Connector chart `0.2.0`; unified App chart `0.1.8` is the frontend security-header hotfix and `0.1.9` adds continuous encrypted gateway-grant readiness monitoring to the Agent. Public workloads do not expose container command/args, component-specific extra volumes/mounts, or component-specific `extraDeploy`; only top-level unified-chart `extraDeploy` remains. `extraEnvVars`, `extraEnvVarsCM`, and `extraEnvVarsSecret` remain supported. Front always renders chart-owned `emptyDir` mounts for Nginx runtime paths and defaults to a read-only root filesystem.
+
+## Pipeline Model Runtime Wiring
+
+The unified chart owns a single private Pipeline worker token at `api.config.pipelines.workerToken`. App API receives it directly, while the Pipelines Secret copies the same value into `pipelines.config.appApi.workerToken` and derives `pipelines.config.appApi.url` from the release-scoped App API Service. Public values must not require users to duplicate the token or hardcode an internal Service name.
+
+Pipeline Model nodes default to a ten-minute `pipelines.config.runtime.modelTimeoutSeconds` and a one-hour `runTimeoutSeconds`; the whole-run bound must never be shorter than one model call. The internal App API call remains direct cluster traffic, while the Agent keeps responsibility for provider transport and model credentials.
