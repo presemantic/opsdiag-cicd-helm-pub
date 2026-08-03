@@ -58,3 +58,7 @@ The unified chart owns a single private Pipeline worker token at `api.config.pip
 Pipeline Model nodes default to a ten-minute `pipelines.config.runtime.modelTimeoutSeconds` and a one-hour `runTimeoutSeconds`; the whole-run bound must never be shorter than one model call. The internal App API call remains direct cluster traffic, while the Agent keeps responsibility for provider transport and model credentials.
 
 When App API migration is enabled, the chart renders a dedicated pre-install/pre-upgrade migration config Secret at hook weight `-1` and mounts it into the migration Job. This keeps the hook on the same desired runtime config as the release even when the normal long-lived App API Secret has not been updated yet; both migration hook resources use the hook-success deletion policy.
+
+## Generic Pipeline Nodes Release
+
+Unified App chart `0.1.120` pins App API `2026-08-03.04-07-40.188dcae`, Front `2026-08-03.04-07-42.02ac92e`, and Pipelines `2026-08-03.04-07-41.a13a285`. This supersedes the older node-catalog and removed-HTTP wording above: Pipelines support If, Logic Gate, Switch, Filter, Merge, Loop Over Items, HTTP Request, and generic outbound Webhook alongside the existing nodes. Branches persist named `sourcePort` values, HTTP/Webhook use only Generic credentials and Connector-aware egress, and Webhook is not an inbound public trigger. The release needs no database migration; production must keep the migration Job disabled for this rollout.
