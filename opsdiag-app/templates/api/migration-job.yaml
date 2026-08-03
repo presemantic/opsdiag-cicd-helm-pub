@@ -19,7 +19,7 @@ spec:
         {{- include "opsdiag-app.podLabels" (dict "root" . "component" "api") | nindent 8 }}
         app.kubernetes.io/component: migration
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/api/secret.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/api/migration-secret.yaml") . | sha256sum }}
         {{- with .Values.api.podAnnotations }}
         {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
         {{- end }}
@@ -65,5 +65,5 @@ spec:
       volumes:
         - name: app-config
           secret:
-            secretName: {{ include "opsdiag-app.configName" (dict "root" . "component" "api") }}
+            secretName: {{ printf "%s-migrate-config" (include "opsdiag-app.componentName" (dict "root" . "component" "api")) | trunc 63 | trimSuffix "-" }}
 {{- end }}
