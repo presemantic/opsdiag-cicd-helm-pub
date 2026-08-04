@@ -563,7 +563,7 @@ mcp-proxy:
     ## @param mcp-proxy.image.repository App MCP Proxy image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-mcp-proxy-api
     ## @param mcp-proxy.image.tag App MCP Proxy image tag
-    tag: "2026-08-04.04-26-22.045013c"
+    tag: "2026-08-05.00-16-40.380fec6"
     ## @param mcp-proxy.image.digest App MCP Proxy image digest; overrides the tag when set
     digest: ""
     ## @param mcp-proxy.image.pullPolicy App MCP Proxy image pull policy
@@ -710,7 +710,7 @@ vcs:
     ## @param vcs.image.repository App VCS image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-vcs-api
     ## @param vcs.image.tag Exact published App VCS image tag
-    tag: "2026-08-04.04-26-22.1a8c041"
+    tag: "2026-08-05.00-16-36.444ed22"
     ## @param vcs.image.digest Optional immutable App VCS image digest
     digest: ""
     ## @param vcs.image.pullPolicy App VCS image pull policy
@@ -1092,7 +1092,7 @@ pipelines:
     ## @param pipelines.image.repository App Pipelines image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-pipelines
     ## @param pipelines.image.tag App Pipelines image tag
-    tag: "2026-08-04.04-26-22.5dfc8c1"
+    tag: "2026-08-05.00-16-32.d347842"
     ## @param pipelines.image.digest App Pipelines image digest
     digest: ""
     ## @param pipelines.image.pullPolicy App Pipelines image pull policy
