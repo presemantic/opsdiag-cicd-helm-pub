@@ -8,7 +8,9 @@ This project is `opsdiag-cicd-helm-pub`, the public Helm chart repository for cu
 
 - [`opsdiag-app/`](./opsdiag-app/) deploys App API, App Agent, App Front, App Scheduler, App Pipelines, the thin App MCP Proxy, and App VCS from `api`, `agent`, `front`, `sched`, `pipelines`, `mcp-proxy`, and `vcs`. It also owns optional Kubernetes Ingress, OpenShift Route, Istio Gateway, and Istio VirtualService resources.
 
-App chart `0.1.129` is the production-binary hardening release. It pins Pipelines `2026-08-05.00-16-32.d347842`, MCP Proxy `2026-08-05.00-16-40.380fec6`, and VCS `2026-08-05.00-16-36.444ed22`; Pipelines now uses deterministic Garble and removes runtime package managers, while all three releases attest the exact image pulled after push. Front remains `2026-08-04.23-13-15.2c455ac`; this release requires no database migration.
+App chart `0.1.130` is the Pipeline Variable type-label release. It pins Front `2026-08-06.22-25-13.082a65e`; every Variable list card now shows exactly `Secret` or `Plain`, and the technical `write-only` copy is removed from the list. Backend images remain unchanged and this release requires no database migration.
+
+App chart `0.1.129` is the production-binary hardening release. It pins Pipelines `2026-08-05.00-16-32.d347842`, MCP Proxy `2026-08-05.00-16-40.380fec6`, and VCS `2026-08-05.00-16-36.444ed22`; Pipelines now uses deterministic Garble and removes runtime package managers, while all three releases attest the exact image pulled after push. Front was `2026-08-04.23-13-15.2c455ac`; this release requires no database migration.
 
 App chart `0.1.127` is the Flow/Pipeline template-manager release. It pins Front `2026-08-04.23-00-43.c0e628a`, which gives both manager sidebars the same first row: wide `Create from template` on the left and compact `Reload` on the right. Template selection now opens the shared full-height 80vw drawer instead of occupying the manager list, and Pipelines include Model-free examples for If, Filter, Logic Gate, Switch, and Merge. The backend image pins and values-only `/app/config.yaml` mounts from `0.1.126` remain unchanged; this release requires no database migration.
 
