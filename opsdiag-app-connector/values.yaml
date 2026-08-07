@@ -27,9 +27,9 @@ image:
   ## @param image.repository OpsDiag connector image repository
   repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-connector
   ## @param image.tag OpsDiag connector image tag; defaults to chart appVersion when empty
-  tag: "2026-08-05.00-16-44.1ddebf2"
+  tag: "2026-08-07.09-58-54.e280437"
   ## @param image.digest OpsDiag connector image digest, used instead of tag when set
-  digest: ""
+  digest: "sha256:1bd16b35a6d5b4c04d8c4ba9bffd8ef6d46c98fb447a4a92694f77ced179e6a1"
   ## @param image.pullPolicy OpsDiag connector image pull policy
   pullPolicy: IfNotPresent
   ## @param image.pullSecrets OpsDiag connector image pull secret names as strings or maps with a `name` key
@@ -37,7 +37,7 @@ image:
 
 ## @section OpsDiag connector config file
 ##
-## @param config Connector config rendered directly as `/app/config.yaml`; users must provide licenses and endpoints in their own values.
+## @param config Connector config rendered from a Kubernetes Secret as read-only `/app/config.yaml`; users provide licenses and endpoints in their own values or an encrypted values workflow.
 config: {}
 
 ## @section Deployment parameters
@@ -72,6 +72,10 @@ serviceAccount:
 podSecurityContext:
   ## @param podSecurityContext.enabled Enable pod security context
   enabled: true
+  ## @param podSecurityContext.fsGroup Group allowed to read the projected connector config Secret
+  fsGroup: 1000
+  ## @param podSecurityContext.fsGroupChangePolicy Avoid recursive ownership changes when the projected Secret already has the expected group
+  fsGroupChangePolicy: OnRootMismatch
   ## @param podSecurityContext.seccompProfile.type Pod seccomp profile type
   seccompProfile:
     type: RuntimeDefault
