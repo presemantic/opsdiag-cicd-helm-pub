@@ -22,7 +22,7 @@ spec:
       labels:
         {{- include "opsdiag-app-connector.podLabels" . | nindent 8 }}
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
         {{- with .Values.podAnnotations }}
         {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
         {{- end }}
@@ -105,5 +105,6 @@ spec:
               readOnly: true
       volumes:
         - name: connector-config
-          configMap:
-            name: {{ include "opsdiag-app-connector.configMapName" . }}
+          secret:
+            secretName: {{ include "opsdiag-app-connector.configSecretName" . }}
+            defaultMode: 0440
