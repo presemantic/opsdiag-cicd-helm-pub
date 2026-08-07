@@ -11,7 +11,7 @@ SPDX-License-Identifier: APACHE-2.0
 {{- end -}}
 {{- end -}}
 
-{{- define "opsdiag-app-connector.configSecretName" -}}
+{{- define "opsdiag-app-connector.configMapName" -}}
 {{- printf "%s-config" (include "common.names.fullname" .) | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
