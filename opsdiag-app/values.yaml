@@ -44,9 +44,9 @@ api:
     ## @param api.image.repository App API image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-api
     ## @param api.image.tag App API image tag
-    tag: "2026-08-07.09-58-54.36a5000"
+    tag: "2026-08-07.11-22-03.5632bbb"
     ## @param api.image.digest App API image digest; overrides the tag when set
-    digest: "sha256:c738b0da0f51ec3c784b4e1b41ef4e03616d9a3d9e796cd7a03e0cb36275595d"
+    digest: "sha256:2e1f60074063225ec13056678728467fa4058eebca31c51daca583e9c487f9ec"
     ## @param api.image.pullPolicy App API image pull policy
     pullPolicy: IfNotPresent
     ## @param api.image.pullSecrets App API image pull secrets
@@ -320,9 +320,9 @@ agent:
     ## @param agent.image.repository App Agent image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-agent-api
     ## @param agent.image.tag App Agent image tag
-    tag: "2026-08-07.10-33-58.197a0ea"
+    tag: "2026-08-07.11-22-03.e58a3b1"
     ## @param agent.image.digest App Agent image digest; overrides the tag when set
-    digest: "sha256:8b4b7d70287f6292556f8451f9fdbca4d8894dc834a82e24e44efd223e42cc5e"
+    digest: "sha256:f6c81fd3befc9e48bad4a4a6c20b81103794505fffa5fd6da9901b6af0f04431"
     ## @param agent.image.pullPolicy App Agent image pull policy
     pullPolicy: IfNotPresent
     ## @param agent.image.pullSecrets App Agent image pull secrets
@@ -563,9 +563,9 @@ mcp-proxy:
     ## @param mcp-proxy.image.repository App MCP Proxy image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-mcp-proxy-api
     ## @param mcp-proxy.image.tag App MCP Proxy image tag
-    tag: "2026-08-07.09-58-54.1c6ce34"
+    tag: "2026-08-07.11-40-40.f354b92"
     ## @param mcp-proxy.image.digest App MCP Proxy image digest; overrides the tag when set
-    digest: "sha256:bca752832d2ca3cd815609eb1f991f4171dbf0215bb7f944539f94639c915642"
+    digest: "sha256:d3c293271210b5d2e408917e9ca3714c3aea1fbf5e7a130be362f3aacf193ae7"
     ## @param mcp-proxy.image.pullPolicy App MCP Proxy image pull policy
     pullPolicy: IfNotPresent
     ## @param mcp-proxy.image.pullSecrets App MCP Proxy image pull secrets
@@ -710,9 +710,9 @@ vcs:
     ## @param vcs.image.repository App VCS image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-vcs-api
     ## @param vcs.image.tag Exact published App VCS image tag
-    tag: "2026-08-07.09-58-54.a690773"
+    tag: "2026-08-07.11-22-03.66bdea1"
     ## @param vcs.image.digest Optional immutable App VCS image digest
-    digest: "sha256:e946b21cca286c19135208918392682a408890f077c246802c627bd1b1e0a7c7"
+    digest: "sha256:c914e7ce93e15aaa7d22125a1a2fe6775470dd809475dd4a5c6f8a5a8019a306"
     ## @param vcs.image.pullPolicy App VCS image pull policy
     pullPolicy: IfNotPresent
     ## @param vcs.image.pullSecrets App VCS image pull secrets
@@ -1092,9 +1092,9 @@ pipelines:
     ## @param pipelines.image.repository App Pipelines image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-pipelines
     ## @param pipelines.image.tag App Pipelines image tag
-    tag: "2026-08-07.09-58-54.f279c85"
+    tag: "2026-08-07.11-22-03.c691d6a"
     ## @param pipelines.image.digest App Pipelines image digest
-    digest: "sha256:5f4638911902a0508240a4508726924b3a0878fdace2a9d23da4faea089d9bc1"
+    digest: "sha256:7d657ed045b4d95f1a91280a035eba3629a7dca0d640ddafb75ca7b7e3fd4ea3"
     ## @param pipelines.image.pullPolicy App Pipelines image pull policy
     pullPolicy: IfNotPresent
     ## @param pipelines.image.pullSecrets App Pipelines image pull secrets
@@ -1306,9 +1306,9 @@ sched:
     ## @param sched.image.repository App Scheduler image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-sched
     ## @param sched.image.tag App Scheduler image tag
-    tag: "2026-08-07.09-58-54.8ce28a3"
+    tag: "2026-08-07.11-22-03.5987330"
     ## @param sched.image.digest App Scheduler image digest; overrides the tag when set
-    digest: "sha256:1a23d115d73dd5782642a211788f97161f336c9d656ecb706f939dfdb514c411"
+    digest: "sha256:aea140f8dea58c366e933fb6b342e53bf8e65c94323250da17c67f3226ca9d19"
     ## @param sched.image.pullPolicy App Scheduler image pull policy
     pullPolicy: IfNotPresent
     ## @param sched.image.pullSecrets App Scheduler image pull secrets

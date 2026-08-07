@@ -27,9 +27,9 @@ image:
   ## @param image.repository OpsDiag connector image repository
   repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-connector
   ## @param image.tag OpsDiag connector image tag; defaults to chart appVersion when empty
-  tag: "2026-08-07.09-58-54.e280437"
+  tag: "2026-08-07.11-22-03.d815999"
   ## @param image.digest OpsDiag connector image digest, used instead of tag when set
-  digest: "sha256:1bd16b35a6d5b4c04d8c4ba9bffd8ef6d46c98fb447a4a92694f77ced179e6a1"
+  digest: "sha256:39739727d1f6da1a8250fb4b11c17b89039fbd3c229a1d327271ec5635312082"
   ## @param image.pullPolicy OpsDiag connector image pull policy
   pullPolicy: IfNotPresent
   ## @param image.pullSecrets OpsDiag connector image pull secret names as strings or maps with a `name` key
