@@ -44,9 +44,9 @@ api:
     ## @param api.image.repository App API image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-api
     ## @param api.image.tag App API image tag
-    tag: "2026-08-07.09-58-54.36a5000"
+    tag: "2026-08-04.04-26-22.95bda87"
     ## @param api.image.digest App API image digest; overrides the tag when set
-    digest: "sha256:c738b0da0f51ec3c784b4e1b41ef4e03616d9a3d9e796cd7a03e0cb36275595d"
+    digest: ""
     ## @param api.image.pullPolicy App API image pull policy
     pullPolicy: IfNotPresent
     ## @param api.image.pullSecrets App API image pull secrets
@@ -320,9 +320,9 @@ agent:
     ## @param agent.image.repository App Agent image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-agent-api
     ## @param agent.image.tag App Agent image tag
-    tag: "2026-08-07.10-33-58.197a0ea"
+    tag: "2026-08-04.04-26-22.193f35d"
     ## @param agent.image.digest App Agent image digest; overrides the tag when set
-    digest: "sha256:8b4b7d70287f6292556f8451f9fdbca4d8894dc834a82e24e44efd223e42cc5e"
+    digest: ""
     ## @param agent.image.pullPolicy App Agent image pull policy
     pullPolicy: IfNotPresent
     ## @param agent.image.pullSecrets App Agent image pull secrets
@@ -563,9 +563,9 @@ mcp-proxy:
     ## @param mcp-proxy.image.repository App MCP Proxy image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-mcp-proxy-api
     ## @param mcp-proxy.image.tag App MCP Proxy image tag
-    tag: "2026-08-07.09-58-54.1c6ce34"
+    tag: "2026-08-05.00-16-40.380fec6"
     ## @param mcp-proxy.image.digest App MCP Proxy image digest; overrides the tag when set
-    digest: "sha256:bca752832d2ca3cd815609eb1f991f4171dbf0215bb7f944539f94639c915642"
+    digest: ""
     ## @param mcp-proxy.image.pullPolicy App MCP Proxy image pull policy
     pullPolicy: IfNotPresent
     ## @param mcp-proxy.image.pullSecrets App MCP Proxy image pull secrets
@@ -710,9 +710,9 @@ vcs:
     ## @param vcs.image.repository App VCS image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-vcs-api
     ## @param vcs.image.tag Exact published App VCS image tag
-    tag: "2026-08-07.09-58-54.a690773"
+    tag: "2026-08-05.00-16-36.444ed22"
     ## @param vcs.image.digest Optional immutable App VCS image digest
-    digest: "sha256:e946b21cca286c19135208918392682a408890f077c246802c627bd1b1e0a7c7"
+    digest: ""
     ## @param vcs.image.pullPolicy App VCS image pull policy
     pullPolicy: IfNotPresent
     ## @param vcs.image.pullSecrets App VCS image pull secrets
@@ -1092,9 +1092,9 @@ pipelines:
     ## @param pipelines.image.repository App Pipelines image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-pipelines
     ## @param pipelines.image.tag App Pipelines image tag
-    tag: "2026-08-07.09-58-54.f279c85"
+    tag: "2026-08-05.00-16-32.d347842"
     ## @param pipelines.image.digest App Pipelines image digest
-    digest: "sha256:5f4638911902a0508240a4508726924b3a0878fdace2a9d23da4faea089d9bc1"
+    digest: ""
     ## @param pipelines.image.pullPolicy App Pipelines image pull policy
     pullPolicy: IfNotPresent
     ## @param pipelines.image.pullSecrets App Pipelines image pull secrets
@@ -1147,10 +1147,6 @@ pipelines:
       maxHttpResponseBytes: 2097152
       ## @param pipelines.config.runtime.nodeBinary Node.js binary used by JavaScript nodes
       nodeBinary: /usr/local/bin/node
-      ## @param pipelines.config.runtime.sandboxBinary Bubblewrap binary required to isolate each JavaScript node in separate user, PID, mount, IPC and network namespaces
-      sandboxBinary: /usr/bin/bwrap
-      ## @param pipelines.config.runtime.sandboxWorkerBinary Minimal broker binary exposed inside the isolated JavaScript namespace
-      sandboxWorkerBinary: /opt/app/bin/opsdiag-pipelines-sandbox
   ## @param pipelines.extraEnvVars Additional App Pipelines environment variables
   extraEnvVars: []
   ## @param pipelines.extraEnvVarsCM Existing ConfigMap with additional environment variables
@@ -1306,9 +1302,9 @@ sched:
     ## @param sched.image.repository App Scheduler image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-sched
     ## @param sched.image.tag App Scheduler image tag
-    tag: "2026-08-07.09-58-54.8ce28a3"
+    tag: "2026-08-04.04-26-22.08f9516"
     ## @param sched.image.digest App Scheduler image digest; overrides the tag when set
-    digest: "sha256:1a23d115d73dd5782642a211788f97161f336c9d656ecb706f939dfdb514c411"
+    digest: ""
     ## @param sched.image.pullPolicy App Scheduler image pull policy
     pullPolicy: IfNotPresent
     ## @param sched.image.pullSecrets App Scheduler image pull secrets

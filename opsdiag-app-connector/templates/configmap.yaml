@@ -1,7 +1,7 @@
 apiVersion: v1
-kind: Secret
+kind: ConfigMap
 metadata:
-  name: {{ include "opsdiag-app-connector.configSecretName" . }}
+  name: {{ include "opsdiag-app-connector.configMapName" . }}
   namespace: {{ include "common.names.namespace" . | quote }}
   labels:
     {{- include "common.labels.standard" (dict "customLabels" .Values.commonLabels "context" .) | nindent 4 }}
@@ -9,7 +9,6 @@ metadata:
   annotations:
     {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
   {{- end }}
-type: Opaque
-stringData:
+data:
   config.yaml: |
     {{- include "common.tplvalues.render" (dict "value" (.Values.config | toYaml) "context" $) | nindent 4 }}
