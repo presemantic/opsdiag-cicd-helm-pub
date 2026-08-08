@@ -44,9 +44,9 @@ api:
     ## @param api.image.repository App API image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-api
     ## @param api.image.tag App API image tag
-    tag: "2026-08-07.13-19-19.08ebdcc"
+    tag: "2026-08-08.17-15-53.54a17cf"
     ## @param api.image.digest App API image digest; overrides the tag when set
-    digest: "sha256:25daab2e41bb06c82245bab13cdafa848a358d95a798353da2334daa301265c6"
+    digest: "sha256:682c6ec8cb9667bb152954e065fa7d43cd502f8d49e3206e1abff563b3467f0f"
     ## @param api.image.pullPolicy App API image pull policy
     pullPolicy: IfNotPresent
     ## @param api.image.pullSecrets App API image pull secrets
@@ -320,9 +320,9 @@ agent:
     ## @param agent.image.repository App Agent image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-agent-api
     ## @param agent.image.tag App Agent image tag
-    tag: "2026-08-07.13-19-15.18be637"
+    tag: "2026-08-08.17-15-51.f2c2725"
     ## @param agent.image.digest App Agent image digest; overrides the tag when set
-    digest: "sha256:f19e85d3f3de8f79c52b8c2e406ee44c3ae219acfe97b1fc0315adbeae9f8e32"
+    digest: "sha256:d2615bc8e356f6ae5d54418eb04094c91b80e66b8fca59c0ef56455992a16529"
     ## @param agent.image.pullPolicy App Agent image pull policy
     pullPolicy: IfNotPresent
     ## @param agent.image.pullSecrets App Agent image pull secrets
@@ -563,9 +563,9 @@ mcp-proxy:
     ## @param mcp-proxy.image.repository App MCP Proxy image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-mcp-proxy-api
     ## @param mcp-proxy.image.tag App MCP Proxy image tag
-    tag: "2026-08-07.13-19-29.5198530"
+    tag: "2026-08-08.17-15-52.7991329"
     ## @param mcp-proxy.image.digest App MCP Proxy image digest; overrides the tag when set
-    digest: "sha256:477645238635aeaa10d97c46a5d260cbe226788bb61da3691375dc00660fe6f6"
+    digest: "sha256:ecc3ab6d5a6e651a82e71a9803bee700a1cf73a3a18cbd5c6c646f7f61541c59"
     ## @param mcp-proxy.image.pullPolicy App MCP Proxy image pull policy
     pullPolicy: IfNotPresent
     ## @param mcp-proxy.image.pullSecrets App MCP Proxy image pull secrets
