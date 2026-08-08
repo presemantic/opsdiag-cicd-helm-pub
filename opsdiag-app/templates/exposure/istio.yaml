@@ -86,7 +86,7 @@ spec:
     - name: mcp-proxy
       match:
         - uri:
-            prefix: /mcp
+            prefix: /mcp/proxy
       route:
         - destination:
             host: {{ include "opsdiag-app.componentServiceName" (dict "root" . "component" "mcp-proxy") }}

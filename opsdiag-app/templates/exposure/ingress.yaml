@@ -51,7 +51,7 @@ spec:
                 name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "api") }}
                 port:
                   name: http
-          - path: /mcp
+          - path: /mcp/proxy
             pathType: Prefix
             backend:
               service:
@@ -111,7 +111,7 @@ spec:
                 name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "api") }}
                 port:
                   name: http
-          - path: /mcp
+          - path: /mcp/proxy
             pathType: Prefix
             backend:
               service:

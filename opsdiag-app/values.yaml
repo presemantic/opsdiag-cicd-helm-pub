@@ -44,9 +44,9 @@ api:
     ## @param api.image.repository App API image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-api
     ## @param api.image.tag App API image tag
-    tag: "2026-08-08.17-15-53.54a17cf"
+    tag: "2026-08-08.18-13-59.98f4c7c"
     ## @param api.image.digest App API image digest; overrides the tag when set
-    digest: "sha256:682c6ec8cb9667bb152954e065fa7d43cd502f8d49e3206e1abff563b3467f0f"
+    digest: "sha256:3ecd4235df38b41f50b04ba00bbeb19e3a8654ffacd7254641287a049c7e42f5"
     ## @param api.image.pullPolicy App API image pull policy
     pullPolicy: IfNotPresent
     ## @param api.image.pullSecrets App API image pull secrets
@@ -563,9 +563,9 @@ mcp-proxy:
     ## @param mcp-proxy.image.repository App MCP Proxy image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-mcp-proxy-api
     ## @param mcp-proxy.image.tag App MCP Proxy image tag
-    tag: "2026-08-08.17-15-52.7991329"
+    tag: "2026-08-08.18-13-59.1379e0a"
     ## @param mcp-proxy.image.digest App MCP Proxy image digest; overrides the tag when set
-    digest: "sha256:ecc3ab6d5a6e651a82e71a9803bee700a1cf73a3a18cbd5c6c646f7f61541c59"
+    digest: "sha256:287fa1f32f2c20ebe06f0225dfc6ac7c1350981d78412b492cb0091a32fcddd3"
     ## @param mcp-proxy.image.pullPolicy App MCP Proxy image pull policy
     pullPolicy: IfNotPresent
     ## @param mcp-proxy.image.pullSecrets App MCP Proxy image pull secrets
@@ -907,7 +907,7 @@ front:
     ## @param front.image.repository App Frontend image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-front
     ## @param front.image.tag App Frontend image tag
-    tag: "2026-08-08.16-22-12.13d986f"
+    tag: "2026-08-08.18-13-59.ef50d4f"
     ## @param front.image.digest App Frontend image digest; overrides the tag when set
     digest: ""
     ## @param front.image.pullPolicy App Frontend image pull policy
