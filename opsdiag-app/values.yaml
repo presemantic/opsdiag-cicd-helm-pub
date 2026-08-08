@@ -44,9 +44,9 @@ api:
     ## @param api.image.repository App API image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-api
     ## @param api.image.tag App API image tag
-    tag: "2026-08-08.18-13-59.98f4c7c"
+    tag: "2026-08-08.19-25-24.5056bfa"
     ## @param api.image.digest App API image digest; overrides the tag when set
-    digest: "sha256:3ecd4235df38b41f50b04ba00bbeb19e3a8654ffacd7254641287a049c7e42f5"
+    digest: "sha256:1e4b042435496a096f6da10f7e62d9e9862eb54077be365be5c609a8d68108dd"
     ## @param api.image.pullPolicy App API image pull policy
     pullPolicy: IfNotPresent
     ## @param api.image.pullSecrets App API image pull secrets
@@ -563,9 +563,9 @@ mcp-proxy:
     ## @param mcp-proxy.image.repository App MCP Proxy image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-mcp-proxy-api
     ## @param mcp-proxy.image.tag App MCP Proxy image tag
-    tag: "2026-08-08.18-13-59.1379e0a"
+    tag: "2026-08-08.19-25-24.76b6153"
     ## @param mcp-proxy.image.digest App MCP Proxy image digest; overrides the tag when set
-    digest: "sha256:287fa1f32f2c20ebe06f0225dfc6ac7c1350981d78412b492cb0091a32fcddd3"
+    digest: "sha256:2ace4e294a9344a47720092ccd4f27bf51503a9e86044ef906561e7fe8c2bb18"
     ## @param mcp-proxy.image.pullPolicy App MCP Proxy image pull policy
     pullPolicy: IfNotPresent
     ## @param mcp-proxy.image.pullSecrets App MCP Proxy image pull secrets
@@ -588,6 +588,12 @@ mcp-proxy:
     proxy:
       ## @param mcp-proxy.config.proxy.upstreamUrl Internal App Agent MCP URL; rendered from the Helm release name
       upstreamUrl: 'http://{{ include "opsdiag-app.componentName" (dict "root" . "component" "agent") }}:{{ .Values.agent.service.ports.http }}/api/mcp'
+    ## @param mcp-proxy.config.self Tenant-scoped OpsDiag workspace management upstream and documentation settings
+    self:
+      ## @param mcp-proxy.config.self.upstreamUrl Internal App API MCP Self operation bridge
+      upstreamUrl: 'http://{{ include "opsdiag-app.componentName" (dict "root" . "component" "api") }}:{{ .Values.api.service.ports.http }}/api/internal/mcp-self'
+      ## @param mcp-proxy.config.self.docsBaseUrl Public human documentation base URL
+      docsBaseUrl: https://www.opsdiag.ai/docs
     ## @param mcp-proxy.config.oauth App MCP Proxy OAuth resource-server settings
     oauth:
       ## @param mcp-proxy.config.oauth.issuer Canonical OAuth/OIDC issuer origin
@@ -907,9 +913,9 @@ front:
     ## @param front.image.repository App Frontend image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-front
     ## @param front.image.tag App Frontend image tag
-    tag: "2026-08-08.18-13-59.ef50d4f"
+    tag: "2026-08-08.19-25-24.6ad9795"
     ## @param front.image.digest App Frontend image digest; overrides the tag when set
-    digest: ""
+    digest: "sha256:f6b50b6cf532efb8216dcb1ae3d52f9446c055fcbb173e1575f32f64d264fd44"
     ## @param front.image.pullPolicy App Frontend image pull policy
     pullPolicy: IfNotPresent
     ## @param front.image.pullSecrets App Frontend image pull secrets
