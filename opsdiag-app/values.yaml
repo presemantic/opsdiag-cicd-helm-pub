@@ -1702,8 +1702,8 @@ apisix:
   service:
     ## @param apisix.service.type Must remain ClusterIP so platform exposure is the only public network entry
     type: ClusterIP
-    ## @param apisix.service.externalTrafficPolicy APISIX Service traffic policy retained by the official chart
-    externalTrafficPolicy: Cluster
+    ## @param apisix.service.externalTrafficPolicy Must remain empty because Kubernetes rejects this field on ClusterIP Services
+    externalTrafficPolicy: ""
     ## @param apisix.service.annotations Additional APISIX Service annotations
     annotations: {}
     ## @param apisix.service.externalIPs Must remain empty so the APISIX Service has no direct external address

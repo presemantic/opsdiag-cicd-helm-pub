@@ -17,6 +17,9 @@
 {{- if ne $apisix.service.type "ClusterIP" -}}
 {{- fail "APISIX must remain internal; apisix.service.type must be ClusterIP" -}}
 {{- end -}}
+{{- if $apisix.service.externalTrafficPolicy -}}
+{{- fail "APISIX uses a ClusterIP Service; apisix.service.externalTrafficPolicy must be empty" -}}
+{{- end -}}
 {{- if not $apisix.service.http.enabled -}}
 {{- fail "APISIX HTTP gateway service must be enabled" -}}
 {{- end -}}
