@@ -84,6 +84,28 @@ nodeAffinity:
 {{- printf "http://%s:%v" (include "opsdiag-app.componentName" (dict "root" .root "component" $component)) $values.service.ports.http -}}
 {{- end -}}
 
+{{- define "opsdiag-app.apisixFullname" -}}
+{{- $values := .Values.apisix -}}
+{{- if $values.fullnameOverride -}}
+{{- $values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default "apisix" $values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "opsdiag-app.apisixServiceName" -}}
+{{- printf "%s-gateway" (include "opsdiag-app.apisixFullname" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{- define "opsdiag-app.apisixServicePort" -}}
+{{- .Values.apisix.service.http.servicePort -}}
+{{- end -}}
+
 {{- define "opsdiag-app.openshiftRouteTLS" -}}
 termination: {{ .Values.openshiftRoute.tls.termination | quote }}
 insecureEdgeTerminationPolicy: {{ .Values.openshiftRoute.tls.insecureEdgeTerminationPolicy | quote }}

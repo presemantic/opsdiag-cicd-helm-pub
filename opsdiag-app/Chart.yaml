@@ -2,7 +2,7 @@ apiVersion: v2
 name: opsdiag-app
 description: Complete OpsDiag application stack
 type: application
-version: 0.1.160
+version: 0.1.161
 appVersion: "2026-08-08"
 home: https://opsdiag.ai
 sources:
@@ -13,7 +13,12 @@ sources:
   - https://github.com/presemantic/opsdiag-app-pipelines
   - https://github.com/presemantic/opsdiag-app-mcp-proxy-api
   - https://github.com/presemantic/opsdiag-app-vcs-api
+  - https://github.com/apache/apisix
+  - https://github.com/apache/apisix-helm-chart
 dependencies:
   - name: common
     repository: https://opsolving.github.io/charts/
     version: 2.x.x
+  - name: apisix
+    repository: https://charts.apiseven.com
+    version: 2.16.0

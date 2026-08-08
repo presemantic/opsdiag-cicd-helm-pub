@@ -20,142 +20,24 @@ spec:
     - host: {{ tpl (required "ingress.hostname is required when ingress.enabled is true" .Values.ingress.hostname) . | quote }}
       http:
         paths:
-          {{- with .Values.ingress.extraPaths }}
-          {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 10 }}
-          {{- end }}
-          - path: /.well-known/oauth-protected-resource
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "mcp-proxy") }}
-                port:
-                  name: http
-          - path: /.well-known/oauth-authorization-server
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "api") }}
-                port:
-                  name: http
-          - path: /.well-known/openid-configuration
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "api") }}
-                port:
-                  name: http
-          - path: /mcp/oauth
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "api") }}
-                port:
-                  name: http
-          - path: /mcp/proxy
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "mcp-proxy") }}
-                port:
-                  name: http
-          - path: /mcp/self
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "mcp-proxy") }}
-                port:
-                  name: http
-          - path: /api/vcs/hooks
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "vcs") }}
-                port:
-                  name: http
-          - path: /api
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "api") }}
-                port:
-                  name: http
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "front") }}
+                name: {{ include "opsdiag-app.apisixServiceName" . }}
                 port:
-                  name: http
+                  name: apisix-gateway
     {{- range $host := .Values.ingress.extraHosts }}
     - host: {{ tpl (required "ingress.extraHosts[].name is required" $host.name) $ | quote }}
       http:
         paths:
-          - path: /.well-known/oauth-protected-resource
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "mcp-proxy") }}
-                port:
-                  name: http
-          - path: /.well-known/oauth-authorization-server
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "api") }}
-                port:
-                  name: http
-          - path: /.well-known/openid-configuration
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "api") }}
-                port:
-                  name: http
-          - path: /mcp/oauth
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "api") }}
-                port:
-                  name: http
-          - path: /mcp/proxy
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "mcp-proxy") }}
-                port:
-                  name: http
-          - path: /mcp/self
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "mcp-proxy") }}
-                port:
-                  name: http
-          - path: /api/vcs/hooks
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "vcs") }}
-                port:
-                  name: http
-          - path: /api
-            pathType: Prefix
-            backend:
-              service:
-                name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "api") }}
-                port:
-                  name: http
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: {{ include "opsdiag-app.componentServiceName" (dict "root" $ "component" "front") }}
+                name: {{ include "opsdiag-app.apisixServiceName" $ }}
                 port:
-                  name: http
-    {{- end }}
-    {{- with .Values.ingress.extraRules }}
-    {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+                  name: apisix-gateway
     {{- end }}
   {{- if or .Values.ingress.tls .Values.ingress.extraTls }}
   tls:

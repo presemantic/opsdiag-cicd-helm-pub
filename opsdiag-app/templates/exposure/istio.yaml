@@ -58,74 +58,13 @@ spec:
   gateways:
     - {{ printf "%s-gateway" (include "common.names.fullname" .) | trunc 63 | trimSuffix "-" }}
   http:
-    {{- with .Values.istio.extraHttp }}
-    {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
-    {{- end }}
-    - name: oauth-resource-metadata
-      match:
-        - uri:
-            prefix: /.well-known/oauth-protected-resource
-      route:
-        - destination:
-            host: {{ include "opsdiag-app.componentServiceName" (dict "root" . "component" "mcp-proxy") }}
-            port:
-              number: {{ index .Values "mcp-proxy" "service" "ports" "http" }}
-    - name: oauth-authorization-server
-      match:
-        - uri:
-            exact: /.well-known/oauth-authorization-server
-        - uri:
-            exact: /.well-known/openid-configuration
-        - uri:
-            prefix: /mcp/oauth
-      route:
-        - destination:
-            host: {{ include "opsdiag-app.componentServiceName" (dict "root" . "component" "api") }}
-            port:
-              number: {{ .Values.api.service.ports.http }}
-    - name: mcp-proxy
-      match:
-        - uri:
-            prefix: /mcp/proxy
-      route:
-        - destination:
-            host: {{ include "opsdiag-app.componentServiceName" (dict "root" . "component" "mcp-proxy") }}
-            port:
-              number: {{ index .Values "mcp-proxy" "service" "ports" "http" }}
-    - name: mcp-self
-      match:
-        - uri:
-            prefix: /mcp/self
-      route:
-        - destination:
-            host: {{ include "opsdiag-app.componentServiceName" (dict "root" . "component" "mcp-proxy") }}
-            port:
-              number: {{ index .Values "mcp-proxy" "service" "ports" "http" }}
-    - name: vcs-hooks
-      match:
-        - uri:
-            prefix: /api/vcs/hooks
-      route:
-        - destination:
-            host: {{ include "opsdiag-app.componentServiceName" (dict "root" . "component" "vcs") }}
-            port:
-              number: {{ .Values.vcs.service.ports.http }}
-    - name: api
-      match:
-        - uri:
-            prefix: /api
-      route:
-        - destination:
-            host: {{ include "opsdiag-app.componentServiceName" (dict "root" . "component" "api") }}
-            port:
-              number: {{ .Values.api.service.ports.http }}
-    - name: front
+    - name: apisix-gateway
       match:
         - uri:
             prefix: /
       route:
         - destination:
-            host: {{ include "opsdiag-app.componentServiceName" (dict "root" . "component" "front") }}
+            host: {{ include "opsdiag-app.apisixServiceName" . }}
             port:
-              number: {{ .Values.front.service.ports.http }}
+              number: {{ include "opsdiag-app.apisixServicePort" . }}
 {{- end }}

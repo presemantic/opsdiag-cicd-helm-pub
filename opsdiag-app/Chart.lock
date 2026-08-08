@@ -2,5 +2,8 @@ dependencies:
 - name: common
   repository: https://opsolving.github.io/charts/
   version: 2.31.4
-digest: sha256:8da915cf94d6c4aa92db5d68351ea3aab0922aad434d3a5e299e1c1c5cbf6d0c
-generated: "2026-07-19T01:04:40.065031+02:00"
+- name: apisix
+  repository: https://charts.apiseven.com
+  version: 2.16.0
+digest: sha256:f7b4e753a87a364a81a4ede8d9ae68016065f629db5af86d1b35aec5dfda0384
+generated: "2026-08-08T21:37:24.996496+02:00"

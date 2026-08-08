@@ -1513,11 +1513,308 @@ sched:
     ## @param sched.podDisruptionBudget.maxUnavailable Maximum number or percentage of unavailable App Scheduler pods
     maxUnavailable: ""
 
+## @section Central APISIX gateway parameters
+##
+## @param gateway Central application routing rendered into the standalone `apisix.yaml`
+gateway:
+  ## @param gateway.routing Declarative APISIX routing configuration; this is the only source of application path routing
+  routing:
+    ## @param gateway.routing.upstreams Named internal component upstreams and their APISIX timeouts in seconds
+    upstreams:
+      api:
+        component: api
+        timeout:
+          connect: 10
+          send: 600
+          read: 600
+      front:
+        component: front
+        timeout:
+          connect: 10
+          send: 300
+          read: 300
+      mcp-proxy:
+        component: mcp-proxy
+        timeout:
+          connect: 10
+          send: 3600
+          read: 3600
+      vcs:
+        component: vcs
+        timeout:
+          connect: 10
+          send: 300
+          read: 300
+
+    ## @param gateway.routing.routes Ordered standalone APISIX routes; every route targets one named internal upstream
+    routes:
+      - id: oauth-protected-resource
+        name: OAuth protected resource metadata
+        uris:
+          - /.well-known/oauth-protected-resource
+          - /.well-known/oauth-protected-resource/*
+        upstream: mcp-proxy
+        priority: 1000
+      - id: oauth-authorization-server
+        name: OAuth authorization server metadata
+        uris:
+          - /.well-known/oauth-authorization-server
+        upstream: api
+        priority: 990
+      - id: openid-configuration
+        name: OpenID Connect discovery
+        uris:
+          - /.well-known/openid-configuration
+        upstream: api
+        priority: 980
+      - id: mcp-oauth
+        name: MCP OAuth
+        uris:
+          - /mcp/oauth
+          - /mcp/oauth/*
+        upstream: api
+        priority: 970
+      - id: mcp-proxy
+        name: MCP Proxy
+        uris:
+          - /mcp/proxy
+          - /mcp/proxy/*
+        upstream: mcp-proxy
+        priority: 960
+      - id: mcp-self
+        name: MCP Self
+        uris:
+          - /mcp/self
+          - /mcp/self/*
+        upstream: mcp-proxy
+        priority: 950
+      - id: vcs-hooks
+        name: VCS hooks
+        uris:
+          - /api/vcs/hooks
+          - /api/vcs/hooks/*
+        upstream: vcs
+        priority: 940
+      - id: api
+        name: App API
+        uris:
+          - /api
+          - /api/*
+        upstream: api
+        priority: 930
+        enableWebsocket: true
+      - id: front
+        name: App Frontend
+        uris:
+          - /*
+        upstream: front
+        priority: 0
+        enableWebsocket: true
+
+## @param apisix Official Apache APISIX chart configuration; standalone safety invariants are enforced by opsdiag-app templates
+apisix:
+  ## @param apisix.replicaCount APISIX Deployment replicas; at least two are required
+  replicaCount: 2
+  ## @param apisix.useDaemonSet Must remain false so APISIX runs as a Deployment
+  useDaemonSet: false
+  ## @param apisix.nameOverride Optional partial APISIX resource-name override
+  nameOverride: ""
+  ## @param apisix.fullnameOverride Optional complete APISIX resource-name override
+  fullnameOverride: ""
+
+  ## @param apisix.image Official APISIX container image settings
+  image:
+    ## @param apisix.image.repository Official APISIX image repository
+    repository: apache/apisix
+    ## @param apisix.image.tag APISIX image tag paired with the pinned chart version
+    tag: 3.17.0-ubuntu
+    ## @param apisix.image.pullPolicy APISIX image pull policy
+    pullPolicy: IfNotPresent
+
+  ## @param apisix.updateStrategy APISIX Deployment rolling-update strategy
+  updateStrategy:
+    ## @param apisix.updateStrategy.type APISIX Deployment strategy type
+    type: RollingUpdate
+    ## @param apisix.updateStrategy.rollingUpdate APISIX rolling-update availability settings
+    rollingUpdate:
+      ## @param apisix.updateStrategy.rollingUpdate.maxSurge Maximum extra APISIX pods during an update
+      maxSurge: 1
+      ## @param apisix.updateStrategy.rollingUpdate.maxUnavailable Maximum unavailable APISIX pods during an update
+      maxUnavailable: 0
+
+  ## @param apisix.autoscaling APISIX autoscaling settings; autoscaling must remain disabled
+  autoscaling:
+    ## @param apisix.autoscaling.enabled Must remain false so the enforced replica floor is deterministic
+    enabled: false
+
+  ## @param apisix.podSecurityContext APISIX pod security context
+  podSecurityContext:
+    ## @param apisix.podSecurityContext.seccompProfile APISIX pod seccomp profile
+    seccompProfile:
+      ## @param apisix.podSecurityContext.seccompProfile.type APISIX pod seccomp profile type
+      type: RuntimeDefault
+  ## @param apisix.securityContext APISIX container security context
+  securityContext:
+    ## @param apisix.securityContext.allowPrivilegeEscalation Allow privilege escalation in APISIX
+    allowPrivilegeEscalation: false
+    ## @param apisix.securityContext.capabilities APISIX Linux capability settings
+    capabilities:
+      ## @param apisix.securityContext.capabilities.drop APISIX Linux capabilities to drop
+      drop:
+        - ALL
+
+  ## @param apisix.resources APISIX resource requests and limits
+  resources:
+    ## @param apisix.resources.requests APISIX resource requests
+    requests:
+      ## @param apisix.resources.requests.cpu APISIX requested CPU
+      cpu: 100m
+      ## @param apisix.resources.requests.memory APISIX requested memory
+      memory: 256Mi
+    ## @param apisix.resources.limits APISIX resource limits
+    limits:
+      ## @param apisix.resources.limits.cpu APISIX CPU limit
+      cpu: "1"
+      ## @param apisix.resources.limits.memory APISIX memory limit
+      memory: 1Gi
+
+  ## @param apisix.podDisruptionBudget APISIX PodDisruptionBudget settings
+  podDisruptionBudget:
+    ## @param apisix.podDisruptionBudget.enabled Create the APISIX PodDisruptionBudget
+    enabled: true
+    ## @param apisix.podDisruptionBudget.minAvailable Minimum available APISIX pods during voluntary disruptions
+    minAvailable: 1
+
+  ## @param apisix.serviceAccount APISIX ServiceAccount settings
+  serviceAccount:
+    ## @param apisix.serviceAccount.create Create a dedicated APISIX ServiceAccount
+    create: true
+    ## @param apisix.serviceAccount.annotations Additional APISIX ServiceAccount annotations
+    annotations: {}
+    ## @param apisix.serviceAccount.name APISIX ServiceAccount name; generated when empty
+    name: ""
+  ## @param apisix.rbac APISIX RBAC settings; APISIX requires no Kubernetes API permissions in standalone mode
+  rbac:
+    ## @param apisix.rbac.create Must remain false because standalone APISIX does not read cluster resources
+    create: false
+
+  ## @param apisix.service Internal APISIX gateway Service settings
+  service:
+    ## @param apisix.service.type Must remain ClusterIP so platform exposure is the only public network entry
+    type: ClusterIP
+    ## @param apisix.service.externalTrafficPolicy APISIX Service traffic policy retained by the official chart
+    externalTrafficPolicy: Cluster
+    ## @param apisix.service.annotations Additional APISIX Service annotations
+    annotations: {}
+    ## @param apisix.service.externalIPs Must remain empty so the APISIX Service has no direct external address
+    externalIPs: []
+    ## @param apisix.service.http APISIX HTTP listener Service settings
+    http:
+      ## @param apisix.service.http.enabled Enable the required APISIX HTTP gateway port
+      enabled: true
+      ## @param apisix.service.http.servicePort APISIX Service HTTP port used by platform exposure
+      servicePort: 80
+      ## @param apisix.service.http.containerPort APISIX container HTTP port
+      containerPort: 9080
+      ## @param apisix.service.http.additionalContainerPorts Additional APISIX HTTP container ports
+      additionalContainerPorts: []
+    ## @param apisix.service.tls Disabled APISIX TLS Service port settings; TLS terminates at the platform exposure
+    tls:
+      ## @param apisix.service.tls.servicePort Unused APISIX TLS Service port
+      servicePort: 443
+    ## @param apisix.service.stream Disabled APISIX stream proxy Service settings
+    stream:
+      ## @param apisix.service.stream.enabled Must remain false because the product gateway is HTTP-only
+      enabled: false
+      ## @param apisix.service.stream.tcp Disabled TCP stream listener list
+      tcp: []
+      ## @param apisix.service.stream.udp Disabled UDP stream listener list
+      udp: []
+
+  ## @param apisix.ingress Official APISIX subchart Ingress settings; this Ingress must remain disabled
+  ingress:
+    ## @param apisix.ingress.enabled Must remain false; use the chart-level `ingress` block
+    enabled: false
+
+  ## @param apisix.control APISIX Control API settings
+  control:
+    ## @param apisix.control.enabled Must remain false in standalone data-plane mode
+    enabled: false
+
+  ## @param apisix.metrics APISIX metrics integration settings
+  metrics:
+    ## @param apisix.metrics.serviceMonitor APISIX Prometheus Operator integration settings
+    serviceMonitor:
+      ## @param apisix.metrics.serviceMonitor.enabled Must remain false; no APISIX ServiceMonitor is deployed
+      enabled: false
+
+  ## @param apisix.apisix APISIX runtime settings passed to the official subchart
+  apisix:
+    ## @param apisix.apisix.enableIPv6 Enable APISIX IPv6 resolution
+    enableIPv6: false
+    ## @param apisix.apisix.enableHTTP2 Enable downstream HTTP/2 support
+    enableHTTP2: true
+    ## @param apisix.apisix.enableServerTokens Expose the APISIX version in response headers
+    enableServerTokens: false
+    ## @param apisix.apisix.ssl APISIX internal TLS listener settings
+    ssl:
+      ## @param apisix.apisix.ssl.enabled Must remain false because TLS terminates at platform exposure
+      enabled: false
+    ## @param apisix.apisix.deployment APISIX standalone data-plane configuration
+    deployment:
+      ## @param apisix.apisix.deployment.mode Must remain `standalone`
+      mode: standalone
+      ## @param apisix.apisix.deployment.role Must remain `data_plane`
+      role: data_plane
+      ## @param apisix.apisix.deployment.role_data_plane APISIX data-plane configuration source
+      role_data_plane:
+        ## @param apisix.apisix.deployment.role_data_plane.config_provider Must remain `yaml`
+        config_provider: yaml
+      ## @param apisix.apisix.deployment.standalone Standalone APISIX configuration mount settings
+      standalone:
+        ## @param apisix.apisix.deployment.standalone.config Inline subchart config; must remain empty because the parent owns `apisix.yaml`
+        config: ""
+        ## This name is intentionally shared by the parent ConfigMap and official APISIX subchart mount.
+        ## Override it when installing more than one opsdiag-app release in a namespace.
+        ## @param apisix.apisix.deployment.standalone.existingConfigMap Parent-owned ConfigMap containing the generated `apisix.yaml`
+        existingConfigMap: opsdiag-app-apisix-standalone
+    ## @param apisix.apisix.admin APISIX Admin API settings
+    admin:
+      ## @param apisix.apisix.admin.enabled Must remain false
+      enabled: false
+      ## @param apisix.apisix.admin.enable_admin_ui Must remain false; no APISIX dashboard is deployed
+      enable_admin_ui: false
+    ## @param apisix.apisix.prometheus APISIX Prometheus exporter settings
+    prometheus:
+      ## @param apisix.apisix.prometheus.enabled Must remain false so only the gateway Service is exposed
+      enabled: false
+
+  ## @param apisix.etcd Bundled etcd subchart settings
+  etcd:
+    ## @param apisix.etcd.enabled Must remain false in standalone mode
+    enabled: false
+
+  ## @param apisix.externalEtcd External etcd settings kept empty so the official chart renders no credential Secret
+  externalEtcd:
+    ## @param apisix.externalEtcd.host Must remain empty
+    host: []
+    ## @param apisix.externalEtcd.user Must remain empty
+    user: ""
+    ## @param apisix.externalEtcd.password Must remain empty
+    password: ""
+    ## @param apisix.externalEtcd.existingSecret Must remain empty
+    existingSecret: ""
+
+  ## @param apisix.ingress-controller Bundled APISIX Ingress Controller settings
+  ingress-controller:
+    ## @param apisix.ingress-controller.enabled Must remain false; no controller, CRDs, or Gateway API resources are deployed
+    enabled: false
+
 ## @section Kubernetes Ingress parameters
 ##
-## @param ingress Kubernetes Ingress settings for App API and App Frontend
+## @param ingress Kubernetes Ingress settings that expose only the internal APISIX gateway Service
 ingress:
-  ## @param ingress.enabled Create a Kubernetes Ingress for App API and App Frontend
+  ## @param ingress.enabled Create a Kubernetes Ingress with one `/` rule to APISIX
   enabled: false
   ## @param ingress.hostname Default hostname for the App Ingress
   hostname: app.local
@@ -1528,23 +1825,11 @@ ingress:
   ## @param ingress.tls Enable TLS for `ingress.hostname`; the TLS Secret name is derived as `<hostname>-tls`
   tls: false
 
-  ## @param ingress.extraHosts Additional hostnames that expose the same complete App routing
+  ## @param ingress.extraHosts Additional hostnames, each with one `/` rule to APISIX
   ## E.g.:
   ## extraHosts:
   ##   - name: app-alt.example.com
   extraHosts: []
-
-  ## @param ingress.extraPaths Additional paths inserted before the chart-owned `/api` and `/` paths on the primary hostname
-  ## E.g.:
-  ## extraPaths:
-  ##   - path: /special
-  ##     pathType: Prefix
-  ##     backend:
-  ##       service:
-  ##         name: special-service
-  ##         port:
-  ##           name: http
-  extraPaths: []
 
   ## @param ingress.extraTls Additional TLS entries for extra hostnames
   ## E.g.:
@@ -1554,18 +1839,15 @@ ingress:
   ##     secretName: app-alt.example.com-tls
   extraTls: []
 
-  ## @param ingress.extraRules Additional complete Ingress rules rendered after the chart-owned rules
-  extraRules: []
-
 ## @section OpenShift Route parameters
 ##
-## @param openshiftRoute OpenShift Route settings for App API and App Frontend
+## @param openshiftRoute OpenShift Route settings that expose only the internal APISIX gateway Service
 openshiftRoute:
-  ## @param openshiftRoute.enabled Create OpenShift Routes for App API and App Frontend
+  ## @param openshiftRoute.enabled Create an OpenShift Route with one `/` rule to APISIX
   enabled: false
   ## @param openshiftRoute.hostname Shared OpenShift Route hostname
   hostname: app.local
-  ## @param openshiftRoute.annotations Additional annotations applied to both Routes
+  ## @param openshiftRoute.annotations Additional annotations applied to chart-owned Routes
   annotations: {}
 
   ## @param openshiftRoute.tls OpenShift Route TLS settings
@@ -1585,28 +1867,15 @@ openshiftRoute:
     ## @param openshiftRoute.tls.destinationCACertificate Optional destination CA certificate for re-encrypt termination
     destinationCACertificate: ""
 
-  ## @param openshiftRoute.extraHosts Additional hostnames that expose the same complete App routing
+  ## @param openshiftRoute.extraHosts Additional hostnames, each with one `/` Route to APISIX
   ## E.g.:
   ## extraHosts:
   ##   - name: app-alt.example.com
   extraHosts: []
 
-  ## @param openshiftRoute.extraRoutes Additional OpenShift Route specs with optional annotations; resource names remain chart-owned
-  ## E.g.:
-  ## extraRoutes:
-  ##   - annotations: {}
-  ##     spec:
-  ##       host: special.example.com
-  ##       to:
-  ##         kind: Service
-  ##         name: special-service
-  ##       port:
-  ##         targetPort: http
-  extraRoutes: []
-
 ## @section Istio exposure parameters
 ##
-## @param istio Istio exposure settings for App API and App Frontend
+## @param istio Istio Gateway and single-route VirtualService settings for APISIX
 istio:
   ## @param istio.enabled Create Istio exposure resources
   enabled: false
@@ -1640,22 +1909,8 @@ istio:
     ## @param istio.virtualService.annotations Additional Istio VirtualService annotations
     annotations: {}
 
-  ## @param istio.extraHosts Additional hostnames exposed by the same Gateway and VirtualService
+  ## @param istio.extraHosts Additional hostnames exposed by the same Gateway and single APISIX route
   ## E.g.:
   ## extraHosts:
   ##   - app-alt.example.com
   extraHosts: []
-
-  ## @param istio.extraHttp Additional Istio HTTP routes inserted before the chart-owned `/api` and `/` routes
-  ## E.g.:
-  ## extraHttp:
-  ##   - name: special
-  ##     match:
-  ##       - uri:
-  ##           prefix: /special
-  ##     route:
-  ##       - destination:
-  ##           host: special-service
-  ##           port:
-  ##             number: 8080
-  extraHttp: []
