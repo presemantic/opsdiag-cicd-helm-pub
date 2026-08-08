@@ -563,9 +563,9 @@ mcp-proxy:
     ## @param mcp-proxy.image.repository App MCP Proxy image repository
     repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-mcp-proxy-api
     ## @param mcp-proxy.image.tag App MCP Proxy image tag
-    tag: "2026-08-08.20-33-48.34a8853"
+    tag: "2026-08-08.21-09-58.08a4eb8"
     ## @param mcp-proxy.image.digest App MCP Proxy image digest; overrides the tag when set
-    digest: "sha256:4b8dff75a76b9b5b93dd089445c77506f29325f66baa76bb865579bda3d7912b"
+    digest: "sha256:c419bc9c4f9db65a8011e0ae3a16bdf925cfb86d6830520aad51b076c9059b01"
     ## @param mcp-proxy.image.pullPolicy App MCP Proxy image pull policy
     pullPolicy: IfNotPresent
     ## @param mcp-proxy.image.pullSecrets App MCP Proxy image pull secrets
