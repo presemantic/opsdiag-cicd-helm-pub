@@ -2,7 +2,7 @@ apiVersion: v2
 name: opsdiag-app
 description: Complete OpsDiag application stack
 type: application
-version: 0.1.171
+version: 0.1.172
 appVersion: "2026-08-09"
 home: https://opsdiag.ai
 sources:
@@ -15,6 +15,7 @@ sources:
   - https://github.com/presemantic/opsdiag-app-vcs-api
   - https://github.com/apache/apisix
   - https://github.com/apache/apisix-helm-chart
+  - https://github.com/bitnami/charts/tree/main/bitnami/postgresql
 dependencies:
   - name: common
     repository: https://opsolving.github.io/charts/
@@ -22,3 +23,12 @@ dependencies:
   - name: apisix
     repository: https://charts.apiseven.com
     version: 2.16.0
+  - name: postgresql
+    repository: oci://registry-1.docker.io/bitnamicharts
+    version: 18.7.11
+    condition: postgresql.enabled
+  - name: postgresql
+    alias: tables-postgresql
+    repository: oci://registry-1.docker.io/bitnamicharts
+    version: 18.7.11
+    condition: tables-postgresql.enabled

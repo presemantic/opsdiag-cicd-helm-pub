@@ -40,6 +40,65 @@ app.kubernetes.io/managed-by: {{ .root.Release.Service | quote }}
 {{- printf "%s-config" (include "opsdiag-app.componentName" .) | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
+{{- define "opsdiag-app.postgresqlFullname" -}}
+{{- $values := .values -}}
+{{- if $values.fullnameOverride -}}
+{{- $values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default .alias $values.nameOverride -}}
+{{- if contains $name .root.Release.Name -}}
+{{- .root.Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s" .root.Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "opsdiag-app.postgresqlURL" -}}
+{{- $root := .root -}}
+{{- $values := .values -}}
+{{- $explicitURL := trim .explicitURL -}}
+{{- if $explicitURL -}}
+{{- tpl $explicitURL $root -}}
+{{- else if $values.enabled -}}
+{{- if $values.auth.existingSecret -}}
+{{- fail (printf "%s uses auth.existingSecret; provide the complete %s URL because the parent chart cannot read that Secret during rendering" .valuePath .urlPath) -}}
+{{- end -}}
+{{- $username := required (printf "%s.auth.username is required" .valuePath) $values.auth.username -}}
+{{- $password := required (printf "%s.auth.password is required when %s is empty" .valuePath .urlPath) $values.auth.password -}}
+{{- $database := required (printf "%s.auth.database is required" .valuePath) $values.auth.database -}}
+{{- $host := include "opsdiag-app.postgresqlFullname" (dict "root" $root "values" $values "alias" .alias) -}}
+{{- $port := $values.primary.service.ports.postgresql -}}
+{{- $sslMode := ternary "require" "disable" $values.tls.enabled -}}
+{{- printf "postgresql://%s:%s@%s:%v/%s?sslmode=%s" ($username | urlquery) ($password | urlquery) $host $port ($database | urlquery) $sslMode -}}
+{{- else -}}
+{{- fail (printf "%s is disabled; %s is required for an external PostgreSQL instance" .valuePath .urlPath) -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "opsdiag-app.databaseURL" -}}
+{{- include "opsdiag-app.postgresqlURL" (dict
+  "root" .
+  "values" .Values.postgresql
+  "alias" "postgresql"
+  "valuePath" "postgresql"
+  "urlPath" "api.config.database.url"
+  "explicitURL" .Values.api.config.database.url
+) -}}
+{{- end -}}
+
+{{- define "opsdiag-app.tablesDatabaseURL" -}}
+{{- $values := index .Values "tables-postgresql" -}}
+{{- include "opsdiag-app.postgresqlURL" (dict
+  "root" .
+  "values" $values
+  "alias" "tables-postgresql"
+  "valuePath" "tables-postgresql"
+  "urlPath" "api.config.tablesDatabase.url"
+  "explicitURL" .Values.api.config.tablesDatabase.url
+) -}}
+{{- end -}}
+
 {{- define "opsdiag-app.resources" -}}
 {{- $values := index .root.Values .component -}}
 {{- if $values.resources -}}

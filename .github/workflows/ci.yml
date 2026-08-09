@@ -99,7 +99,11 @@ jobs:
 
       - name: "[Helm] Lint"
         run: |
-          helm lint "build/${{ matrix.chart }}"
+          if [ "${{ matrix.chart }}" = "opsdiag-app" ]; then
+            helm lint "build/${{ matrix.chart }}" --values "build/${{ matrix.chart }}/ci-values.yaml"
+          else
+            helm lint "build/${{ matrix.chart }}"
+          fi
 
       - name: "[Helm] Package"
         run: |
