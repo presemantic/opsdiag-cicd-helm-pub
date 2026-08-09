@@ -1,132 +1,11 @@
 {{/* Copyright OpsDiag. All Rights Reserved. SPDX-License-Identifier: Apache-2.0 */}}
 
-{{- $apisix := .Values.apisix -}}
-{{- $deployment := $apisix.apisix.deployment -}}
-{{- if $apisix.useDaemonSet -}}
-{{- fail "opsdiag-app requires APISIX to run as a Deployment; apisix.useDaemonSet must be false" -}}
-{{- end -}}
-{{- if $apisix.autoscaling.enabled -}}
-{{- fail "opsdiag-app owns a fixed highly available APISIX Deployment; apisix.autoscaling.enabled must be false" -}}
-{{- end -}}
-{{- if $apisix.rbac.create -}}
-{{- fail "standalone APISIX must not receive Kubernetes API permissions; apisix.rbac.create must be false" -}}
-{{- end -}}
-{{- if lt (int $apisix.replicaCount) 2 -}}
-{{- fail "opsdiag-app requires at least two APISIX replicas" -}}
-{{- end -}}
-{{- if ne $apisix.service.type "ClusterIP" -}}
-{{- fail "APISIX must remain internal; apisix.service.type must be ClusterIP" -}}
-{{- end -}}
-{{- if $apisix.service.externalTrafficPolicy -}}
-{{- fail "APISIX uses a ClusterIP Service; apisix.service.externalTrafficPolicy must be empty" -}}
-{{- end -}}
-{{- if not $apisix.service.http.enabled -}}
-{{- fail "APISIX HTTP gateway service must be enabled" -}}
-{{- end -}}
-{{- if gt (len $apisix.service.externalIPs) 0 -}}
-{{- fail "APISIX must remain internal; apisix.service.externalIPs must be empty" -}}
-{{- end -}}
-{{- if gt (len $apisix.service.http.additionalContainerPorts) 0 -}}
-{{- fail "opsdiag-app exposes one APISIX HTTP listener; additionalContainerPorts must be empty" -}}
-{{- end -}}
-{{- if $apisix.service.stream.enabled -}}
-{{- fail "opsdiag-app does not permit APISIX TCP or UDP stream listeners" -}}
-{{- end -}}
-{{- if $apisix.apisix.ssl.enabled -}}
-{{- fail "TLS terminates at the platform exposure; apisix.apisix.ssl.enabled must be false" -}}
-{{- end -}}
-{{- if ne $deployment.mode "standalone" -}}
-{{- fail "opsdiag-app requires apisix.apisix.deployment.mode=standalone" -}}
-{{- end -}}
-{{- if ne $deployment.role "data_plane" -}}
-{{- fail "opsdiag-app requires apisix.apisix.deployment.role=data_plane" -}}
-{{- end -}}
-{{- if ne $deployment.role_data_plane.config_provider "yaml" -}}
-{{- fail "opsdiag-app requires the APISIX standalone YAML configuration provider" -}}
-{{- end -}}
-{{- if $apisix.etcd.enabled -}}
-{{- fail "opsdiag-app standalone APISIX does not permit etcd" -}}
-{{- end -}}
-{{- if or (gt (len $apisix.externalEtcd.host) 0) $apisix.externalEtcd.user $apisix.externalEtcd.password $apisix.externalEtcd.existingSecret -}}
-{{- fail "opsdiag-app standalone APISIX does not permit external etcd configuration" -}}
-{{- end -}}
-{{- if (index $apisix "ingress-controller").enabled -}}
-{{- fail "opsdiag-app does not permit the APISIX Ingress Controller or its CRDs" -}}
-{{- end -}}
-{{- if $apisix.apisix.admin.enabled -}}
-{{- fail "opsdiag-app standalone APISIX does not permit the Admin API" -}}
-{{- end -}}
-{{- if $apisix.apisix.admin.enable_admin_ui -}}
-{{- fail "opsdiag-app does not permit the APISIX Admin UI or dashboard" -}}
-{{- end -}}
-{{- if $apisix.control.enabled -}}
-{{- fail "opsdiag-app standalone APISIX does not permit the Control API" -}}
-{{- end -}}
-{{- if $apisix.apisix.prometheus.enabled -}}
-{{- fail "opsdiag-app exposes only the APISIX gateway Service; the APISIX metrics Service must remain disabled" -}}
-{{- end -}}
-{{- if $apisix.ingress.enabled -}}
-{{- fail "the APISIX subchart Ingress must remain disabled; use the opsdiag-app exposure values" -}}
-{{- end -}}
-{{- if $apisix.metrics.serviceMonitor.enabled -}}
-{{- fail "opsdiag-app does not permit the APISIX subchart ServiceMonitor" -}}
-{{- end -}}
-{{- if $deployment.standalone.config -}}
-{{- fail "standalone APISIX routing must come only from the parent apisix.yaml ConfigMap" -}}
-{{- end -}}
-
-{{- range $component := list "api" "front" "mcp-proxy" "vcs" -}}
-{{- if ne (index $.Values $component).service.type "ClusterIP" -}}
-{{- fail (printf "%s.service.type must be ClusterIP because APISIX is the only public application entrypoint" $component) -}}
-{{- end -}}
-{{- end -}}
-
-{{- $configMapName := required "apisix.apisix.deployment.standalone.existingConfigMap is required" $deployment.standalone.existingConfigMap -}}
-{{- $routing := .Values.gateway.routing -}}
-{{- if eq (len $routing.routes) 0 -}}
-{{- fail "gateway.routing.routes must contain at least one APISIX route" -}}
-{{- end -}}
-{{- $allowedComponents := list "api" "front" "mcp-proxy" "vcs" -}}
-{{- $seenRouteIDs := dict -}}
-{{- $renderedRoutes := list -}}
-{{- range $route := $routing.routes -}}
-{{- $routeID := required "gateway.routing.routes[].id is required" $route.id -}}
-{{- if hasKey $seenRouteIDs $routeID -}}
-{{- fail (printf "duplicate APISIX route id %q" $routeID) -}}
-{{- end -}}
-{{- $_ := set $seenRouteIDs $routeID true -}}
-{{- if eq (len $route.uris) 0 -}}
-{{- fail (printf "gateway route %q requires at least one URI" $routeID) -}}
-{{- end -}}
-{{- $upstreamName := required (printf "gateway route %q requires an upstream" $routeID) $route.upstream -}}
-{{- if not (hasKey $routing.upstreams $upstreamName) -}}
-{{- fail (printf "gateway route %q references unknown upstream %q" $routeID $upstreamName) -}}
-{{- end -}}
-{{- $upstream := index $routing.upstreams $upstreamName -}}
-{{- $component := required (printf "gateway upstream %q requires a component" $upstreamName) $upstream.component -}}
-{{- if not (has $component $allowedComponents) -}}
-{{- fail (printf "gateway upstream %q targets forbidden component %q" $upstreamName $component) -}}
-{{- end -}}
-{{- range $uri := $route.uris -}}
-{{- if not (hasPrefix "/" $uri) -}}
-{{- fail (printf "gateway route %q URI %q must start with /" $routeID $uri) -}}
-{{- end -}}
-{{- end -}}
-{{- $componentValues := index $.Values $component -}}
-{{- $nodes := dict (printf "%s:%v" (include "opsdiag-app.componentServiceName" (dict "root" $ "component" $component)) $componentValues.service.ports.http) 1 -}}
-{{- $timeout := dict "connect" (int $upstream.timeout.connect) "send" (int $upstream.timeout.send) "read" (int $upstream.timeout.read) -}}
-{{- $renderedUpstream := dict "type" "roundrobin" "scheme" "http" "pass_host" "pass" "timeout" $timeout "nodes" $nodes -}}
-{{- $renderedRoute := dict "id" $routeID "name" (default $routeID $route.name) "uris" $route.uris "priority" (int $route.priority) "upstream" $renderedUpstream -}}
-{{- if $route.enableWebsocket -}}
-{{- $_ := set $renderedRoute "enable_websocket" true -}}
-{{- end -}}
-{{- $renderedRoutes = append $renderedRoutes $renderedRoute -}}
-{{- end -}}
+{{- include "opsdiag-app.validateApisix" . -}}
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ $configMapName | quote }}
+  name: {{ required "apisix.apisix.deployment.standalone.existingConfigMap is required" .Values.apisix.apisix.deployment.standalone.existingConfigMap | quote }}
   namespace: {{ include "common.names.namespace" . | quote }}
   labels:
     {{- include "common.labels.standard" (dict "customLabels" .Values.commonLabels "context" .) | nindent 4 }}
@@ -136,5 +15,27 @@ metadata:
   {{- end }}
 data:
   apisix.yaml: |
-    {{- dict "routes" $renderedRoutes | toYaml | nindent 4 }}
+    routes:
+    {{- range $route := .Values.gateway.routing.routes }}
+      - id: {{ $route.id | quote }}
+        name: {{ default $route.id $route.name | quote }}
+        uris:
+          {{- $route.uris | toYaml | nindent 10 }}
+        priority: {{ int $route.priority }}
+        {{- if $route.enableWebsocket }}
+        enable_websocket: true
+        {{- end }}
+        upstream:
+          type: roundrobin
+          scheme: http
+          pass_host: pass
+          {{- with index $.Values.gateway.routing.upstreams $route.upstream }}
+          timeout:
+            connect: {{ int .timeout.connect }}
+            send: {{ int .timeout.send }}
+            read: {{ int .timeout.read }}
+          nodes:
+            {{ printf "%s:%v" (include "opsdiag-app.componentServiceName" (dict "root" $ "component" .component)) (index $.Values .component).service.ports.http | quote }}: 1
+          {{- end }}
+    {{- end }}
     #END
