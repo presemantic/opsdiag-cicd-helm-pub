@@ -6,7 +6,6 @@ metadata:
   namespace: {{ include "common.names.namespace" . | quote }}
   labels:
     {{- include "opsdiag-app.podLabels" (dict "root" . "component" "api") | nindent 4 }}
-    app.kubernetes.io/component: migration
   annotations:
     {{- include "common.tplvalues.render" (dict "value" .Values.api.migration.annotations "context" $) | nindent 4 }}
 spec:
@@ -17,7 +16,6 @@ spec:
     metadata:
       labels:
         {{- include "opsdiag-app.podLabels" (dict "root" . "component" "api") | nindent 8 }}
-        app.kubernetes.io/component: migration
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/api/migration-secret.yaml") . | sha256sum }}
         {{- with .Values.api.podAnnotations }}
