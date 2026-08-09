@@ -8,6 +8,8 @@ This project is `opsdiag-cicd-helm-pub`, the public Helm chart repository for cu
 
 - [`opsdiag-app/`](./opsdiag-app/) deploys App API, App Agent, App Front, App Scheduler, App Pipelines, the thin App MCP Proxy, App VCS, and the mandatory official Apache APISIX gateway from `api`, `agent`, `front`, `sched`, `pipelines`, `mcp-proxy`, `vcs`, and `apisix`. It also owns optional single-backend Kubernetes Ingress, OpenShift Route, Istio Gateway, and Istio VirtualService resources that expose only APISIX.
 
+App chart `0.1.171` removes the unified chart's generic `extraDeploy` escape hatch and its `extra-list.yaml` renderer. Every object deployed by `opsdiag-app` must now have an explicit chart-owned template and contract; arbitrary additional Kubernetes objects belong in the caller's deployment layer. Component images and runtime behavior are unchanged, and this release requires no database migration.
+
 App chart `0.1.170` is the readable standalone APISIX manifest release. The parent ConfigMap now renders the complete `apisix.yaml` route and upstream objects directly in `apisix-standalone.yaml` instead of constructing nested temporary dictionaries and lists before serializing them. Standalone topology and routing validation lives in a separate non-rendering helper, preserving all safety checks and the exact generated routing contract without obscuring the Kubernetes object. Component images and runtime behavior are unchanged, and this release requires no database migration.
 
 App chart `0.1.169` is the MCP Self instruction-discovery clarification release. It pins MCP Proxy `2026-08-09.06-45-16.6941f6c` by its verified registry digest and states directly in the `instructions_write` tool that Flow references require `body.kind=flow`, Reviewer references require `body.kind=review`, the kinds are not interchangeable, and complete instruction fields should be preserved on update. Other component images remain unchanged and this release requires no database migration.
@@ -127,7 +129,7 @@ Chart dependencies are limited to the public Opsolving `common` library and, for
 
 Product documentation belongs in `opsdiag-docs-ai-context`, not this repository. Keep public chart defaults free of tenant credentials, endpoints, licenses, or environment-specific values.
 
-The breaking gateway transport release is unified App chart `0.1.7` plus customer Connector chart `0.2.0`; unified App chart `0.1.8` is the frontend security-header hotfix and `0.1.9` adds continuous encrypted gateway-grant readiness monitoring to the Agent. Public workloads do not expose container command/args, component-specific extra volumes/mounts, or component-specific `extraDeploy`; only top-level unified-chart `extraDeploy` remains. `extraEnvVars`, `extraEnvVarsCM`, and `extraEnvVarsSecret` remain supported. Front always renders chart-owned `emptyDir` mounts for Nginx runtime paths and defaults to a read-only root filesystem.
+The breaking gateway transport release is unified App chart `0.1.7` plus customer Connector chart `0.2.0`; unified App chart `0.1.8` is the frontend security-header hotfix and `0.1.9` adds continuous encrypted gateway-grant readiness monitoring to the Agent. Public workloads do not expose container command/args, component-specific extra volumes/mounts, or any generic `extraDeploy` escape hatch. `extraEnvVars`, `extraEnvVarsCM`, and `extraEnvVarsSecret` remain supported. Front always renders chart-owned `emptyDir` mounts for Nginx runtime paths and defaults to a read-only root filesystem.
 
 ## Pipeline Model Runtime Wiring
 

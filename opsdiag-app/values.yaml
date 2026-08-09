@@ -23,8 +23,6 @@ namespaceOverride: ""
 commonLabels: {}
 ## @param commonAnnotations Annotations to add to every deployed resource
 commonAnnotations: {}
-## @param extraDeploy Additional Kubernetes objects to deploy with the release
-extraDeploy: []
 
 ## @section App API parameters
 ##
