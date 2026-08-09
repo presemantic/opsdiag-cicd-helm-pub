@@ -61,10 +61,9 @@ spec:
             {{- with .Values.api.migration.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 12 }}
             {{- end }}
-          {{- $resources := include "opsdiag-app.resources" (dict "root" . "component" "api") | trim }}
-          {{- if $resources }}
+          {{- with .Values.api.resources }}
           resources:
-            {{- $resources | nindent 12 }}
+            {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 12 }}
           {{- end }}
           volumeMounts:
             - name: app-config

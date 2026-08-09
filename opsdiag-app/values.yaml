@@ -31,362 +31,362 @@ commonAnnotations: {}
 ## `api.config.database.url` or `api.config.tablesDatabase.url` to use an external database.
 ## An explicit URL always takes precedence over the embedded connection generated here.
 ##
-## @param postgresql Main App PostgreSQL settings
-postgresql:
-  ## @param postgresql.enabled Deploy the main App PostgreSQL instance
+## @param pgsql Main App PostgreSQL settings
+pgsql:
+  ## @param pgsql.enabled Deploy the main App PostgreSQL instance
   enabled: true
-  ## @param postgresql.nameOverride String to partially override the main PostgreSQL name
+  ## @param pgsql.nameOverride String to partially override the main PostgreSQL name
   nameOverride: ""
-  ## @param postgresql.fullnameOverride String to fully override the main PostgreSQL name
+  ## @param pgsql.fullnameOverride String to fully override the main PostgreSQL name
   fullnameOverride: ""
-  ## @param postgresql.image Official PostgreSQL container image settings
+  ## @param pgsql.image Official PostgreSQL container image settings
   image:
-    ## @param postgresql.image.registry Official PostgreSQL image registry
+    ## @param pgsql.image.registry Official PostgreSQL image registry
     registry: registry-1.docker.io
-    ## @param postgresql.image.repository Official PostgreSQL image repository
+    ## @param pgsql.image.repository Official PostgreSQL image repository
     repository: library/postgres
-    ## @param postgresql.image.tag PostgreSQL major-version tag; `Always` pull policy follows the newest available 18.x image
+    ## @param pgsql.image.tag PostgreSQL major-version tag; `Always` pull policy follows the newest available 18.x image
     tag: "18"
-    ## @param postgresql.image.digest Optional immutable PostgreSQL image digest; when set it overrides the tag
+    ## @param pgsql.image.digest Optional immutable PostgreSQL image digest; when set it overrides the tag
     digest: ""
-    ## @param postgresql.image.pullPolicy PostgreSQL image pull policy
+    ## @param pgsql.image.pullPolicy PostgreSQL image pull policy
     pullPolicy: Always
-    ## @param postgresql.image.pullSecrets PostgreSQL image pull secrets
+    ## @param pgsql.image.pullSecrets PostgreSQL image pull secrets
     pullSecrets: []
-  ## @param postgresql.auth Main App database credentials; password is required when no explicit URL is supplied
+  ## @param pgsql.auth Main App database credentials; password is required when no explicit URL is supplied
   auth:
-    ## @param postgresql.auth.username Main App database username
+    ## @param pgsql.auth.username Main App database username
     username: app
-    ## @param postgresql.auth.password Main App database password used when `existingSecret` is empty
+    ## @param pgsql.auth.password Main App database password used when `existingSecret` is empty
     password: ""
-    ## @param postgresql.auth.database Main App database name
+    ## @param pgsql.auth.database Main App database name
     database: app
-    ## @param postgresql.auth.existingSecret Existing Secret containing the database password; requires an explicit `api.config.database.url`
+    ## @param pgsql.auth.existingSecret Existing Secret containing the database password; requires an explicit `api.config.database.url`
     existingSecret: ""
-    ## @param postgresql.auth.secretKeys Password key names in the generated or existing Secret
+    ## @param pgsql.auth.secretKeys Password key names in the generated or existing Secret
     secretKeys:
-      ## @param postgresql.auth.secretKeys.userPasswordKey Secret key containing the Main App database password
+      ## @param pgsql.auth.secretKeys.userPasswordKey Secret key containing the Main App database password
       userPasswordKey: password
-  ## @param postgresql.primary Main App PostgreSQL primary workload settings
+  ## @param pgsql.primary Main App PostgreSQL primary workload settings
   primary:
-    ## @param postgresql.primary.serviceAccount Main App PostgreSQL ServiceAccount settings
+    ## @param pgsql.primary.serviceAccount Main App PostgreSQL ServiceAccount settings
     serviceAccount:
-      ## @param postgresql.primary.serviceAccount.create Create a dedicated ServiceAccount
+      ## @param pgsql.primary.serviceAccount.create Create a dedicated ServiceAccount
       create: true
-      ## @param postgresql.primary.serviceAccount.name ServiceAccount name; generated when empty
+      ## @param pgsql.primary.serviceAccount.name ServiceAccount name; generated when empty
       name: ""
-      ## @param postgresql.primary.serviceAccount.annotations Additional ServiceAccount annotations
+      ## @param pgsql.primary.serviceAccount.annotations Additional ServiceAccount annotations
       annotations: {}
-      ## @param postgresql.primary.serviceAccount.automountServiceAccountToken Mount the Kubernetes API token
+      ## @param pgsql.primary.serviceAccount.automountServiceAccountToken Mount the Kubernetes API token
       automountServiceAccountToken: false
-    ## @param postgresql.primary.updateStrategy StatefulSet update strategy
+    ## @param pgsql.primary.updateStrategy StatefulSet update strategy
     updateStrategy:
-      ## @param postgresql.primary.updateStrategy.type StatefulSet update strategy type
+      ## @param pgsql.primary.updateStrategy.type StatefulSet update strategy type
       type: RollingUpdate
-    ## @param postgresql.primary.podManagementPolicy StatefulSet pod management policy
+    ## @param pgsql.primary.podManagementPolicy StatefulSet pod management policy
     podManagementPolicy: OrderedReady
-    ## @param postgresql.primary.podSecurityContext PostgreSQL pod security context
+    ## @param pgsql.primary.podSecurityContext PostgreSQL pod security context
     podSecurityContext:
-      ## @param postgresql.primary.podSecurityContext.enabled Enable the PostgreSQL pod security context
+      ## @param pgsql.primary.podSecurityContext.enabled Enable the PostgreSQL pod security context
       enabled: true
-      ## @param postgresql.primary.podSecurityContext.fsGroup Filesystem group used by PostgreSQL
+      ## @param pgsql.primary.podSecurityContext.fsGroup Filesystem group used by PostgreSQL
       fsGroup: 999
-      ## @param postgresql.primary.podSecurityContext.fsGroupChangePolicy Filesystem group ownership change policy
+      ## @param pgsql.primary.podSecurityContext.fsGroupChangePolicy Filesystem group ownership change policy
       fsGroupChangePolicy: OnRootMismatch
-      ## @param postgresql.primary.podSecurityContext.seccompProfile PostgreSQL pod seccomp profile
+      ## @param pgsql.primary.podSecurityContext.seccompProfile PostgreSQL pod seccomp profile
       seccompProfile:
-        ## @param postgresql.primary.podSecurityContext.seccompProfile.type PostgreSQL pod seccomp profile type
+        ## @param pgsql.primary.podSecurityContext.seccompProfile.type PostgreSQL pod seccomp profile type
         type: RuntimeDefault
-    ## @param postgresql.primary.containerSecurityContext PostgreSQL container security context
+    ## @param pgsql.primary.containerSecurityContext PostgreSQL container security context
     containerSecurityContext:
-      ## @param postgresql.primary.containerSecurityContext.enabled Enable the PostgreSQL container security context
+      ## @param pgsql.primary.containerSecurityContext.enabled Enable the PostgreSQL container security context
       enabled: true
-      ## @param postgresql.primary.containerSecurityContext.runAsUser PostgreSQL process user ID
+      ## @param pgsql.primary.containerSecurityContext.runAsUser PostgreSQL process user ID
       runAsUser: 999
-      ## @param postgresql.primary.containerSecurityContext.runAsGroup PostgreSQL process group ID
+      ## @param pgsql.primary.containerSecurityContext.runAsGroup PostgreSQL process group ID
       runAsGroup: 999
-      ## @param postgresql.primary.containerSecurityContext.runAsNonRoot Require a non-root PostgreSQL process
+      ## @param pgsql.primary.containerSecurityContext.runAsNonRoot Require a non-root PostgreSQL process
       runAsNonRoot: true
-      ## @param postgresql.primary.containerSecurityContext.allowPrivilegeEscalation Allow PostgreSQL privilege escalation
+      ## @param pgsql.primary.containerSecurityContext.allowPrivilegeEscalation Allow PostgreSQL privilege escalation
       allowPrivilegeEscalation: false
-      ## @param postgresql.primary.containerSecurityContext.readOnlyRootFilesystem Use a read-only PostgreSQL root filesystem
+      ## @param pgsql.primary.containerSecurityContext.readOnlyRootFilesystem Use a read-only PostgreSQL root filesystem
       readOnlyRootFilesystem: true
-      ## @param postgresql.primary.containerSecurityContext.capabilities PostgreSQL Linux capability settings
+      ## @param pgsql.primary.containerSecurityContext.capabilities PostgreSQL Linux capability settings
       capabilities:
-        ## @param postgresql.primary.containerSecurityContext.capabilities.drop PostgreSQL Linux capabilities to drop
+        ## @param pgsql.primary.containerSecurityContext.capabilities.drop PostgreSQL Linux capabilities to drop
         drop:
           - ALL
-    ## @param postgresql.primary.resources PostgreSQL resource requests and limits
+    ## @param pgsql.primary.resources PostgreSQL resource requests and limits
     resources:
-      ## @param postgresql.primary.resources.requests PostgreSQL resource requests
+      ## @param pgsql.primary.resources.requests PostgreSQL resource requests
       requests:
-        ## @param postgresql.primary.resources.requests.cpu Requested PostgreSQL CPU
+        ## @param pgsql.primary.resources.requests.cpu Requested PostgreSQL CPU
         cpu: 100m
-        ## @param postgresql.primary.resources.requests.memory Requested PostgreSQL memory
+        ## @param pgsql.primary.resources.requests.memory Requested PostgreSQL memory
         memory: 256Mi
-    ## @param postgresql.primary.persistence PostgreSQL data persistence settings
+    ## @param pgsql.primary.persistence PostgreSQL data persistence settings
     persistence:
-      ## @param postgresql.primary.persistence.enabled Persist PostgreSQL data in a PVC
+      ## @param pgsql.primary.persistence.enabled Persist PostgreSQL data in a PVC
       enabled: true
-      ## @param postgresql.primary.persistence.existingClaim Existing PVC mounted at `/var/lib/postgresql`; no volumeClaimTemplate is created
+      ## @param pgsql.primary.persistence.existingClaim Existing PVC mounted at `/var/lib/postgresql`; no volumeClaimTemplate is created
       existingClaim: ""
-      ## @param postgresql.primary.persistence.storageClass StorageClass for the generated PVC; `-` disables dynamic provisioning
+      ## @param pgsql.primary.persistence.storageClass StorageClass for the generated PVC; `-` disables dynamic provisioning
       storageClass: ""
-      ## @param postgresql.primary.persistence.accessModes Access modes for the generated PVC
+      ## @param pgsql.primary.persistence.accessModes Access modes for the generated PVC
       accessModes:
         - ReadWriteOnce
-      ## @param postgresql.primary.persistence.size Requested PostgreSQL data volume size
+      ## @param pgsql.primary.persistence.size Requested PostgreSQL data volume size
       size: 50Gi
-      ## @param postgresql.primary.persistence.annotations Additional generated PVC annotations
+      ## @param pgsql.primary.persistence.annotations Additional generated PVC annotations
       annotations: {}
-      ## @param postgresql.primary.persistence.selector Label selector for a pre-provisioned PersistentVolume
+      ## @param pgsql.primary.persistence.selector Label selector for a pre-provisioned PersistentVolume
       selector: {}
-    ## @param postgresql.primary.service Stable client Service settings
+    ## @param pgsql.primary.service Stable client Service settings
     service:
-      ## @param postgresql.primary.service.type PostgreSQL Service type
+      ## @param pgsql.primary.service.type PostgreSQL Service type
       type: ClusterIP
-      ## @param postgresql.primary.service.annotations Additional PostgreSQL Service annotations
+      ## @param pgsql.primary.service.annotations Additional PostgreSQL Service annotations
       annotations: {}
-      ## @param postgresql.primary.service.clusterIP Requested PostgreSQL Service cluster IP
+      ## @param pgsql.primary.service.clusterIP Requested PostgreSQL Service cluster IP
       clusterIP: ""
-      ## @param postgresql.primary.service.sessionAffinity PostgreSQL Service session affinity
+      ## @param pgsql.primary.service.sessionAffinity PostgreSQL Service session affinity
       sessionAffinity: None
-      ## @param postgresql.primary.service.ports PostgreSQL Service port settings
+      ## @param pgsql.primary.service.ports PostgreSQL Service port settings
       ports:
-        ## @param postgresql.primary.service.ports.postgresql PostgreSQL client port
-        postgresql: 5432
-    ## @param postgresql.primary.startupProbe PostgreSQL startup probe settings
+        ## @param pgsql.primary.service.ports.pgsql PostgreSQL client port
+        pgsql: 5432
+    ## @param pgsql.primary.startupProbe PostgreSQL startup probe settings
     startupProbe:
-      ## @param postgresql.primary.startupProbe.enabled Enable the PostgreSQL startup probe
+      ## @param pgsql.primary.startupProbe.enabled Enable the PostgreSQL startup probe
       enabled: true
-      ## @param postgresql.primary.startupProbe.spec PostgreSQL startup probe timing settings
+      ## @param pgsql.primary.startupProbe.spec PostgreSQL startup probe timing settings
       spec:
-        ## @param postgresql.primary.startupProbe.spec.periodSeconds PostgreSQL startup probe period in seconds
+        ## @param pgsql.primary.startupProbe.spec.periodSeconds PostgreSQL startup probe period in seconds
         periodSeconds: 5
-        ## @param postgresql.primary.startupProbe.spec.timeoutSeconds PostgreSQL startup probe timeout in seconds
+        ## @param pgsql.primary.startupProbe.spec.timeoutSeconds PostgreSQL startup probe timeout in seconds
         timeoutSeconds: 5
-        ## @param postgresql.primary.startupProbe.spec.failureThreshold PostgreSQL startup probe failure threshold
+        ## @param pgsql.primary.startupProbe.spec.failureThreshold PostgreSQL startup probe failure threshold
         failureThreshold: 60
-    ## @param postgresql.primary.readinessProbe PostgreSQL readiness probe settings
+    ## @param pgsql.primary.readinessProbe PostgreSQL readiness probe settings
     readinessProbe:
-      ## @param postgresql.primary.readinessProbe.enabled Enable the PostgreSQL readiness probe
+      ## @param pgsql.primary.readinessProbe.enabled Enable the PostgreSQL readiness probe
       enabled: true
-      ## @param postgresql.primary.readinessProbe.spec PostgreSQL readiness probe timing settings
+      ## @param pgsql.primary.readinessProbe.spec PostgreSQL readiness probe timing settings
       spec:
-        ## @param postgresql.primary.readinessProbe.spec.periodSeconds PostgreSQL readiness probe period in seconds
+        ## @param pgsql.primary.readinessProbe.spec.periodSeconds PostgreSQL readiness probe period in seconds
         periodSeconds: 10
-        ## @param postgresql.primary.readinessProbe.spec.timeoutSeconds PostgreSQL readiness probe timeout in seconds
+        ## @param pgsql.primary.readinessProbe.spec.timeoutSeconds PostgreSQL readiness probe timeout in seconds
         timeoutSeconds: 5
-        ## @param postgresql.primary.readinessProbe.spec.failureThreshold PostgreSQL readiness probe failure threshold
+        ## @param pgsql.primary.readinessProbe.spec.failureThreshold PostgreSQL readiness probe failure threshold
         failureThreshold: 6
-    ## @param postgresql.primary.livenessProbe PostgreSQL liveness probe settings
+    ## @param pgsql.primary.livenessProbe PostgreSQL liveness probe settings
     livenessProbe:
-      ## @param postgresql.primary.livenessProbe.enabled Enable the PostgreSQL liveness probe
+      ## @param pgsql.primary.livenessProbe.enabled Enable the PostgreSQL liveness probe
       enabled: true
-      ## @param postgresql.primary.livenessProbe.spec PostgreSQL liveness probe timing settings
+      ## @param pgsql.primary.livenessProbe.spec PostgreSQL liveness probe timing settings
       spec:
-        ## @param postgresql.primary.livenessProbe.spec.periodSeconds PostgreSQL liveness probe period in seconds
+        ## @param pgsql.primary.livenessProbe.spec.periodSeconds PostgreSQL liveness probe period in seconds
         periodSeconds: 10
-        ## @param postgresql.primary.livenessProbe.spec.timeoutSeconds PostgreSQL liveness probe timeout in seconds
+        ## @param pgsql.primary.livenessProbe.spec.timeoutSeconds PostgreSQL liveness probe timeout in seconds
         timeoutSeconds: 5
-        ## @param postgresql.primary.livenessProbe.spec.failureThreshold PostgreSQL liveness probe failure threshold
+        ## @param pgsql.primary.livenessProbe.spec.failureThreshold PostgreSQL liveness probe failure threshold
         failureThreshold: 6
-    ## @param postgresql.primary.podLabels Additional PostgreSQL pod labels
+    ## @param pgsql.primary.podLabels Additional PostgreSQL pod labels
     podLabels: {}
-    ## @param postgresql.primary.podAnnotations Additional PostgreSQL pod annotations
+    ## @param pgsql.primary.podAnnotations Additional PostgreSQL pod annotations
     podAnnotations: {}
-    ## @param postgresql.primary.affinity PostgreSQL pod affinity rules
+    ## @param pgsql.primary.affinity PostgreSQL pod affinity rules
     affinity: {}
-    ## @param postgresql.primary.nodeSelector Node labels for PostgreSQL pod assignment
+    ## @param pgsql.primary.nodeSelector Node labels for PostgreSQL pod assignment
     nodeSelector: {}
-    ## @param postgresql.primary.tolerations Tolerations for PostgreSQL pod assignment
+    ## @param pgsql.primary.tolerations Tolerations for PostgreSQL pod assignment
     tolerations: []
-    ## @param postgresql.primary.topologySpreadConstraints Topology spread constraints for PostgreSQL pods
+    ## @param pgsql.primary.topologySpreadConstraints Topology spread constraints for PostgreSQL pods
     topologySpreadConstraints: []
-    ## @param postgresql.primary.priorityClassName PostgreSQL pod priority class
+    ## @param pgsql.primary.priorityClassName PostgreSQL pod priority class
     priorityClassName: ""
-    ## @param postgresql.primary.schedulerName Alternate Kubernetes scheduler for PostgreSQL
+    ## @param pgsql.primary.schedulerName Alternate Kubernetes scheduler for PostgreSQL
     schedulerName: ""
-    ## @param postgresql.primary.terminationGracePeriodSeconds PostgreSQL pod termination grace period
+    ## @param pgsql.primary.terminationGracePeriodSeconds PostgreSQL pod termination grace period
     terminationGracePeriodSeconds: 60
 
-## @param tables-postgresql Dedicated Pipeline Tables PostgreSQL settings
-tables-postgresql:
-  ## @param tables-postgresql.enabled Deploy the dedicated Pipeline Tables PostgreSQL instance
+## @param pgsql-tables Dedicated Pipeline Tables PostgreSQL settings
+pgsql-tables:
+  ## @param pgsql-tables.enabled Deploy the dedicated Pipeline Tables PostgreSQL instance
   enabled: true
-  ## @param tables-postgresql.nameOverride String to partially override the Pipeline Tables PostgreSQL name
+  ## @param pgsql-tables.nameOverride String to partially override the Pipeline Tables PostgreSQL name
   nameOverride: ""
-  ## @param tables-postgresql.fullnameOverride String to fully override the Pipeline Tables PostgreSQL name
+  ## @param pgsql-tables.fullnameOverride String to fully override the Pipeline Tables PostgreSQL name
   fullnameOverride: ""
-  ## @param tables-postgresql.image Official PostgreSQL container image settings
+  ## @param pgsql-tables.image Official PostgreSQL container image settings
   image:
-    ## @param tables-postgresql.image.registry Official PostgreSQL image registry
+    ## @param pgsql-tables.image.registry Official PostgreSQL image registry
     registry: registry-1.docker.io
-    ## @param tables-postgresql.image.repository Official PostgreSQL image repository
+    ## @param pgsql-tables.image.repository Official PostgreSQL image repository
     repository: library/postgres
-    ## @param tables-postgresql.image.tag PostgreSQL major-version tag; `Always` pull policy follows the newest available 18.x image
+    ## @param pgsql-tables.image.tag PostgreSQL major-version tag; `Always` pull policy follows the newest available 18.x image
     tag: "18"
-    ## @param tables-postgresql.image.digest Optional immutable PostgreSQL image digest; when set it overrides the tag
+    ## @param pgsql-tables.image.digest Optional immutable PostgreSQL image digest; when set it overrides the tag
     digest: ""
-    ## @param tables-postgresql.image.pullPolicy PostgreSQL image pull policy
+    ## @param pgsql-tables.image.pullPolicy PostgreSQL image pull policy
     pullPolicy: Always
-    ## @param tables-postgresql.image.pullSecrets PostgreSQL image pull secrets
+    ## @param pgsql-tables.image.pullSecrets PostgreSQL image pull secrets
     pullSecrets: []
-  ## @param tables-postgresql.auth Pipeline Tables database credentials; password is required when no explicit URL is supplied
+  ## @param pgsql-tables.auth Pipeline Tables database credentials; password is required when no explicit URL is supplied
   auth:
-    ## @param tables-postgresql.auth.username Pipeline Tables database username
+    ## @param pgsql-tables.auth.username Pipeline Tables database username
     username: tables
-    ## @param tables-postgresql.auth.password Pipeline Tables database password used when `existingSecret` is empty
+    ## @param pgsql-tables.auth.password Pipeline Tables database password used when `existingSecret` is empty
     password: ""
-    ## @param tables-postgresql.auth.database Pipeline Tables database name
+    ## @param pgsql-tables.auth.database Pipeline Tables database name
     database: tables
-    ## @param tables-postgresql.auth.existingSecret Existing Secret containing the database password; requires an explicit `api.config.tablesDatabase.url`
+    ## @param pgsql-tables.auth.existingSecret Existing Secret containing the database password; requires an explicit `api.config.tablesDatabase.url`
     existingSecret: ""
-    ## @param tables-postgresql.auth.secretKeys Password key names in the generated or existing Secret
+    ## @param pgsql-tables.auth.secretKeys Password key names in the generated or existing Secret
     secretKeys:
-      ## @param tables-postgresql.auth.secretKeys.userPasswordKey Secret key containing the Pipeline Tables database password
+      ## @param pgsql-tables.auth.secretKeys.userPasswordKey Secret key containing the Pipeline Tables database password
       userPasswordKey: password
-  ## @param tables-postgresql.primary Pipeline Tables PostgreSQL primary workload settings
+  ## @param pgsql-tables.primary Pipeline Tables PostgreSQL primary workload settings
   primary:
-    ## @param tables-postgresql.primary.serviceAccount Pipeline Tables PostgreSQL ServiceAccount settings
+    ## @param pgsql-tables.primary.serviceAccount Pipeline Tables PostgreSQL ServiceAccount settings
     serviceAccount:
-      ## @param tables-postgresql.primary.serviceAccount.create Create a dedicated ServiceAccount
+      ## @param pgsql-tables.primary.serviceAccount.create Create a dedicated ServiceAccount
       create: true
-      ## @param tables-postgresql.primary.serviceAccount.name ServiceAccount name; generated when empty
+      ## @param pgsql-tables.primary.serviceAccount.name ServiceAccount name; generated when empty
       name: ""
-      ## @param tables-postgresql.primary.serviceAccount.annotations Additional ServiceAccount annotations
+      ## @param pgsql-tables.primary.serviceAccount.annotations Additional ServiceAccount annotations
       annotations: {}
-      ## @param tables-postgresql.primary.serviceAccount.automountServiceAccountToken Mount the Kubernetes API token
+      ## @param pgsql-tables.primary.serviceAccount.automountServiceAccountToken Mount the Kubernetes API token
       automountServiceAccountToken: false
-    ## @param tables-postgresql.primary.updateStrategy StatefulSet update strategy
+    ## @param pgsql-tables.primary.updateStrategy StatefulSet update strategy
     updateStrategy:
-      ## @param tables-postgresql.primary.updateStrategy.type StatefulSet update strategy type
+      ## @param pgsql-tables.primary.updateStrategy.type StatefulSet update strategy type
       type: RollingUpdate
-    ## @param tables-postgresql.primary.podManagementPolicy StatefulSet pod management policy
+    ## @param pgsql-tables.primary.podManagementPolicy StatefulSet pod management policy
     podManagementPolicy: OrderedReady
-    ## @param tables-postgresql.primary.podSecurityContext PostgreSQL pod security context
+    ## @param pgsql-tables.primary.podSecurityContext PostgreSQL pod security context
     podSecurityContext:
-      ## @param tables-postgresql.primary.podSecurityContext.enabled Enable the PostgreSQL pod security context
+      ## @param pgsql-tables.primary.podSecurityContext.enabled Enable the PostgreSQL pod security context
       enabled: true
-      ## @param tables-postgresql.primary.podSecurityContext.fsGroup Filesystem group used by PostgreSQL
+      ## @param pgsql-tables.primary.podSecurityContext.fsGroup Filesystem group used by PostgreSQL
       fsGroup: 999
-      ## @param tables-postgresql.primary.podSecurityContext.fsGroupChangePolicy Filesystem group ownership change policy
+      ## @param pgsql-tables.primary.podSecurityContext.fsGroupChangePolicy Filesystem group ownership change policy
       fsGroupChangePolicy: OnRootMismatch
-      ## @param tables-postgresql.primary.podSecurityContext.seccompProfile PostgreSQL pod seccomp profile
+      ## @param pgsql-tables.primary.podSecurityContext.seccompProfile PostgreSQL pod seccomp profile
       seccompProfile:
-        ## @param tables-postgresql.primary.podSecurityContext.seccompProfile.type PostgreSQL pod seccomp profile type
+        ## @param pgsql-tables.primary.podSecurityContext.seccompProfile.type PostgreSQL pod seccomp profile type
         type: RuntimeDefault
-    ## @param tables-postgresql.primary.containerSecurityContext PostgreSQL container security context
+    ## @param pgsql-tables.primary.containerSecurityContext PostgreSQL container security context
     containerSecurityContext:
-      ## @param tables-postgresql.primary.containerSecurityContext.enabled Enable the PostgreSQL container security context
+      ## @param pgsql-tables.primary.containerSecurityContext.enabled Enable the PostgreSQL container security context
       enabled: true
-      ## @param tables-postgresql.primary.containerSecurityContext.runAsUser PostgreSQL process user ID
+      ## @param pgsql-tables.primary.containerSecurityContext.runAsUser PostgreSQL process user ID
       runAsUser: 999
-      ## @param tables-postgresql.primary.containerSecurityContext.runAsGroup PostgreSQL process group ID
+      ## @param pgsql-tables.primary.containerSecurityContext.runAsGroup PostgreSQL process group ID
       runAsGroup: 999
-      ## @param tables-postgresql.primary.containerSecurityContext.runAsNonRoot Require a non-root PostgreSQL process
+      ## @param pgsql-tables.primary.containerSecurityContext.runAsNonRoot Require a non-root PostgreSQL process
       runAsNonRoot: true
-      ## @param tables-postgresql.primary.containerSecurityContext.allowPrivilegeEscalation Allow PostgreSQL privilege escalation
+      ## @param pgsql-tables.primary.containerSecurityContext.allowPrivilegeEscalation Allow PostgreSQL privilege escalation
       allowPrivilegeEscalation: false
-      ## @param tables-postgresql.primary.containerSecurityContext.readOnlyRootFilesystem Use a read-only PostgreSQL root filesystem
+      ## @param pgsql-tables.primary.containerSecurityContext.readOnlyRootFilesystem Use a read-only PostgreSQL root filesystem
       readOnlyRootFilesystem: true
-      ## @param tables-postgresql.primary.containerSecurityContext.capabilities PostgreSQL Linux capability settings
+      ## @param pgsql-tables.primary.containerSecurityContext.capabilities PostgreSQL Linux capability settings
       capabilities:
-        ## @param tables-postgresql.primary.containerSecurityContext.capabilities.drop PostgreSQL Linux capabilities to drop
+        ## @param pgsql-tables.primary.containerSecurityContext.capabilities.drop PostgreSQL Linux capabilities to drop
         drop:
           - ALL
-    ## @param tables-postgresql.primary.resources PostgreSQL resource requests and limits
+    ## @param pgsql-tables.primary.resources PostgreSQL resource requests and limits
     resources:
-      ## @param tables-postgresql.primary.resources.requests PostgreSQL resource requests
+      ## @param pgsql-tables.primary.resources.requests PostgreSQL resource requests
       requests:
-        ## @param tables-postgresql.primary.resources.requests.cpu Requested PostgreSQL CPU
+        ## @param pgsql-tables.primary.resources.requests.cpu Requested PostgreSQL CPU
         cpu: 100m
-        ## @param tables-postgresql.primary.resources.requests.memory Requested PostgreSQL memory
+        ## @param pgsql-tables.primary.resources.requests.memory Requested PostgreSQL memory
         memory: 256Mi
-    ## @param tables-postgresql.primary.persistence PostgreSQL data persistence settings
+    ## @param pgsql-tables.primary.persistence PostgreSQL data persistence settings
     persistence:
-      ## @param tables-postgresql.primary.persistence.enabled Persist PostgreSQL data in a PVC
+      ## @param pgsql-tables.primary.persistence.enabled Persist PostgreSQL data in a PVC
       enabled: true
-      ## @param tables-postgresql.primary.persistence.existingClaim Existing PVC mounted at `/var/lib/postgresql`; no volumeClaimTemplate is created
+      ## @param pgsql-tables.primary.persistence.existingClaim Existing PVC mounted at `/var/lib/postgresql`; no volumeClaimTemplate is created
       existingClaim: ""
-      ## @param tables-postgresql.primary.persistence.storageClass StorageClass for the generated PVC; `-` disables dynamic provisioning
+      ## @param pgsql-tables.primary.persistence.storageClass StorageClass for the generated PVC; `-` disables dynamic provisioning
       storageClass: ""
-      ## @param tables-postgresql.primary.persistence.accessModes Access modes for the generated PVC
+      ## @param pgsql-tables.primary.persistence.accessModes Access modes for the generated PVC
       accessModes:
         - ReadWriteOnce
-      ## @param tables-postgresql.primary.persistence.size Requested PostgreSQL data volume size
+      ## @param pgsql-tables.primary.persistence.size Requested PostgreSQL data volume size
       size: 20Gi
-      ## @param tables-postgresql.primary.persistence.annotations Additional generated PVC annotations
+      ## @param pgsql-tables.primary.persistence.annotations Additional generated PVC annotations
       annotations: {}
-      ## @param tables-postgresql.primary.persistence.selector Label selector for a pre-provisioned PersistentVolume
+      ## @param pgsql-tables.primary.persistence.selector Label selector for a pre-provisioned PersistentVolume
       selector: {}
-    ## @param tables-postgresql.primary.service Stable client Service settings
+    ## @param pgsql-tables.primary.service Stable client Service settings
     service:
-      ## @param tables-postgresql.primary.service.type PostgreSQL Service type
+      ## @param pgsql-tables.primary.service.type PostgreSQL Service type
       type: ClusterIP
-      ## @param tables-postgresql.primary.service.annotations Additional PostgreSQL Service annotations
+      ## @param pgsql-tables.primary.service.annotations Additional PostgreSQL Service annotations
       annotations: {}
-      ## @param tables-postgresql.primary.service.clusterIP Requested PostgreSQL Service cluster IP
+      ## @param pgsql-tables.primary.service.clusterIP Requested PostgreSQL Service cluster IP
       clusterIP: ""
-      ## @param tables-postgresql.primary.service.sessionAffinity PostgreSQL Service session affinity
+      ## @param pgsql-tables.primary.service.sessionAffinity PostgreSQL Service session affinity
       sessionAffinity: None
-      ## @param tables-postgresql.primary.service.ports PostgreSQL Service port settings
+      ## @param pgsql-tables.primary.service.ports PostgreSQL Service port settings
       ports:
-        ## @param tables-postgresql.primary.service.ports.postgresql PostgreSQL client port
-        postgresql: 5432
-    ## @param tables-postgresql.primary.startupProbe PostgreSQL startup probe settings
+        ## @param pgsql-tables.primary.service.ports.pgsql PostgreSQL client port
+        pgsql: 5432
+    ## @param pgsql-tables.primary.startupProbe PostgreSQL startup probe settings
     startupProbe:
-      ## @param tables-postgresql.primary.startupProbe.enabled Enable the PostgreSQL startup probe
+      ## @param pgsql-tables.primary.startupProbe.enabled Enable the PostgreSQL startup probe
       enabled: true
-      ## @param tables-postgresql.primary.startupProbe.spec PostgreSQL startup probe timing settings
+      ## @param pgsql-tables.primary.startupProbe.spec PostgreSQL startup probe timing settings
       spec:
-        ## @param tables-postgresql.primary.startupProbe.spec.periodSeconds PostgreSQL startup probe period in seconds
+        ## @param pgsql-tables.primary.startupProbe.spec.periodSeconds PostgreSQL startup probe period in seconds
         periodSeconds: 5
-        ## @param tables-postgresql.primary.startupProbe.spec.timeoutSeconds PostgreSQL startup probe timeout in seconds
+        ## @param pgsql-tables.primary.startupProbe.spec.timeoutSeconds PostgreSQL startup probe timeout in seconds
         timeoutSeconds: 5
-        ## @param tables-postgresql.primary.startupProbe.spec.failureThreshold PostgreSQL startup probe failure threshold
+        ## @param pgsql-tables.primary.startupProbe.spec.failureThreshold PostgreSQL startup probe failure threshold
         failureThreshold: 60
-    ## @param tables-postgresql.primary.readinessProbe PostgreSQL readiness probe settings
+    ## @param pgsql-tables.primary.readinessProbe PostgreSQL readiness probe settings
     readinessProbe:
-      ## @param tables-postgresql.primary.readinessProbe.enabled Enable the PostgreSQL readiness probe
+      ## @param pgsql-tables.primary.readinessProbe.enabled Enable the PostgreSQL readiness probe
       enabled: true
-      ## @param tables-postgresql.primary.readinessProbe.spec PostgreSQL readiness probe timing settings
+      ## @param pgsql-tables.primary.readinessProbe.spec PostgreSQL readiness probe timing settings
       spec:
-        ## @param tables-postgresql.primary.readinessProbe.spec.periodSeconds PostgreSQL readiness probe period in seconds
+        ## @param pgsql-tables.primary.readinessProbe.spec.periodSeconds PostgreSQL readiness probe period in seconds
         periodSeconds: 10
-        ## @param tables-postgresql.primary.readinessProbe.spec.timeoutSeconds PostgreSQL readiness probe timeout in seconds
+        ## @param pgsql-tables.primary.readinessProbe.spec.timeoutSeconds PostgreSQL readiness probe timeout in seconds
         timeoutSeconds: 5
-        ## @param tables-postgresql.primary.readinessProbe.spec.failureThreshold PostgreSQL readiness probe failure threshold
+        ## @param pgsql-tables.primary.readinessProbe.spec.failureThreshold PostgreSQL readiness probe failure threshold
         failureThreshold: 6
-    ## @param tables-postgresql.primary.livenessProbe PostgreSQL liveness probe settings
+    ## @param pgsql-tables.primary.livenessProbe PostgreSQL liveness probe settings
     livenessProbe:
-      ## @param tables-postgresql.primary.livenessProbe.enabled Enable the PostgreSQL liveness probe
+      ## @param pgsql-tables.primary.livenessProbe.enabled Enable the PostgreSQL liveness probe
       enabled: true
-      ## @param tables-postgresql.primary.livenessProbe.spec PostgreSQL liveness probe timing settings
+      ## @param pgsql-tables.primary.livenessProbe.spec PostgreSQL liveness probe timing settings
       spec:
-        ## @param tables-postgresql.primary.livenessProbe.spec.periodSeconds PostgreSQL liveness probe period in seconds
+        ## @param pgsql-tables.primary.livenessProbe.spec.periodSeconds PostgreSQL liveness probe period in seconds
         periodSeconds: 10
-        ## @param tables-postgresql.primary.livenessProbe.spec.timeoutSeconds PostgreSQL liveness probe timeout in seconds
+        ## @param pgsql-tables.primary.livenessProbe.spec.timeoutSeconds PostgreSQL liveness probe timeout in seconds
         timeoutSeconds: 5
-        ## @param tables-postgresql.primary.livenessProbe.spec.failureThreshold PostgreSQL liveness probe failure threshold
+        ## @param pgsql-tables.primary.livenessProbe.spec.failureThreshold PostgreSQL liveness probe failure threshold
         failureThreshold: 6
-    ## @param tables-postgresql.primary.podLabels Additional PostgreSQL pod labels
+    ## @param pgsql-tables.primary.podLabels Additional PostgreSQL pod labels
     podLabels: {}
-    ## @param tables-postgresql.primary.podAnnotations Additional PostgreSQL pod annotations
+    ## @param pgsql-tables.primary.podAnnotations Additional PostgreSQL pod annotations
     podAnnotations: {}
-    ## @param tables-postgresql.primary.affinity PostgreSQL pod affinity rules
+    ## @param pgsql-tables.primary.affinity PostgreSQL pod affinity rules
     affinity: {}
-    ## @param tables-postgresql.primary.nodeSelector Node labels for PostgreSQL pod assignment
+    ## @param pgsql-tables.primary.nodeSelector Node labels for PostgreSQL pod assignment
     nodeSelector: {}
-    ## @param tables-postgresql.primary.tolerations Tolerations for PostgreSQL pod assignment
+    ## @param pgsql-tables.primary.tolerations Tolerations for PostgreSQL pod assignment
     tolerations: []
-    ## @param tables-postgresql.primary.topologySpreadConstraints Topology spread constraints for PostgreSQL pods
+    ## @param pgsql-tables.primary.topologySpreadConstraints Topology spread constraints for PostgreSQL pods
     topologySpreadConstraints: []
-    ## @param tables-postgresql.primary.priorityClassName PostgreSQL pod priority class
+    ## @param pgsql-tables.primary.priorityClassName PostgreSQL pod priority class
     priorityClassName: ""
-    ## @param tables-postgresql.primary.schedulerName Alternate Kubernetes scheduler for PostgreSQL
+    ## @param pgsql-tables.primary.schedulerName Alternate Kubernetes scheduler for PostgreSQL
     schedulerName: ""
-    ## @param tables-postgresql.primary.terminationGracePeriodSeconds PostgreSQL pod termination grace period
+    ## @param pgsql-tables.primary.terminationGracePeriodSeconds PostgreSQL pod termination grace period
     terminationGracePeriodSeconds: 60
 
 ## @section App API parameters
@@ -629,16 +629,6 @@ api:
   ## @param api.terminationGracePeriodSeconds App API pod termination grace period
   terminationGracePeriodSeconds: 30
 
-  ## App API PodDisruptionBudget
-  ##
-  ## @param api.podDisruptionBudget App API PodDisruptionBudget settings
-  podDisruptionBudget:
-    ## @param api.podDisruptionBudget.enabled Create an App API PodDisruptionBudget
-    enabled: true
-    ## @param api.podDisruptionBudget.minAvailable Minimum number or percentage of available App API pods
-    minAvailable: 1
-    ## @param api.podDisruptionBudget.maxUnavailable Maximum number or percentage of unavailable App API pods
-    maxUnavailable: ""
 
   ## App API database migration Job
   ##
@@ -895,17 +885,6 @@ agent:
   ## @param agent.terminationGracePeriodSeconds App Agent pod termination grace period
   terminationGracePeriodSeconds: 30
 
-  ## App Agent PodDisruptionBudget
-  ##
-  ## @param agent.podDisruptionBudget App Agent PodDisruptionBudget settings
-  podDisruptionBudget:
-    ## @param agent.podDisruptionBudget.enabled Create an App Agent PodDisruptionBudget
-    enabled: false
-    ## @param agent.podDisruptionBudget.minAvailable Minimum number or percentage of available App Agent pods
-    minAvailable: ""
-    ## @param agent.podDisruptionBudget.maxUnavailable Maximum number or percentage of unavailable App Agent pods
-    maxUnavailable: ""
-
 ## @section App MCP Proxy parameters
 ##
 ## @param mcp-proxy App MCP Proxy component settings
@@ -1053,12 +1032,6 @@ mcp-proxy:
   priorityClassName: ""
   schedulerName: ""
   terminationGracePeriodSeconds: 30
-
-  ## @param mcp-proxy.podDisruptionBudget App MCP Proxy PodDisruptionBudget settings
-  podDisruptionBudget:
-    enabled: false
-    minAvailable: ""
-    maxUnavailable: ""
 
 ## @section App VCS parameters
 ##
@@ -1245,15 +1218,6 @@ vcs:
   schedulerName: ""
   ## @param vcs.terminationGracePeriodSeconds App VCS pod termination grace period
   terminationGracePeriodSeconds: 30
-  ## @param vcs.podDisruptionBudget App VCS PodDisruptionBudget settings
-  podDisruptionBudget:
-    ## @param vcs.podDisruptionBudget.enabled Create an App VCS PodDisruptionBudget
-    enabled: false
-    ## @param vcs.podDisruptionBudget.minAvailable Minimum number or percentage of available App VCS pods
-    minAvailable: ""
-    ## @param vcs.podDisruptionBudget.maxUnavailable Maximum number or percentage of unavailable App VCS pods
-    maxUnavailable: ""
-
 ## @section App Frontend parameters
 ##
 ## @param front App Frontend component settings
@@ -1430,17 +1394,6 @@ front:
   schedulerName: ""
   ## @param front.terminationGracePeriodSeconds App Frontend pod termination grace period
   terminationGracePeriodSeconds: 30
-
-  ## App Frontend PodDisruptionBudget
-  ##
-  ## @param front.podDisruptionBudget App Frontend PodDisruptionBudget settings
-  podDisruptionBudget:
-    ## @param front.podDisruptionBudget.enabled Create an App Frontend PodDisruptionBudget
-    enabled: false
-    ## @param front.podDisruptionBudget.minAvailable Minimum number or percentage of available App Frontend pods
-    minAvailable: ""
-    ## @param front.podDisruptionBudget.maxUnavailable Maximum number or percentage of unavailable App Frontend pods
-    maxUnavailable: ""
 
 ## @section App Pipelines parameters
 ##
@@ -1646,15 +1599,6 @@ pipelines:
   schedulerName: ""
   ## @param pipelines.terminationGracePeriodSeconds App Pipelines termination grace period
   terminationGracePeriodSeconds: 30
-  ## @param pipelines.podDisruptionBudget App Pipelines PodDisruptionBudget settings
-  podDisruptionBudget:
-    ## @param pipelines.podDisruptionBudget.enabled Create an App Pipelines PodDisruptionBudget
-    enabled: false
-    ## @param pipelines.podDisruptionBudget.minAvailable Minimum available App Pipelines pods
-    minAvailable: ""
-    ## @param pipelines.podDisruptionBudget.maxUnavailable Maximum unavailable App Pipelines pods
-    maxUnavailable: ""
-
 ## @section App Scheduler parameters
 ##
 ## @param sched App Scheduler component settings
@@ -1861,17 +1805,6 @@ sched:
   ## @param sched.terminationGracePeriodSeconds App Scheduler pod termination grace period
   terminationGracePeriodSeconds: 30
 
-  ## App Scheduler PodDisruptionBudget
-  ##
-  ## @param sched.podDisruptionBudget App Scheduler PodDisruptionBudget settings
-  podDisruptionBudget:
-    ## @param sched.podDisruptionBudget.enabled Create an App Scheduler PodDisruptionBudget
-    enabled: false
-    ## @param sched.podDisruptionBudget.minAvailable Minimum number or percentage of available App Scheduler pods
-    minAvailable: ""
-    ## @param sched.podDisruptionBudget.maxUnavailable Maximum number or percentage of unavailable App Scheduler pods
-    maxUnavailable: ""
-
 ## @section Central APISIX gateway parameters
 ##
 ## @param gateway Central application routing rendered into the standalone `apisix.yaml`
@@ -2037,12 +1970,6 @@ apisix:
       ## @param apisix.resources.limits.memory APISIX memory limit
       memory: 1Gi
 
-  ## @param apisix.podDisruptionBudget APISIX PodDisruptionBudget settings
-  podDisruptionBudget:
-    ## @param apisix.podDisruptionBudget.enabled Create the APISIX PodDisruptionBudget
-    enabled: true
-    ## @param apisix.podDisruptionBudget.minAvailable Minimum available APISIX pods during voluntary disruptions
-    minAvailable: 1
 
   ## @param apisix.serviceAccount APISIX ServiceAccount settings
   serviceAccount:

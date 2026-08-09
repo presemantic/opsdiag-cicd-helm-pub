@@ -1,1 +1,126 @@
-{{ include "opsdiag-app.deployment" (dict "root" . "component" "sched") }}
+{{/* Copyright OpsDiag. All Rights Reserved. SPDX-License-Identifier: APACHE-2.0 */}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "opsdiag-app.componentName" (dict "root" . "component" "sched") }}
+  namespace: {{ include "common.names.namespace" . | quote }}
+  labels:
+    {{- include "opsdiag-app.podLabels" (dict "root" . "component" "sched") | nindent 4 }}
+  {{- with .Values.commonAnnotations }}
+  annotations:
+    {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+spec:
+  replicas: {{ .Values.sched.replicaCount }}
+  revisionHistoryLimit: {{ .Values.sched.revisionHistoryLimit }}
+  strategy:
+    {{- include "common.tplvalues.render" (dict "value" .Values.sched.updateStrategy "context" .) | nindent 4 }}
+  selector:
+    matchLabels:
+      {{- include "opsdiag-app.selectorLabels" (dict "root" . "component" "sched") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "opsdiag-app.podLabels" (dict "root" . "component" "sched") | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/sched/secret.yaml") $ | sha256sum }}
+        {{- with .Values.sched.podAnnotations }}
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+        {{- end }}
+    spec:
+      serviceAccountName: {{ include "opsdiag-app.serviceAccountName" (dict "root" . "component" "sched") }}
+      automountServiceAccountToken: {{ .Values.sched.serviceAccount.automountServiceAccountToken }}
+      {{- include "common.images.renderPullSecrets" (dict "images" (list .Values.sched.image) "context" .) | nindent 6 }}
+      {{- if .Values.sched.podSecurityContext.enabled }}
+      securityContext:
+        {{- omit .Values.sched.podSecurityContext "enabled" | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with .Values.sched.priorityClassName }}
+      priorityClassName: {{ . | quote }}
+      {{- end }}
+      {{- with .Values.sched.schedulerName }}
+      schedulerName: {{ . | quote }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.sched.terminationGracePeriodSeconds }}
+      {{- with .Values.sched.nodeSelector }}
+      nodeSelector:
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.sched.affinity }}
+      affinity:
+        {{- include "common.tplvalues.render" (dict "value" .Values.sched.affinity "context" .) | nindent 8 }}
+      {{- else if or .Values.sched.podAffinityPreset .Values.sched.podAntiAffinityPreset .Values.sched.nodeAffinityPreset.type }}
+      affinity:
+        {{- if .Values.sched.podAffinityPreset }}
+        podAffinity:
+          {{- include "common.affinities.pods" (dict "type" .Values.sched.podAffinityPreset "component" "sched" "customLabels" .Values.sched.podLabels "context" .) | nindent 10 }}
+        {{- end }}
+        {{- if .Values.sched.podAntiAffinityPreset }}
+        podAntiAffinity:
+          {{- include "common.affinities.pods" (dict "type" .Values.sched.podAntiAffinityPreset "component" "sched" "customLabels" .Values.sched.podLabels "context" .) | nindent 10 }}
+        {{- end }}
+        {{- if .Values.sched.nodeAffinityPreset.type }}
+        nodeAffinity:
+          {{- include "common.affinities.nodes" (dict "type" .Values.sched.nodeAffinityPreset.type "key" .Values.sched.nodeAffinityPreset.key "values" .Values.sched.nodeAffinityPreset.values) | nindent 10 }}
+        {{- end }}
+      {{- end }}
+      {{- with .Values.sched.tolerations }}
+      tolerations:
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+      {{- end }}
+      {{- with .Values.sched.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: "sched"
+          image: {{ include "common.images.image" (dict "imageRoot" .Values.sched.image "global" .Values.global "chart" .Chart) | quote }}
+          imagePullPolicy: {{ .Values.sched.image.pullPolicy }}
+          {{- if .Values.sched.containerSecurityContext.enabled }}
+          securityContext:
+            {{- omit .Values.sched.containerSecurityContext "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.sched.containerPorts.http }}
+              protocol: TCP
+          {{- with .Values.sched.extraEnvVars }}
+          env:
+            {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 12 }}
+          {{- end }}
+          {{- if or .Values.sched.extraEnvVarsCM .Values.sched.extraEnvVarsSecret }}
+          envFrom:
+            {{- with .Values.sched.extraEnvVarsCM }}
+            - configMapRef:
+                name: {{ . }}
+            {{- end }}
+            {{- with .Values.sched.extraEnvVarsSecret }}
+            - secretRef:
+                name: {{ . }}
+            {{- end }}
+          {{- end }}
+          {{- with .Values.sched.resources }}
+          resources:
+            {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 12 }}
+          {{- end }}
+          {{- if .Values.sched.livenessProbe.enabled }}
+          livenessProbe:
+            {{- include "common.tplvalues.render" (dict "value" .Values.sched.livenessProbe.spec "context" .) | nindent 12 }}
+          {{- end }}
+          {{- if .Values.sched.readinessProbe.enabled }}
+          readinessProbe:
+            {{- include "common.tplvalues.render" (dict "value" .Values.sched.readinessProbe.spec "context" .) | nindent 12 }}
+          {{- end }}
+          {{- if .Values.sched.startupProbe.enabled }}
+          startupProbe:
+            {{- include "common.tplvalues.render" (dict "value" .Values.sched.startupProbe.spec "context" .) | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: app-config
+              mountPath: /app/config.yaml
+              subPath: config.yaml
+              readOnly: true
+      volumes:
+        - name: app-config
+          secret:
+            secretName: {{ include "opsdiag-app.configName" (dict "root" . "component" "sched") }}

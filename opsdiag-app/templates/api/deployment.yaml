@@ -1,1 +1,126 @@
-{{ include "opsdiag-app.deployment" (dict "root" . "component" "api") }}
+{{/* Copyright OpsDiag. All Rights Reserved. SPDX-License-Identifier: APACHE-2.0 */}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "opsdiag-app.componentName" (dict "root" . "component" "api") }}
+  namespace: {{ include "common.names.namespace" . | quote }}
+  labels:
+    {{- include "opsdiag-app.podLabels" (dict "root" . "component" "api") | nindent 4 }}
+  {{- with .Values.commonAnnotations }}
+  annotations:
+    {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+spec:
+  replicas: {{ .Values.api.replicaCount }}
+  revisionHistoryLimit: {{ .Values.api.revisionHistoryLimit }}
+  strategy:
+    {{- include "common.tplvalues.render" (dict "value" .Values.api.updateStrategy "context" .) | nindent 4 }}
+  selector:
+    matchLabels:
+      {{- include "opsdiag-app.selectorLabels" (dict "root" . "component" "api") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "opsdiag-app.podLabels" (dict "root" . "component" "api") | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/api/secret.yaml") $ | sha256sum }}
+        {{- with .Values.api.podAnnotations }}
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+        {{- end }}
+    spec:
+      serviceAccountName: {{ include "opsdiag-app.serviceAccountName" (dict "root" . "component" "api") }}
+      automountServiceAccountToken: {{ .Values.api.serviceAccount.automountServiceAccountToken }}
+      {{- include "common.images.renderPullSecrets" (dict "images" (list .Values.api.image) "context" .) | nindent 6 }}
+      {{- if .Values.api.podSecurityContext.enabled }}
+      securityContext:
+        {{- omit .Values.api.podSecurityContext "enabled" | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with .Values.api.priorityClassName }}
+      priorityClassName: {{ . | quote }}
+      {{- end }}
+      {{- with .Values.api.schedulerName }}
+      schedulerName: {{ . | quote }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.api.terminationGracePeriodSeconds }}
+      {{- with .Values.api.nodeSelector }}
+      nodeSelector:
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.api.affinity }}
+      affinity:
+        {{- include "common.tplvalues.render" (dict "value" .Values.api.affinity "context" .) | nindent 8 }}
+      {{- else if or .Values.api.podAffinityPreset .Values.api.podAntiAffinityPreset .Values.api.nodeAffinityPreset.type }}
+      affinity:
+        {{- if .Values.api.podAffinityPreset }}
+        podAffinity:
+          {{- include "common.affinities.pods" (dict "type" .Values.api.podAffinityPreset "component" "api" "customLabels" .Values.api.podLabels "context" .) | nindent 10 }}
+        {{- end }}
+        {{- if .Values.api.podAntiAffinityPreset }}
+        podAntiAffinity:
+          {{- include "common.affinities.pods" (dict "type" .Values.api.podAntiAffinityPreset "component" "api" "customLabels" .Values.api.podLabels "context" .) | nindent 10 }}
+        {{- end }}
+        {{- if .Values.api.nodeAffinityPreset.type }}
+        nodeAffinity:
+          {{- include "common.affinities.nodes" (dict "type" .Values.api.nodeAffinityPreset.type "key" .Values.api.nodeAffinityPreset.key "values" .Values.api.nodeAffinityPreset.values) | nindent 10 }}
+        {{- end }}
+      {{- end }}
+      {{- with .Values.api.tolerations }}
+      tolerations:
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+      {{- end }}
+      {{- with .Values.api.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: "api"
+          image: {{ include "common.images.image" (dict "imageRoot" .Values.api.image "global" .Values.global "chart" .Chart) | quote }}
+          imagePullPolicy: {{ .Values.api.image.pullPolicy }}
+          {{- if .Values.api.containerSecurityContext.enabled }}
+          securityContext:
+            {{- omit .Values.api.containerSecurityContext "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.api.containerPorts.http }}
+              protocol: TCP
+          {{- with .Values.api.extraEnvVars }}
+          env:
+            {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 12 }}
+          {{- end }}
+          {{- if or .Values.api.extraEnvVarsCM .Values.api.extraEnvVarsSecret }}
+          envFrom:
+            {{- with .Values.api.extraEnvVarsCM }}
+            - configMapRef:
+                name: {{ . }}
+            {{- end }}
+            {{- with .Values.api.extraEnvVarsSecret }}
+            - secretRef:
+                name: {{ . }}
+            {{- end }}
+          {{- end }}
+          {{- with .Values.api.resources }}
+          resources:
+            {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 12 }}
+          {{- end }}
+          {{- if .Values.api.livenessProbe.enabled }}
+          livenessProbe:
+            {{- include "common.tplvalues.render" (dict "value" .Values.api.livenessProbe.spec "context" .) | nindent 12 }}
+          {{- end }}
+          {{- if .Values.api.readinessProbe.enabled }}
+          readinessProbe:
+            {{- include "common.tplvalues.render" (dict "value" .Values.api.readinessProbe.spec "context" .) | nindent 12 }}
+          {{- end }}
+          {{- if .Values.api.startupProbe.enabled }}
+          startupProbe:
+            {{- include "common.tplvalues.render" (dict "value" .Values.api.startupProbe.spec "context" .) | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: app-config
+              mountPath: /app/config.yaml
+              subPath: config.yaml
+              readOnly: true
+      volumes:
+        - name: app-config
+          secret:
+            secretName: {{ include "opsdiag-app.configName" (dict "root" . "component" "api") }}

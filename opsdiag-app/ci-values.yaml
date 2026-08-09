@@ -1,6 +1,6 @@
-postgresql:
+pgsql:
   auth:
     password: ci-only-main-password
-tables-postgresql:
+pgsql-tables:
   auth:
     password: ci-only-tables-password

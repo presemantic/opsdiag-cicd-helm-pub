@@ -81,7 +81,7 @@ jobs:
           token_format: "access_token"
 
       - name: "[GOOGLE] Set up Cloud SDK"
-        uses: "google-github-actions/setup-gcloud@v1"
+        uses: "google-github-actions/setup-gcloud@v2"
 
       - name: "[GOOGLE] Use gcloud CLI"
         run: "gcloud info"
@@ -93,9 +93,9 @@ jobs:
             --password-stdin \
             "${{ env.REGION }}-docker.pkg.dev"
 
-      - name: "[Helm] Dependency update"
+      - name: "[Helm] Verify vendored dependencies"
         run: |
-          helm dependency update "build/${{ matrix.chart }}"
+          helm dependency list "build/${{ matrix.chart }}"
 
       - name: "[Helm] Lint"
         run: |
@@ -103,6 +103,53 @@ jobs:
             helm lint "build/${{ matrix.chart }}" --values "build/${{ matrix.chart }}/ci-values.yaml"
           else
             helm lint "build/${{ matrix.chart }}"
+          fi
+
+      - name: "[Helm] Enforce readable templates"
+        run: |
+          set -euo pipefail
+          chart="build/${{ matrix.chart }}"
+
+          if grep -REn '\{\{[^}]*[[:space:]](deepCopy|set|unset|mergeOverwrite)[[:space:](]' "${chart}/templates"; then
+            echo "Owned templates must not mutate copied values."
+            exit 1
+          fi
+
+          if grep -REn '^kind: (PodDisruptionBudget|NetworkPolicy)$|extraDeploy|extra-list' "${chart}/templates" "${chart}/values.yaml"; then
+            echo "PDB, NetworkPolicy, and arbitrary extraDeploy renderers are not supported."
+            exit 1
+          fi
+
+          while IFS= read -r template; do
+            if awk '
+              FNR == 1 { seen_api = 0 }
+              /^apiVersion:/ { seen_api = 1 }
+              !seen_api && /\{\{-? *\$[^:]*:=/ { print FILENAME ":" FNR ":" $0; found = 1 }
+              END { exit found ? 0 : 1 }
+            ' "${template}"; then
+              echo "Resource templates must not declare variables before apiVersion."
+              exit 1
+            fi
+          done < <(find "${chart}/templates" -type f -name '*.yaml' -print)
+
+          if [ "${{ matrix.chart }}" = "opsdiag-app" ]; then
+            if tar -tzf "${chart}/charts/apisix-2.16.0.tgz" | grep -Ei '/templates/.*(pdb|poddisruptionbudget|networkpolicy)'; then
+              echo "The committed APISIX archive must not contain PDB or NetworkPolicy templates."
+              exit 1
+            fi
+
+            rendered="$(helm template opsdiag "${chart}" --values "${chart}/ci-values.yaml")"
+            printf '%s\n' "${rendered}" | grep -q 'image: "registry-1.docker.io/library/postgres:18"'
+            printf '%s\n' "${rendered}" | grep -q 'name: "opsdiag-pgsql-v18"'
+            printf '%s\n' "${rendered}" | grep -q 'name: "opsdiag-pgsql-tables-v18"'
+            test "$(printf '%s\n' "${rendered}" | grep -c '^kind: StatefulSet$')" -eq 2
+          else
+            rendered="$(helm template opsdiag "${chart}")"
+          fi
+
+          if printf '%s\n' "${rendered}" | grep -Eq '^kind: (PodDisruptionBudget|NetworkPolicy)$'; then
+            echo "A forbidden PDB or NetworkPolicy was rendered."
+            exit 1
           fi
 
       - name: "[Helm] Package"

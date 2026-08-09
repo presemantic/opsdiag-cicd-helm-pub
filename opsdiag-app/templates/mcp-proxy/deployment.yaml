@@ -1,1 +1,126 @@
-{{ include "opsdiag-app.deployment" (dict "root" . "component" "mcp-proxy") }}
+{{/* Copyright OpsDiag. All Rights Reserved. SPDX-License-Identifier: APACHE-2.0 */}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "opsdiag-app.componentName" (dict "root" . "component" "mcp-proxy") }}
+  namespace: {{ include "common.names.namespace" . | quote }}
+  labels:
+    {{- include "opsdiag-app.podLabels" (dict "root" . "component" "mcp-proxy") | nindent 4 }}
+  {{- with .Values.commonAnnotations }}
+  annotations:
+    {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+spec:
+  replicas: {{ (index .Values "mcp-proxy").replicaCount }}
+  revisionHistoryLimit: {{ (index .Values "mcp-proxy").revisionHistoryLimit }}
+  strategy:
+    {{- include "common.tplvalues.render" (dict "value" (index .Values "mcp-proxy").updateStrategy "context" .) | nindent 4 }}
+  selector:
+    matchLabels:
+      {{- include "opsdiag-app.selectorLabels" (dict "root" . "component" "mcp-proxy") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "opsdiag-app.podLabels" (dict "root" . "component" "mcp-proxy") | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/mcp-proxy/secret.yaml") $ | sha256sum }}
+        {{- with (index .Values "mcp-proxy").podAnnotations }}
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+        {{- end }}
+    spec:
+      serviceAccountName: {{ include "opsdiag-app.serviceAccountName" (dict "root" . "component" "mcp-proxy") }}
+      automountServiceAccountToken: {{ (index .Values "mcp-proxy").serviceAccount.automountServiceAccountToken }}
+      {{- include "common.images.renderPullSecrets" (dict "images" (list (index .Values "mcp-proxy").image) "context" .) | nindent 6 }}
+      {{- if (index .Values "mcp-proxy").podSecurityContext.enabled }}
+      securityContext:
+        {{- omit (index .Values "mcp-proxy").podSecurityContext "enabled" | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with (index .Values "mcp-proxy").priorityClassName }}
+      priorityClassName: {{ . | quote }}
+      {{- end }}
+      {{- with (index .Values "mcp-proxy").schedulerName }}
+      schedulerName: {{ . | quote }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ (index .Values "mcp-proxy").terminationGracePeriodSeconds }}
+      {{- with (index .Values "mcp-proxy").nodeSelector }}
+      nodeSelector:
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+      {{- end }}
+      {{- if (index .Values "mcp-proxy").affinity }}
+      affinity:
+        {{- include "common.tplvalues.render" (dict "value" (index .Values "mcp-proxy").affinity "context" .) | nindent 8 }}
+      {{- else if or (index .Values "mcp-proxy").podAffinityPreset (index .Values "mcp-proxy").podAntiAffinityPreset (index .Values "mcp-proxy").nodeAffinityPreset.type }}
+      affinity:
+        {{- if (index .Values "mcp-proxy").podAffinityPreset }}
+        podAffinity:
+          {{- include "common.affinities.pods" (dict "type" (index .Values "mcp-proxy").podAffinityPreset "component" "mcp-proxy" "customLabels" (index .Values "mcp-proxy").podLabels "context" .) | nindent 10 }}
+        {{- end }}
+        {{- if (index .Values "mcp-proxy").podAntiAffinityPreset }}
+        podAntiAffinity:
+          {{- include "common.affinities.pods" (dict "type" (index .Values "mcp-proxy").podAntiAffinityPreset "component" "mcp-proxy" "customLabels" (index .Values "mcp-proxy").podLabels "context" .) | nindent 10 }}
+        {{- end }}
+        {{- if (index .Values "mcp-proxy").nodeAffinityPreset.type }}
+        nodeAffinity:
+          {{- include "common.affinities.nodes" (dict "type" (index .Values "mcp-proxy").nodeAffinityPreset.type "key" (index .Values "mcp-proxy").nodeAffinityPreset.key "values" (index .Values "mcp-proxy").nodeAffinityPreset.values) | nindent 10 }}
+        {{- end }}
+      {{- end }}
+      {{- with (index .Values "mcp-proxy").tolerations }}
+      tolerations:
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+      {{- end }}
+      {{- with (index .Values "mcp-proxy").topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: "mcp-proxy"
+          image: {{ include "common.images.image" (dict "imageRoot" (index .Values "mcp-proxy").image "global" .Values.global "chart" .Chart) | quote }}
+          imagePullPolicy: {{ (index .Values "mcp-proxy").image.pullPolicy }}
+          {{- if (index .Values "mcp-proxy").containerSecurityContext.enabled }}
+          securityContext:
+            {{- omit (index .Values "mcp-proxy").containerSecurityContext "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ (index .Values "mcp-proxy").containerPorts.http }}
+              protocol: TCP
+          {{- with (index .Values "mcp-proxy").extraEnvVars }}
+          env:
+            {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 12 }}
+          {{- end }}
+          {{- if or (index .Values "mcp-proxy").extraEnvVarsCM (index .Values "mcp-proxy").extraEnvVarsSecret }}
+          envFrom:
+            {{- with (index .Values "mcp-proxy").extraEnvVarsCM }}
+            - configMapRef:
+                name: {{ . }}
+            {{- end }}
+            {{- with (index .Values "mcp-proxy").extraEnvVarsSecret }}
+            - secretRef:
+                name: {{ . }}
+            {{- end }}
+          {{- end }}
+          {{- with (index .Values "mcp-proxy").resources }}
+          resources:
+            {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 12 }}
+          {{- end }}
+          {{- if (index .Values "mcp-proxy").livenessProbe.enabled }}
+          livenessProbe:
+            {{- include "common.tplvalues.render" (dict "value" (index .Values "mcp-proxy").livenessProbe.spec "context" .) | nindent 12 }}
+          {{- end }}
+          {{- if (index .Values "mcp-proxy").readinessProbe.enabled }}
+          readinessProbe:
+            {{- include "common.tplvalues.render" (dict "value" (index .Values "mcp-proxy").readinessProbe.spec "context" .) | nindent 12 }}
+          {{- end }}
+          {{- if (index .Values "mcp-proxy").startupProbe.enabled }}
+          startupProbe:
+            {{- include "common.tplvalues.render" (dict "value" (index .Values "mcp-proxy").startupProbe.spec "context" .) | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: app-config
+              mountPath: /app/config.yaml
+              subPath: config.yaml
+              readOnly: true
+      volumes:
+        - name: app-config
+          secret:
+            secretName: {{ include "opsdiag-app.configName" (dict "root" . "component" "mcp-proxy") }}

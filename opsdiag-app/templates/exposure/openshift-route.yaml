@@ -1,5 +1,4 @@
 {{- if .Values.openshiftRoute.enabled }}
-{{- $hostname := tpl (required "openshiftRoute.hostname is required when openshiftRoute.enabled is true" .Values.openshiftRoute.hostname) . }}
 ---
 apiVersion: route.openshift.io/v1
 kind: Route
@@ -9,12 +8,11 @@ metadata:
   labels:
     {{- include "common.labels.standard" (dict "customLabels" .Values.commonLabels "context" .) | nindent 4 }}
   {{- if or .Values.openshiftRoute.annotations .Values.commonAnnotations }}
-  {{- $annotations := include "common.tplvalues.merge" (dict "values" (list .Values.openshiftRoute.annotations .Values.commonAnnotations) "context" .) }}
   annotations:
-    {{- include "common.tplvalues.render" (dict "value" $annotations "context" $) | nindent 4 }}
+    {{- include "common.tplvalues.merge" (dict "values" (list .Values.openshiftRoute.annotations .Values.commonAnnotations) "context" .) | nindent 4 }}
   {{- end }}
 spec:
-  host: {{ $hostname | quote }}
+  host: {{ tpl (required "openshiftRoute.hostname is required when openshiftRoute.enabled is true" .Values.openshiftRoute.hostname) . | quote }}
   path: /
   to:
     kind: Service
@@ -37,9 +35,8 @@ metadata:
   labels:
     {{- include "common.labels.standard" (dict "customLabels" $.Values.commonLabels "context" $) | nindent 4 }}
   {{- if or $.Values.openshiftRoute.annotations $.Values.commonAnnotations }}
-  {{- $annotations := include "common.tplvalues.merge" (dict "values" (list $.Values.openshiftRoute.annotations $.Values.commonAnnotations) "context" $) }}
   annotations:
-    {{- include "common.tplvalues.render" (dict "value" $annotations "context" $) | nindent 4 }}
+    {{- include "common.tplvalues.merge" (dict "values" (list $.Values.openshiftRoute.annotations $.Values.commonAnnotations) "context" $) | nindent 4 }}
   {{- end }}
 spec:
   host: {{ tpl (required "openshiftRoute.extraHosts[].name is required" $host.name) $ | quote }}

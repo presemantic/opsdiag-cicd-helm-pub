@@ -1,0 +1,179 @@
+{{/* Copyright OpsDiag. All Rights Reserved. SPDX-License-Identifier: APACHE-2.0 */}}
+{{- if .Values.pgsql.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ printf "%s-v18" (include "opsdiag-app.pgsql.fullname" .) | trunc 63 | trimSuffix "-" | quote }}
+  namespace: {{ include "common.names.namespace" . | quote }}
+  labels:
+    {{- include "opsdiag-app.pgsql.labels" . | nindent 4 }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-20"
+    {{- with .Values.commonAnnotations }}
+    {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+    {{- end }}
+spec:
+  serviceName: {{ printf "%s-headless" (include "opsdiag-app.pgsql.fullname" .) | trunc 63 | trimSuffix "-" | quote }}
+  replicas: 1
+  podManagementPolicy: {{ .Values.pgsql.primary.podManagementPolicy }}
+  updateStrategy:
+    {{- include "common.tplvalues.render" (dict "value" .Values.pgsql.primary.updateStrategy "context" .) | nindent 4 }}
+  selector:
+    matchLabels:
+      {{- include "opsdiag-app.pgsql.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "opsdiag-app.pgsql.labels" . | nindent 8 }}
+        {{- with .Values.pgsql.primary.podLabels }}
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+        {{- end }}
+      annotations:
+        checksum/auth: {{ printf "%s:%s:%s" (include "opsdiag-app.pgsql.secretName" .) .Values.pgsql.auth.secretKeys.userPasswordKey .Values.pgsql.auth.password | sha256sum }}
+        {{- with .Values.pgsql.primary.podAnnotations }}
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+        {{- end }}
+    spec:
+      serviceAccountName: {{ include "opsdiag-app.pgsql.serviceAccountName" . | quote }}
+      automountServiceAccountToken: {{ .Values.pgsql.primary.serviceAccount.automountServiceAccountToken }}
+      enableServiceLinks: false
+      {{- include "common.images.renderPullSecrets" (dict "images" (list .Values.pgsql.image) "context" .) | nindent 6 }}
+      {{- if .Values.pgsql.primary.podSecurityContext.enabled }}
+      securityContext:
+        {{- omit .Values.pgsql.primary.podSecurityContext "enabled" | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with .Values.pgsql.primary.priorityClassName }}
+      priorityClassName: {{ . | quote }}
+      {{- end }}
+      {{- with .Values.pgsql.primary.schedulerName }}
+      schedulerName: {{ . | quote }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.pgsql.primary.terminationGracePeriodSeconds }}
+      containers:
+        - name: pgsql
+          image: {{ include "common.images.image" (dict "imageRoot" .Values.pgsql.image "global" .Values.global "chart" .Chart) | quote }}
+          imagePullPolicy: {{ .Values.pgsql.image.pullPolicy }}
+          {{- if .Values.pgsql.primary.containerSecurityContext.enabled }}
+          securityContext:
+            {{- omit .Values.pgsql.primary.containerSecurityContext "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          env:
+            - name: POSTGRES_USER
+              value: {{ required "pgsql.auth.username is required" .Values.pgsql.auth.username | quote }}
+            - name: POSTGRES_DB
+              value: {{ required "pgsql.auth.database is required" .Values.pgsql.auth.database | quote }}
+            - name: POSTGRES_PASSWORD_FILE
+              value: /run/secrets/pgsql/password
+            - name: PGDATA
+              value: /var/lib/postgresql/18/docker
+          ports:
+            - name: pgsql
+              containerPort: {{ .Values.pgsql.primary.service.ports.pgsql }}
+              protocol: TCP
+          {{- if .Values.pgsql.primary.startupProbe.enabled }}
+          startupProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -ec
+                - exec pg_isready -h 127.0.0.1 -p {{ .Values.pgsql.primary.service.ports.pgsql }} -U "$POSTGRES_USER" -d "$POSTGRES_DB"
+            {{- include "common.tplvalues.render" (dict "value" .Values.pgsql.primary.startupProbe.spec "context" .) | nindent 12 }}
+          {{- end }}
+          {{- if .Values.pgsql.primary.readinessProbe.enabled }}
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -ec
+                - exec pg_isready -h 127.0.0.1 -p {{ .Values.pgsql.primary.service.ports.pgsql }} -U "$POSTGRES_USER" -d "$POSTGRES_DB"
+            {{- include "common.tplvalues.render" (dict "value" .Values.pgsql.primary.readinessProbe.spec "context" .) | nindent 12 }}
+          {{- end }}
+          {{- if .Values.pgsql.primary.livenessProbe.enabled }}
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -ec
+                - exec pg_isready -h 127.0.0.1 -p {{ .Values.pgsql.primary.service.ports.pgsql }} -U "$POSTGRES_USER" -d "$POSTGRES_DB"
+            {{- include "common.tplvalues.render" (dict "value" .Values.pgsql.primary.livenessProbe.spec "context" .) | nindent 12 }}
+          {{- end }}
+          {{- with .Values.pgsql.primary.resources }}
+          resources:
+            {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql
+            - name: password
+              mountPath: /run/secrets/pgsql
+              readOnly: true
+            - name: tmp
+              mountPath: /tmp
+            - name: run
+              mountPath: /var/run/postgresql
+            - name: shm
+              mountPath: /dev/shm
+      volumes:
+        - name: password
+          secret:
+            secretName: {{ include "opsdiag-app.pgsql.secretName" . | quote }}
+            defaultMode: 0440
+            items:
+              - key: {{ .Values.pgsql.auth.secretKeys.userPasswordKey | quote }}
+                path: password
+        - name: tmp
+          emptyDir: {}
+        - name: run
+          emptyDir: {}
+        - name: shm
+          emptyDir:
+            medium: Memory
+        {{- if .Values.pgsql.primary.persistence.existingClaim }}
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ tpl .Values.pgsql.primary.persistence.existingClaim . | quote }}
+        {{- else if not .Values.pgsql.primary.persistence.enabled }}
+        - name: data
+          emptyDir: {}
+        {{- end }}
+      {{- with .Values.pgsql.primary.affinity }}
+      affinity:
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+      {{- end }}
+      {{- with .Values.pgsql.primary.nodeSelector }}
+      nodeSelector:
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+      {{- end }}
+      {{- with .Values.pgsql.primary.tolerations }}
+      tolerations:
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+      {{- end }}
+      {{- with .Values.pgsql.primary.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+      {{- end }}
+  {{- if and .Values.pgsql.primary.persistence.enabled (not .Values.pgsql.primary.persistence.existingClaim) }}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+        {{- with .Values.pgsql.primary.persistence.annotations }}
+        annotations:
+          {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 10 }}
+        {{- end }}
+      spec:
+        accessModes:
+          {{- toYaml .Values.pgsql.primary.persistence.accessModes | nindent 10 }}
+        {{- if eq "-" .Values.pgsql.primary.persistence.storageClass }}
+        storageClassName: ""
+        {{- else if .Values.pgsql.primary.persistence.storageClass }}
+        storageClassName: {{ tpl .Values.pgsql.primary.persistence.storageClass . | quote }}
+        {{- end }}
+        {{- with .Values.pgsql.primary.persistence.selector }}
+        selector:
+          {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 10 }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.pgsql.primary.persistence.size | quote }}
+  {{- end }}
+{{- end }}

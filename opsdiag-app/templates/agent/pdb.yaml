@@ -1,1 +1,0 @@
-{{ include "opsdiag-app.podDisruptionBudget" (dict "root" . "component" "agent") }}

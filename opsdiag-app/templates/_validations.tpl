@@ -87,13 +87,13 @@
 {{- if eq (len .Values.gateway.routing.routes) 0 -}}
 {{- fail "gateway.routing.routes must contain at least one APISIX route" -}}
 {{- end -}}
-{{- $seenRouteIDs := dict -}}
-{{- range $route := .Values.gateway.routing.routes -}}
+{{- range $routeIndex, $route := .Values.gateway.routing.routes -}}
 {{- $routeID := required "gateway.routing.routes[].id is required" $route.id -}}
-{{- if hasKey $seenRouteIDs $routeID -}}
+{{- range $candidateIndex, $candidate := $.Values.gateway.routing.routes -}}
+{{- if and (lt $routeIndex $candidateIndex) (eq $routeID (required "gateway.routing.routes[].id is required" $candidate.id)) -}}
 {{- fail (printf "duplicate APISIX route id %q" $routeID) -}}
 {{- end -}}
-{{- $_ := set $seenRouteIDs $routeID true -}}
+{{- end -}}
 {{- if eq (len $route.uris) 0 -}}
 {{- fail (printf "gateway route %q requires at least one URI" $routeID) -}}
 {{- end -}}

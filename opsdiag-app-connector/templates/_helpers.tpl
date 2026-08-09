@@ -27,30 +27,3 @@ app.kubernetes.io/component: connector
 {{ include "common.tplvalues.render" (dict "value" . "context" $) }}
 {{- end }}
 {{- end -}}
-
-{{- define "opsdiag-app-connector.resources" -}}
-{{- if .Values.resources -}}
-{{ include "common.tplvalues.render" (dict "value" .Values.resources "context" .) }}
-{{- else if .Values.resourcesPreset -}}
-{{ include "common.resources.preset" (dict "type" .Values.resourcesPreset) }}
-{{- end -}}
-{{- end -}}
-
-{{- define "opsdiag-app-connector.affinity" -}}
-{{- if .Values.affinity -}}
-{{ include "common.tplvalues.render" (dict "value" .Values.affinity "context" .) }}
-{{- else -}}
-{{- if .Values.podAffinityPreset }}
-podAffinity:
-{{ include "common.affinities.pods" (dict "type" .Values.podAffinityPreset "component" "connector" "customLabels" .Values.podLabels "context" .) | nindent 2 }}
-{{- end }}
-{{- if .Values.podAntiAffinityPreset }}
-podAntiAffinity:
-{{ include "common.affinities.pods" (dict "type" .Values.podAntiAffinityPreset "component" "connector" "customLabels" .Values.podLabels "context" .) | nindent 2 }}
-{{- end }}
-{{- if .Values.nodeAffinityPreset.type }}
-nodeAffinity:
-{{ include "common.affinities.nodes" (dict "type" .Values.nodeAffinityPreset.type "key" .Values.nodeAffinityPreset.key "values" .Values.nodeAffinityPreset.values) | nindent 2 }}
-{{- end }}
-{{- end -}}
-{{- end -}}

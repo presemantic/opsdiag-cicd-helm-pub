@@ -1,0 +1,31 @@
+{{/* Copyright OpsDiag. All Rights Reserved. SPDX-License-Identifier: APACHE-2.0 */}}
+{{- if (index .Values "pgsql-tables").enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "opsdiag-app.pgsqlTables.fullname" . | quote }}
+  namespace: {{ include "common.names.namespace" . | quote }}
+  labels:
+    {{- include "opsdiag-app.pgsqlTables.labels" . | nindent 4 }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-20"
+    {{- with .Values.commonAnnotations }}
+    {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+    {{- end }}
+    {{- with (index .Values "pgsql-tables").primary.service.annotations }}
+    {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+    {{- end }}
+spec:
+  type: {{ (index .Values "pgsql-tables").primary.service.type }}
+  {{- with (index .Values "pgsql-tables").primary.service.clusterIP }}
+  clusterIP: {{ . | quote }}
+  {{- end }}
+  sessionAffinity: {{ (index .Values "pgsql-tables").primary.service.sessionAffinity }}
+  ports:
+    - name: pgsql
+      port: {{ (index .Values "pgsql-tables").primary.service.ports.pgsql }}
+      protocol: TCP
+      targetPort: pgsql
+  selector:
+    {{- include "opsdiag-app.pgsqlTables.selectorLabels" . | nindent 4 }}
+{{- end }}

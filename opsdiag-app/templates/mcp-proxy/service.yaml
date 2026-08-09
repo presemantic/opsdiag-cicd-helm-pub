@@ -1,1 +1,24 @@
-{{ include "opsdiag-app.service" (dict "root" . "component" "mcp-proxy") }}
+{{/* Copyright OpsDiag. All Rights Reserved. SPDX-License-Identifier: APACHE-2.0 */}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "opsdiag-app.componentName" (dict "root" . "component" "mcp-proxy") }}
+  namespace: {{ include "common.names.namespace" . | quote }}
+  labels:
+    {{- include "opsdiag-app.podLabels" (dict "root" . "component" "mcp-proxy") | nindent 4 }}
+  {{- with (index .Values "mcp-proxy").service.annotations }}
+  annotations:
+    {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ (index .Values "mcp-proxy").service.type }}
+  {{- with (index .Values "mcp-proxy").service.clusterIP }}
+  clusterIP: {{ . }}
+  {{- end }}
+  ports:
+    - name: http
+      port: {{ (index .Values "mcp-proxy").service.ports.http }}
+      targetPort: http
+      protocol: TCP
+  selector:
+    {{- include "opsdiag-app.selectorLabels" (dict "root" . "component" "mcp-proxy") | nindent 4 }}
