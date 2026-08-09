@@ -197,9 +197,14 @@ metadata:
   namespace: {{ include "common.names.namespace" $root | quote }}
   labels:
     {{- include "opsdiag-app.podLabels" . | nindent 4 }}
-  {{- with $values.serviceAccount.annotations }}
+  {{- if or (and (eq .component "api") $root.Values.api.migration.enabled) $values.serviceAccount.annotations }}
   annotations:
+    {{- if and (eq .component "api") $root.Values.api.migration.enabled }}
+    argocd.argoproj.io/sync-wave: "-11"
+    {{- end }}
+    {{- with $values.serviceAccount.annotations }}
     {{- include "common.tplvalues.render" (dict "value" . "context" $root) | nindent 4 }}
+    {{- end }}
   {{- end }}
 automountServiceAccountToken: {{ $values.serviceAccount.automountServiceAccountToken }}
 {{- end }}

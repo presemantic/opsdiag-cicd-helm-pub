@@ -11,12 +11,14 @@ The `opsdiag-app` chart redistributes the official Apache APISIX Helm chart and 
 
 OpsDiag does not modify the Apache APISIX source distribution. OpsDiag supplies product-specific standalone routing through a generated `apisix.yaml` mounted into the official chart workload.
 
-The `opsdiag-app` chart also redistributes the official Bitnami PostgreSQL Helm chart twice, under independent `postgresql` and `tables-postgresql` aliases, and deploys the Bitnami PostgreSQL container image.
+The `opsdiag-app` chart deploys two independent PostgreSQL 18 instances from the Docker Official Image for PostgreSQL. PostgreSQL Kubernetes resources are implemented directly by OpsDiag chart templates; no third-party PostgreSQL Helm chart is redistributed.
 
-- Project: PostgreSQL packaged by Bitnami
-- Helm chart: `postgresql` 18.7.11
-- Application: PostgreSQL 18.4.0
-- Source: https://github.com/bitnami/charts/tree/main/bitnami/postgresql
-- License: Apache License 2.0 for the Helm chart; the vendored chart archive carries its upstream license
+- Project: PostgreSQL
+- Application: PostgreSQL 18.x
+- Project source: https://www.postgresql.org
+- Container image: `registry-1.docker.io/library/postgres:18`
+- Image source and packaging: https://github.com/docker-library/postgres
+- Image status: Docker Official Image
+- PostgreSQL license: PostgreSQL License; see [`POSTGRESQL-LICENSE.txt`](./POSTGRESQL-LICENSE.txt)
 
-OpsDiag does not modify the Bitnami PostgreSQL source distribution. OpsDiag supplies separate main-App and Pipeline-Tables values through the two dependency aliases.
+The official image may also contain operating-system and supporting packages under their respective licenses. Their package copyright files are included in the image filesystem by the upstream Docker Official Image build.

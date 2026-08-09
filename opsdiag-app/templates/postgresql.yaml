@@ -1,0 +1,14 @@
+{{/* Copyright OpsDiag. All Rights Reserved. SPDX-License-Identifier: APACHE-2.0 */}}
+
+{{- include "opsdiag-app.postgresql.resources" (dict
+  "root" .
+  "values" .Values.postgresql
+  "alias" "postgresql"
+  "valuePath" "postgresql"
+) }}
+{{- include "opsdiag-app.postgresql.resources" (dict
+  "root" .
+  "values" (index .Values "tables-postgresql")
+  "alias" "tables-postgresql"
+  "valuePath" "tables-postgresql"
+) }}

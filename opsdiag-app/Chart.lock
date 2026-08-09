@@ -5,11 +5,5 @@ dependencies:
 - name: apisix
   repository: https://charts.apiseven.com
   version: 2.16.0
-- name: postgresql
-  repository: oci://registry-1.docker.io/bitnamicharts
-  version: 18.7.11
-- name: postgresql
-  repository: oci://registry-1.docker.io/bitnamicharts
-  version: 18.7.11
-digest: sha256:65e9e667e3c11fdd320871dc498280e23c0f6f25ad60b1d4f8c1df2ab360780d
-generated: "2026-08-09T07:31:02.875071+02:00"
+digest: sha256:f7b4e753a87a364a81a4ede8d9ae68016065f629db5af86d1b35aec5dfda0384
+generated: "2026-08-09T14:00:41+02:00"

@@ -54,6 +54,38 @@ app.kubernetes.io/managed-by: {{ .root.Release.Service | quote }}
 {{- end -}}
 {{- end -}}
 
+{{- define "opsdiag-app.postgresqlStatefulsetName" -}}
+{{- printf "%s-v18" (include "opsdiag-app.postgresqlFullname" .) | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{- define "opsdiag-app.postgresqlSecretName" -}}
+{{- default (include "opsdiag-app.postgresqlFullname" .) .values.auth.existingSecret -}}
+{{- end -}}
+
+{{- define "opsdiag-app.postgresqlServiceAccountName" -}}
+{{- if .values.primary.serviceAccount.create -}}
+{{- default (include "opsdiag-app.postgresqlStatefulsetName" .) .values.primary.serviceAccount.name -}}
+{{- else -}}
+{{- default "default" .values.primary.serviceAccount.name -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "opsdiag-app.postgresqlSelectorLabels" -}}
+app.kubernetes.io/name: {{ include "opsdiag-app.postgresqlStatefulsetName" . | quote }}
+app.kubernetes.io/instance: {{ .root.Release.Name | quote }}
+app.kubernetes.io/component: "primary"
+{{- end -}}
+
+{{- define "opsdiag-app.postgresqlLabels" -}}
+{{ include "opsdiag-app.postgresqlSelectorLabels" . }}
+helm.sh/chart: {{ printf "%s-%s" .root.Chart.Name .root.Chart.Version | replace "+" "_" | quote }}
+app.kubernetes.io/managed-by: {{ .root.Release.Service | quote }}
+app.kubernetes.io/part-of: {{ include "common.names.fullname" .root | quote }}
+{{- with .root.Values.commonLabels }}
+{{ include "common.tplvalues.render" (dict "value" . "context" $.root) }}
+{{- end }}
+{{- end -}}
+
 {{- define "opsdiag-app.postgresqlURL" -}}
 {{- $root := .root -}}
 {{- $values := .values -}}
@@ -69,8 +101,7 @@ app.kubernetes.io/managed-by: {{ .root.Release.Service | quote }}
 {{- $database := required (printf "%s.auth.database is required" .valuePath) $values.auth.database -}}
 {{- $host := include "opsdiag-app.postgresqlFullname" (dict "root" $root "values" $values "alias" .alias) -}}
 {{- $port := $values.primary.service.ports.postgresql -}}
-{{- $sslMode := ternary "require" "disable" $values.tls.enabled -}}
-{{- printf "postgresql://%s:%s@%s:%v/%s?sslmode=%s" ($username | urlquery) ($password | urlquery) $host $port ($database | urlquery) $sslMode -}}
+{{- printf "postgresql://%s:%s@%s:%v/%s?sslmode=disable" ($username | urlquery) ($password | urlquery) $host $port ($database | urlquery) -}}
 {{- else -}}
 {{- fail (printf "%s is disabled; %s is required for an external PostgreSQL instance" .valuePath .urlPath) -}}
 {{- end -}}
