@@ -403,13 +403,13 @@ api:
   ## @param api.image App API container image settings
   image:
     ## @param api.image.registry App API image registry
-    registry: europe-west1-docker.pkg.dev
+    registry: europe-docker.pkg.dev
     ## @param api.image.repository App API image repository
-    repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-api
+    repository: presemantic/public/opsdiag-app-api
     ## @param api.image.tag App API image tag
-    tag: "2026-08-09.13-50-35.a549695"
+    tag: "2026-08-10.22-37-16.2665096"
     ## @param api.image.digest App API image digest; overrides the tag when set
-    digest: "sha256:164023c56c2acdc450746428640a159d4542949dc19606b64d5951fe1d9d84c7"
+    digest: "sha256:1f62353e4082060c19fed3c8b2dc1529b728902c6b937f0f5569046372fc8088"
     ## @param api.image.pullPolicy App API image pull policy
     pullPolicy: IfNotPresent
     ## @param api.image.pullSecrets App API image pull secrets
@@ -665,13 +665,13 @@ agent:
   ## @param agent.image App Agent container image settings
   image:
     ## @param agent.image.registry App Agent image registry
-    registry: europe-west1-docker.pkg.dev
+    registry: europe-docker.pkg.dev
     ## @param agent.image.repository App Agent image repository
-    repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-agent-api
+    repository: presemantic/public/opsdiag-app-agent-api
     ## @param agent.image.tag App Agent image tag
-    tag: "2026-08-08.17-15-51.f2c2725"
+    tag: "2026-08-10.22-37-16.134b930"
     ## @param agent.image.digest App Agent image digest; overrides the tag when set
-    digest: "sha256:d2615bc8e356f6ae5d54418eb04094c91b80e66b8fca59c0ef56455992a16529"
+    digest: "sha256:4d67ce67f8adb4f91eeafe801a3ad3592746d0b332efd2167c39530d1bef17ab"
     ## @param agent.image.pullPolicy App Agent image pull policy
     pullPolicy: IfNotPresent
     ## @param agent.image.pullSecrets App Agent image pull secrets
@@ -897,13 +897,13 @@ mcp-proxy:
   ## @param mcp-proxy.image App MCP Proxy container image settings
   image:
     ## @param mcp-proxy.image.registry App MCP Proxy image registry
-    registry: europe-west1-docker.pkg.dev
+    registry: europe-docker.pkg.dev
     ## @param mcp-proxy.image.repository App MCP Proxy image repository
-    repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-mcp-proxy-api
+    repository: presemantic/public/opsdiag-app-mcp-proxy-api
     ## @param mcp-proxy.image.tag App MCP Proxy image tag
-    tag: "2026-08-09.12-35-45.969ca38"
+    tag: "2026-08-10.22-37-16.ac1fc09"
     ## @param mcp-proxy.image.digest App MCP Proxy image digest; overrides the tag when set
-    digest: "sha256:480a537600a7957cf6336a66764a035882350594a3dec7c2a8bee672ac51c59b"
+    digest: "sha256:384926e70777ddecf977b2bffb3441cade39634c0e1585e9378ab0dacc8212f4"
     ## @param mcp-proxy.image.pullPolicy App MCP Proxy image pull policy
     pullPolicy: IfNotPresent
     ## @param mcp-proxy.image.pullSecrets App MCP Proxy image pull secrets
@@ -1106,13 +1106,13 @@ vcs:
   ## @param vcs.image App VCS image settings
   image:
     ## @param vcs.image.registry App VCS image registry
-    registry: europe-west1-docker.pkg.dev
+    registry: europe-docker.pkg.dev
     ## @param vcs.image.repository App VCS image repository
-    repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-vcs-api
+    repository: presemantic/public/opsdiag-app-vcs-api
     ## @param vcs.image.tag Exact published App VCS image tag
-    tag: "2026-08-07.13-19-41.0486ea5"
+    tag: "2026-08-10.22-37-16.de6e9e7"
     ## @param vcs.image.digest Optional immutable App VCS image digest
-    digest: "sha256:f5dfbc12cbcf628c385fa4eced3a93a1d840a064919f5d4d201cfb40fee1d692"
+    digest: "sha256:2e6c98396c6cc96f8137b79b61f4af58707174c24b526ab50b0db66e448f7128"
     ## @param vcs.image.pullPolicy App VCS image pull policy
     pullPolicy: IfNotPresent
     ## @param vcs.image.pullSecrets App VCS image pull secrets
@@ -1312,13 +1312,13 @@ front:
   ## @param front.image App Frontend container image settings
   image:
     ## @param front.image.registry App Frontend image registry
-    registry: europe-west1-docker.pkg.dev
+    registry: europe-docker.pkg.dev
     ## @param front.image.repository App Frontend image repository
-    repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-front
+    repository: presemantic/public/opsdiag-app-front
     ## @param front.image.tag App Frontend image tag
-    tag: "2026-08-10.01-19-52.cddc233"
+    tag: "2026-08-10.22-37-16.ad4ef96"
     ## @param front.image.digest App Frontend image digest; overrides the tag when set
-    digest: "sha256:bcf40c5256796eccd8cfbb81dc2aa571812670ed205386c94c508b9de2421621"
+    digest: "sha256:cc2fe0148239e0e12fcd71a45178f0fad9288bc5642d7e9ec01a97b311d598d9"
     ## @param front.image.pullPolicy App Frontend image pull policy
     pullPolicy: IfNotPresent
     ## @param front.image.pullSecrets App Frontend image pull secrets
@@ -1486,13 +1486,13 @@ pipelines:
   ## @param pipelines.image App Pipelines image settings
   image:
     ## @param pipelines.image.registry App Pipelines image registry
-    registry: europe-west1-docker.pkg.dev
+    registry: europe-docker.pkg.dev
     ## @param pipelines.image.repository App Pipelines image repository
-    repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-pipelines
+    repository: presemantic/public/opsdiag-app-pipelines
     ## @param pipelines.image.tag App Pipelines image tag
-    tag: "2026-08-08.01-00-33.baa452a"
+    tag: "2026-08-10.22-37-16.48f0aa8"
     ## @param pipelines.image.digest App Pipelines image digest
-    digest: "sha256:a8f76ceed5640a19443c77895323ee3f753c75c77911098b7d3052707de1e9ea"
+    digest: "sha256:170d575a72cb712bc58d3bd8cb3073f951c4189330bdbc881af9e70780d1b77d"
     ## @param pipelines.image.pullPolicy App Pipelines image pull policy
     pullPolicy: IfNotPresent
     ## @param pipelines.image.pullSecrets App Pipelines image pull secrets
@@ -1693,13 +1693,13 @@ sched:
   ## @param sched.image App Scheduler container image settings
   image:
     ## @param sched.image.registry App Scheduler image registry
-    registry: europe-west1-docker.pkg.dev
+    registry: europe-docker.pkg.dev
     ## @param sched.image.repository App Scheduler image repository
-    repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-sched
+    repository: presemantic/public/opsdiag-app-sched
     ## @param sched.image.tag App Scheduler image tag
-    tag: "2026-08-07.13-19-36.c01f2df"
+    tag: "2026-08-10.22-37-16.08b444b"
     ## @param sched.image.digest App Scheduler image digest; overrides the tag when set
-    digest: "sha256:9711e50b60f6c411f2c045190a03ed9c9dc9e46b7aaaee70f8d7f843de5ccd9e"
+    digest: "sha256:4485d1b8775ee6715ecdd3946ed8907b84c6c02c11c39bb47339aed3a6e7803e"
     ## @param sched.image.pullPolicy App Scheduler image pull policy
     pullPolicy: IfNotPresent
     ## @param sched.image.pullSecrets App Scheduler image pull secrets

@@ -2,7 +2,7 @@ apiVersion: v2
 name: opsdiag-app
 description: Complete OpsDiag application stack
 type: application
-version: 0.3.2
+version: 0.3.3
 appVersion: "2026-08-10"
 dependencies:
   - name: common

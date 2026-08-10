@@ -23,13 +23,13 @@ commonAnnotations: {}
 ##
 image:
   ## @param image.registry OpsDiag connector image registry
-  registry: europe-west1-docker.pkg.dev
+  registry: europe-docker.pkg.dev
   ## @param image.repository OpsDiag connector image repository
-  repository: prod-common-cicd/opsdiag-docker-pub/opsdiag-app-connector
+  repository: presemantic/public/opsdiag-app-connector
   ## @param image.tag OpsDiag connector image tag; defaults to chart appVersion when empty
-  tag: "2026-08-07.13-19-25.1b2a443"
+  tag: "2026-08-10.22-37-16.c352275"
   ## @param image.digest OpsDiag connector image digest, used instead of tag when set
-  digest: "sha256:ab57e6de5bac49d7a3a1de3332ffb10d99919a0126d04f202eac6c8eacc4105e"
+  digest: "sha256:b2fc591dcb3a61c9456abf8375017d80e57e78ae0eda888e0f58a83c65f885b3"
   ## @param image.pullPolicy OpsDiag connector image pull policy
   pullPolicy: IfNotPresent
   ## @param image.pullSecrets OpsDiag connector image pull secret names as strings or maps with a `name` key

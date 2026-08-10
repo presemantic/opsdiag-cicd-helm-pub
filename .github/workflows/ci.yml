@@ -19,8 +19,8 @@ permissions:
   contents: read
 
 env:
-  REGION: europe-west1
-  GAR_LOCATION: europe-west1-docker.pkg.dev/prod-common-cicd/opsdiag-helm-pub
+  REGION: europe
+  GAR_LOCATION: europe-docker.pkg.dev/presemantic/public
 
 jobs:
   validate:
