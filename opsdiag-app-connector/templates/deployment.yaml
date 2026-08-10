@@ -5,6 +5,7 @@ metadata:
   namespace: {{ include "common.names.namespace" . | quote }}
   labels:
     {{- include "common.labels.standard" (dict "customLabels" .Values.commonLabels "context" .) | nindent 4 }}
+    app.kubernetes.io/component: connector
   {{- with .Values.commonAnnotations }}
   annotations:
     {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
@@ -16,11 +17,16 @@ spec:
     {{- include "common.tplvalues.render" (dict "value" .Values.updateStrategy "context" .) | nindent 4 }}
   selector:
     matchLabels:
-      {{- include "opsdiag-app-connector.selectorLabels" . | nindent 6 }}
+      {{- include "common.labels.matchLabels" (dict "customLabels" .Values.podLabels "context" .) | nindent 6 }}
+      app.kubernetes.io/component: connector
   template:
     metadata:
       labels:
-        {{- include "opsdiag-app-connector.podLabels" . | nindent 8 }}
+        {{- include "common.labels.standard" (dict "customLabels" .Values.commonLabels "context" .) | nindent 8 }}
+        app.kubernetes.io/component: connector
+        {{- with .Values.podLabels }}
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+        {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/secret.yaml") . | sha256sum }}
         {{- with .Values.podAnnotations }}

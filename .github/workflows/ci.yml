@@ -1,6 +1,7 @@
 name: "opsdiag-helm-pub"
 
 on:
+  pull_request:
   workflow_dispatch:
     inputs:
       VERSION_TAG:
@@ -9,6 +10,8 @@ on:
         type: string
         default: '2025-01-01.01-01-01.aaaaaa'
   push:
+    branches:
+      - main
     tags:
       - '20*'
 
@@ -20,7 +23,123 @@ env:
   GAR_LOCATION: europe-west1-docker.pkg.dev/prod-common-cicd/opsdiag-helm-pub
 
 jobs:
+  validate:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        chart:
+          - opsdiag-app
+          - opsdiag-app-connector
+    steps:
+      - name: "[Checkout] Validate"
+        uses: actions/checkout@v4
+      - name: "[Helm] Setup"
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.18.4
+      - name: "[Helm] Verify vendored dependencies"
+        run: helm dependency list "${{ matrix.chart }}"
+      - name: "[Helm] Enforce chart structure"
+        env:
+          CHART: ${{ matrix.chart }}
+        run: |
+          set -euo pipefail
+
+          if grep -Eq '^(home|sources|kubeVersion):' "${CHART}/Chart.yaml"; then
+            echo "Chart.yaml contains metadata omitted by the Opsolving chart convention."
+            exit 1
+          fi
+
+          grep -Fq 'repository: https://opsolving.github.io/charts/' "${CHART}/Chart.yaml"
+
+          if grep -REn '\{\{[^}]*[[:space:]](deepCopy|set|unset|mergeOverwrite)[[:space:](]' "${CHART}/templates"; then
+            echo "Owned templates must not mutate copied values."
+            exit 1
+          fi
+
+          if grep -REn '^kind: (PodDisruptionBudget|NetworkPolicy)$|extraDeploy|extra-list' "${CHART}/templates" "${CHART}/values.yaml"; then
+            echo "PDB, NetworkPolicy, and arbitrary extra renderers are not supported."
+            exit 1
+          fi
+
+          while IFS= read -r template; do
+            if [ "$(grep -c '^apiVersion:' "${template}" || true)" -gt 1 ]; then
+              echo "${template} contains more than one chart-owned resource."
+              exit 1
+            fi
+
+            if awk '
+              FNR == 1 { seen_api = 0 }
+              /^apiVersion:/ { seen_api = 1 }
+              !seen_api && /\{\{-? *\$[^:]*:=/ { print FILENAME ":" FNR ":" $0; found = 1 }
+              END { exit found ? 0 : 1 }
+            ' "${template}"; then
+              echo "Resource templates must not declare variables before apiVersion."
+              exit 1
+            fi
+          done < <(find "${CHART}/templates" -type f -name '*.yaml' -print)
+      - name: "[Helm] Verify values documentation"
+        env:
+          CHART: ${{ matrix.chart }}
+        run: |
+          ruby -ryaml -e '
+            def leaves(value, prefix = nil, output = [])
+              case value
+              when Hash
+                value.each { |key, child| leaves(child, [prefix, key].compact.join("."), output) }
+              when Array
+                output << prefix
+              else
+                output << prefix
+              end
+              output
+            end
+
+            values_path = File.join(ENV.fetch("CHART"), "values.yaml")
+            values = YAML.safe_load(File.read(values_path), aliases: true) || {}
+            params = File.read(values_path).scan(/^\s*## @param ([^ ]+)/).flatten
+            missing = leaves(values).compact.uniq - params
+            duplicates = params.group_by { |name| name }.select { |_name, entries| entries.length > 1 }.keys
+            abort("Undocumented values: #{missing.join(", ")}") unless missing.empty?
+            abort("Duplicate @param entries: #{duplicates.join(", ")}") unless duplicates.empty?
+          '
+      - name: "[Helm] Lint and render"
+        env:
+          CHART: ${{ matrix.chart }}
+        run: |
+          set -euo pipefail
+          if [ "${CHART}" = "opsdiag-app" ]; then
+            helm lint "${CHART}" --values "${CHART}/ci-values.yaml"
+            helm template opsdiag "${CHART}" --namespace opsdiag --values "${CHART}/ci-values.yaml" > "/tmp/${CHART}.yaml"
+          else
+            helm lint "${CHART}"
+            helm template opsdiag "${CHART}" --namespace opsdiag > "/tmp/${CHART}.yaml"
+          fi
+      - name: "[Helm] Verify rendered selectors and unsupported resources"
+        env:
+          CHART: ${{ matrix.chart }}
+        run: |
+          set -euo pipefail
+
+          if grep -Eq '^kind: (PodDisruptionBudget|NetworkPolicy)$' "/tmp/${CHART}.yaml"; then
+            echo "A forbidden PDB or NetworkPolicy was rendered."
+            exit 1
+          fi
+
+          ruby -ryaml -e '
+            documents = YAML.load_stream(File.read("/tmp/#{ENV.fetch("CHART")}.yaml")).compact
+            documents.select { |document| document["kind"] == "Deployment" }.each do |deployment|
+              selector = deployment.dig("spec", "selector", "matchLabels") || {}
+              labels = deployment.dig("spec", "template", "metadata", "labels") || {}
+              missing = selector.reject { |key, value| labels[key] == value }
+              abort("Deployment #{deployment.dig("metadata", "name")} selector does not match pod labels: #{missing}") unless missing.empty?
+            end
+          '
+
   build:
+    if: github.event_name == 'workflow_dispatch' || github.ref_type == 'tag'
+    needs: validate
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false

@@ -1,5 +1,4 @@
 {{- if .Values.openshiftRoute.enabled }}
----
 apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
@@ -25,32 +24,4 @@ spec:
     {{- include "opsdiag-app.openshiftRouteTLS" . | nindent 4 }}
   {{- end }}
   wildcardPolicy: None
-{{- range $index, $host := .Values.openshiftRoute.extraHosts }}
----
-apiVersion: route.openshift.io/v1
-kind: Route
-metadata:
-  name: {{ printf "%s-gateway-%d" (include "common.names.fullname" $) $index | trunc 63 | trimSuffix "-" }}
-  namespace: {{ include "common.names.namespace" $ | quote }}
-  labels:
-    {{- include "common.labels.standard" (dict "customLabels" $.Values.commonLabels "context" $) | nindent 4 }}
-  {{- if or $.Values.openshiftRoute.annotations $.Values.commonAnnotations }}
-  annotations:
-    {{- include "common.tplvalues.merge" (dict "values" (list $.Values.openshiftRoute.annotations $.Values.commonAnnotations) "context" $) | nindent 4 }}
-  {{- end }}
-spec:
-  host: {{ tpl (required "openshiftRoute.extraHosts[].name is required" $host.name) $ | quote }}
-  path: /
-  to:
-    kind: Service
-    name: {{ include "opsdiag-app.apisixServiceName" $ }}
-    weight: 100
-  port:
-    targetPort: apisix-gateway
-  {{- if $.Values.openshiftRoute.tls.enabled }}
-  tls:
-    {{- include "opsdiag-app.openshiftRouteTLS" $ | nindent 4 }}
-  {{- end }}
-  wildcardPolicy: None
-{{- end }}
 {{- end }}

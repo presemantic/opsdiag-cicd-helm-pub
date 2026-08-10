@@ -911,9 +911,13 @@ mcp-proxy:
 
   ## @param mcp-proxy.updateStrategy App MCP Proxy Deployment update strategy
   updateStrategy:
+    ## @param mcp-proxy.updateStrategy.type App MCP Proxy Deployment strategy type
     type: RollingUpdate
+    ## @param mcp-proxy.updateStrategy.rollingUpdate App MCP Proxy RollingUpdate settings
     rollingUpdate:
+      ## @param mcp-proxy.updateStrategy.rollingUpdate.maxSurge Maximum additional App MCP Proxy pods during rollout
       maxSurge: 0
+      ## @param mcp-proxy.updateStrategy.rollingUpdate.maxUnavailable Maximum unavailable App MCP Proxy pods during rollout
       maxUnavailable: 1
 
   ## @param mcp-proxy.config App MCP Proxy runtime configuration rendered to `/app/config.yaml`
@@ -948,36 +952,55 @@ mcp-proxy:
 
   ## @param mcp-proxy.serviceAccount App MCP Proxy ServiceAccount settings
   serviceAccount:
+    ## @param mcp-proxy.serviceAccount.create Create an App MCP Proxy ServiceAccount
     create: true
+    ## @param mcp-proxy.serviceAccount.name App MCP Proxy ServiceAccount name; generated when empty
     name: ""
+    ## @param mcp-proxy.serviceAccount.annotations Additional App MCP Proxy ServiceAccount annotations
     annotations: {}
+    ## @param mcp-proxy.serviceAccount.automountServiceAccountToken Mount the Kubernetes API token in App MCP Proxy pods
     automountServiceAccountToken: false
 
   ## @param mcp-proxy.podSecurityContext App MCP Proxy pod security context settings
   podSecurityContext:
+    ## @param mcp-proxy.podSecurityContext.enabled Enable the App MCP Proxy pod security context
     enabled: true
+    ## @param mcp-proxy.podSecurityContext.seccompProfile App MCP Proxy pod seccomp profile
     seccompProfile:
+      ## @param mcp-proxy.podSecurityContext.seccompProfile.type App MCP Proxy pod seccomp profile type
       type: RuntimeDefault
 
   ## @param mcp-proxy.containerSecurityContext App MCP Proxy container security context settings
   containerSecurityContext:
+    ## @param mcp-proxy.containerSecurityContext.enabled Enable the App MCP Proxy container security context
     enabled: true
+    ## @param mcp-proxy.containerSecurityContext.runAsNonRoot Require a non-root App MCP Proxy process
     runAsNonRoot: true
+    ## @param mcp-proxy.containerSecurityContext.readOnlyRootFilesystem Use a read-only App MCP Proxy root filesystem
     readOnlyRootFilesystem: true
+    ## @param mcp-proxy.containerSecurityContext.allowPrivilegeEscalation Allow App MCP Proxy privilege escalation
     allowPrivilegeEscalation: false
+    ## @param mcp-proxy.containerSecurityContext.capabilities App MCP Proxy Linux capability settings
     capabilities:
+      ## @param mcp-proxy.containerSecurityContext.capabilities.drop App MCP Proxy Linux capabilities to drop
       drop: [ALL]
 
   ## @param mcp-proxy.containerPorts App MCP Proxy container port settings
   containerPorts:
+    ## @param mcp-proxy.containerPorts.http App MCP Proxy container HTTP port
     http: 8000
 
   ## @param mcp-proxy.service App MCP Proxy Service settings
   service:
+    ## @param mcp-proxy.service.type App MCP Proxy Service type
     type: ClusterIP
+    ## @param mcp-proxy.service.annotations Additional App MCP Proxy Service annotations
     annotations: {}
+    ## @param mcp-proxy.service.ports App MCP Proxy Service port settings
     ports:
+      ## @param mcp-proxy.service.ports.http App MCP Proxy Service HTTP port
       http: 8000
+    ## @param mcp-proxy.service.clusterIP App MCP Proxy Service cluster IP
     clusterIP: ""
 
   ## @param mcp-proxy.resources App MCP Proxy resource requests and limits
@@ -985,52 +1008,91 @@ mcp-proxy:
 
   ## @param mcp-proxy.livenessProbe App MCP Proxy liveness probe settings
   livenessProbe:
+    ## @param mcp-proxy.livenessProbe.enabled Enable the App MCP Proxy liveness probe
     enabled: true
+    ## @param mcp-proxy.livenessProbe.spec App MCP Proxy liveness probe specification
     spec:
+      ## @param mcp-proxy.livenessProbe.spec.httpGet App MCP Proxy HTTP liveness probe settings
       httpGet:
+        ## @param mcp-proxy.livenessProbe.spec.httpGet.path App MCP Proxy liveness probe path
         path: /livez
+        ## @param mcp-proxy.livenessProbe.spec.httpGet.port App MCP Proxy liveness probe port name
         port: http
+      ## @param mcp-proxy.livenessProbe.spec.periodSeconds App MCP Proxy liveness probe period
       periodSeconds: 10
+      ## @param mcp-proxy.livenessProbe.spec.timeoutSeconds App MCP Proxy liveness probe timeout
       timeoutSeconds: 2
+      ## @param mcp-proxy.livenessProbe.spec.failureThreshold App MCP Proxy liveness probe failure threshold
       failureThreshold: 3
 
   ## @param mcp-proxy.readinessProbe App MCP Proxy readiness probe settings
   readinessProbe:
+    ## @param mcp-proxy.readinessProbe.enabled Enable the App MCP Proxy readiness probe
     enabled: true
+    ## @param mcp-proxy.readinessProbe.spec App MCP Proxy readiness probe specification
     spec:
+      ## @param mcp-proxy.readinessProbe.spec.httpGet App MCP Proxy HTTP readiness probe settings
       httpGet:
+        ## @param mcp-proxy.readinessProbe.spec.httpGet.path App MCP Proxy readiness probe path
         path: /readyz
+        ## @param mcp-proxy.readinessProbe.spec.httpGet.port App MCP Proxy readiness probe port name
         port: http
+      ## @param mcp-proxy.readinessProbe.spec.periodSeconds App MCP Proxy readiness probe period
       periodSeconds: 5
+      ## @param mcp-proxy.readinessProbe.spec.timeoutSeconds App MCP Proxy readiness probe timeout
       timeoutSeconds: 2
+      ## @param mcp-proxy.readinessProbe.spec.failureThreshold App MCP Proxy readiness probe failure threshold
       failureThreshold: 3
 
   ## @param mcp-proxy.startupProbe App MCP Proxy startup probe settings
   startupProbe:
+    ## @param mcp-proxy.startupProbe.enabled Enable the App MCP Proxy startup probe
     enabled: true
+    ## @param mcp-proxy.startupProbe.spec App MCP Proxy startup probe specification
     spec:
+      ## @param mcp-proxy.startupProbe.spec.httpGet App MCP Proxy HTTP startup probe settings
       httpGet:
+        ## @param mcp-proxy.startupProbe.spec.httpGet.path App MCP Proxy startup probe path
         path: /readyz
+        ## @param mcp-proxy.startupProbe.spec.httpGet.port App MCP Proxy startup probe port name
         port: http
+      ## @param mcp-proxy.startupProbe.spec.periodSeconds App MCP Proxy startup probe period
       periodSeconds: 5
+      ## @param mcp-proxy.startupProbe.spec.timeoutSeconds App MCP Proxy startup probe timeout
       timeoutSeconds: 2
+      ## @param mcp-proxy.startupProbe.spec.failureThreshold App MCP Proxy startup probe failure threshold
       failureThreshold: 120
 
   ## App MCP Proxy pod placement
+  ## @param mcp-proxy.podLabels Additional App MCP Proxy pod labels
   podLabels: {}
+  ## @param mcp-proxy.podAnnotations Additional App MCP Proxy pod annotations
   podAnnotations: {}
+  ## @param mcp-proxy.podAffinityPreset App MCP Proxy pod affinity preset; ignored when `mcp-proxy.affinity` is set
   podAffinityPreset: ""
+  ## @param mcp-proxy.podAntiAffinityPreset App MCP Proxy pod anti-affinity preset; ignored when `mcp-proxy.affinity` is set
   podAntiAffinityPreset: soft
+  ## @param mcp-proxy.nodeAffinityPreset App MCP Proxy node affinity preset
   nodeAffinityPreset:
+    ## @param mcp-proxy.nodeAffinityPreset.type App MCP Proxy node affinity preset type
     type: ""
+    ## @param mcp-proxy.nodeAffinityPreset.key App MCP Proxy node label key used by the affinity preset
     key: ""
+    ## @param mcp-proxy.nodeAffinityPreset.values App MCP Proxy node label values used by the affinity preset
     values: []
+  ## @param mcp-proxy.affinity App MCP Proxy affinity rules
   affinity: {}
+  ## @param mcp-proxy.nodeSelector Node labels for App MCP Proxy pod assignment
   nodeSelector: {}
+  ## @param mcp-proxy.tolerations Tolerations for App MCP Proxy pod assignment
   tolerations: []
+  ## @param mcp-proxy.topologySpreadConstraints Topology spread constraints for App MCP Proxy pods
   topologySpreadConstraints: []
+  ## @param mcp-proxy.priorityClassName App MCP Proxy pod priority class
   priorityClassName: ""
+  ## @param mcp-proxy.schedulerName Alternate Kubernetes scheduler for App MCP Proxy pods
   schedulerName: ""
+  ## @param mcp-proxy.terminationGracePeriodSeconds App MCP Proxy pod termination grace period
   terminationGracePeriodSeconds: 30
 
 ## @section App VCS parameters
@@ -1157,11 +1219,17 @@ vcs:
     enabled: true
     ## @param vcs.livenessProbe.spec App VCS liveness probe specification
     spec:
+      ## @param vcs.livenessProbe.spec.httpGet App VCS HTTP liveness probe settings
       httpGet:
+        ## @param vcs.livenessProbe.spec.httpGet.path App VCS liveness probe path
         path: /livez
+        ## @param vcs.livenessProbe.spec.httpGet.port App VCS liveness probe port name
         port: http
+      ## @param vcs.livenessProbe.spec.periodSeconds App VCS liveness probe period
       periodSeconds: 10
+      ## @param vcs.livenessProbe.spec.timeoutSeconds App VCS liveness probe timeout
       timeoutSeconds: 2
+      ## @param vcs.livenessProbe.spec.failureThreshold App VCS liveness probe failure threshold
       failureThreshold: 3
   ## @param vcs.readinessProbe App VCS readiness probe settings
   readinessProbe:
@@ -1169,11 +1237,17 @@ vcs:
     enabled: true
     ## @param vcs.readinessProbe.spec App VCS readiness probe specification
     spec:
+      ## @param vcs.readinessProbe.spec.httpGet App VCS HTTP readiness probe settings
       httpGet:
+        ## @param vcs.readinessProbe.spec.httpGet.path App VCS readiness probe path
         path: /readyz
+        ## @param vcs.readinessProbe.spec.httpGet.port App VCS readiness probe port name
         port: http
+      ## @param vcs.readinessProbe.spec.periodSeconds App VCS readiness probe period
       periodSeconds: 5
+      ## @param vcs.readinessProbe.spec.timeoutSeconds App VCS readiness probe timeout
       timeoutSeconds: 2
+      ## @param vcs.readinessProbe.spec.failureThreshold App VCS readiness probe failure threshold
       failureThreshold: 3
   ## @param vcs.startupProbe App VCS startup probe settings
   startupProbe:
@@ -1181,11 +1255,17 @@ vcs:
     enabled: true
     ## @param vcs.startupProbe.spec App VCS startup probe specification
     spec:
+      ## @param vcs.startupProbe.spec.httpGet App VCS HTTP startup probe settings
       httpGet:
+        ## @param vcs.startupProbe.spec.httpGet.path App VCS startup probe path
         path: /readyz
+        ## @param vcs.startupProbe.spec.httpGet.port App VCS startup probe port name
         port: http
+      ## @param vcs.startupProbe.spec.periodSeconds App VCS startup probe period
       periodSeconds: 5
+      ## @param vcs.startupProbe.spec.timeoutSeconds App VCS startup probe timeout
       timeoutSeconds: 2
+      ## @param vcs.startupProbe.spec.failureThreshold App VCS startup probe failure threshold
       failureThreshold: 120
   ## App VCS pod placement
   ## @param vcs.podLabels Additional labels for App VCS pods
@@ -1814,28 +1894,44 @@ gateway:
     ## @param gateway.routing.upstreams Named internal component upstreams and their APISIX timeouts in seconds
     upstreams:
       api:
+        ## @param gateway.routing.upstreams.api.component Internal App API component name
         component: api
         timeout:
+          ## @param gateway.routing.upstreams.api.timeout.connect APISIX connection timeout for App API requests
           connect: 10
+          ## @param gateway.routing.upstreams.api.timeout.send APISIX send timeout for App API requests
           send: 600
+          ## @param gateway.routing.upstreams.api.timeout.read APISIX read timeout for App API requests
           read: 600
       front:
+        ## @param gateway.routing.upstreams.front.component Internal App Frontend component name
         component: front
         timeout:
+          ## @param gateway.routing.upstreams.front.timeout.connect APISIX connection timeout for App Frontend requests
           connect: 10
+          ## @param gateway.routing.upstreams.front.timeout.send APISIX send timeout for App Frontend requests
           send: 300
+          ## @param gateway.routing.upstreams.front.timeout.read APISIX read timeout for App Frontend requests
           read: 300
       mcp-proxy:
+        ## @param gateway.routing.upstreams.mcp-proxy.component Internal App MCP Proxy component name
         component: mcp-proxy
         timeout:
+          ## @param gateway.routing.upstreams.mcp-proxy.timeout.connect APISIX connection timeout for MCP requests
           connect: 10
+          ## @param gateway.routing.upstreams.mcp-proxy.timeout.send APISIX send timeout for MCP requests
           send: 3600
+          ## @param gateway.routing.upstreams.mcp-proxy.timeout.read APISIX read timeout for MCP requests
           read: 3600
       vcs:
+        ## @param gateway.routing.upstreams.vcs.component Internal App VCS component name
         component: vcs
         timeout:
+          ## @param gateway.routing.upstreams.vcs.timeout.connect APISIX connection timeout for App VCS requests
           connect: 10
+          ## @param gateway.routing.upstreams.vcs.timeout.send APISIX send timeout for App VCS requests
           send: 300
+          ## @param gateway.routing.upstreams.vcs.timeout.read APISIX read timeout for App VCS requests
           read: 300
 
     ## @param gateway.routing.routes Ordered standalone APISIX routes; every route targets one named internal upstream
