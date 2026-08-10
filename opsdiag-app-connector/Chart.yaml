@@ -2,8 +2,8 @@ apiVersion: v2
 name: opsdiag-app-connector
 description: OpsDiag customer-side app connector
 type: application
-version: 0.2.15
-appVersion: "2026-08-10.22-37-16.c352275"
+version: 0.2.16
+appVersion: "2026-08-10.23-11-17.9500e05"
 dependencies:
   - name: common
     repository: https://opsolving.github.io/charts/

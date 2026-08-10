@@ -20,7 +20,7 @@ permissions:
 
 env:
   REGION: europe
-  GAR_LOCATION: europe-docker.pkg.dev/presemantic/public
+  GAR_LOCATION: europe-docker.pkg.dev/presemantic/public/charts
 
 jobs:
   validate:
