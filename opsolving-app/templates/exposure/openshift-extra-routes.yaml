@@ -1,0 +1,30 @@
+{{- if .Values.openshiftRoute.enabled }}
+{{- range .Values.openshiftRoute.extraHosts }}
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ printf "%s-gateway-%s" (include "common.names.fullname" $) (.name | sha256sum | trunc 8) | trunc 63 | trimSuffix "-" }}
+  namespace: {{ include "common.names.namespace" $ | quote }}
+  labels:
+    {{- include "common.labels.standard" (dict "customLabels" $.Values.commonLabels "context" $) | nindent 4 }}
+  {{- if or $.Values.openshiftRoute.annotations $.Values.commonAnnotations }}
+  annotations:
+    {{- include "common.tplvalues.merge" (dict "values" (list $.Values.openshiftRoute.annotations $.Values.commonAnnotations) "context" $) | nindent 4 }}
+  {{- end }}
+spec:
+  host: {{ tpl (required "openshiftRoute.extraHosts[].name is required" .name) $ | quote }}
+  path: /
+  to:
+    kind: Service
+    name: {{ include "opsolving-app.apisixServiceName" $ }}
+    weight: 100
+  port:
+    targetPort: apisix-gateway
+  {{- if $.Values.openshiftRoute.tls.enabled }}
+  tls:
+    {{- include "opsolving-app.openshiftRouteTLS" $ | nindent 4 }}
+  {{- end }}
+  wildcardPolicy: None
+{{- end }}
+{{- end }}

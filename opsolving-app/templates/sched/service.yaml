@@ -1,0 +1,24 @@
+{{/* Copyright Opsolving. All Rights Reserved. SPDX-License-Identifier: APACHE-2.0 */}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "opsolving-app.componentName" (dict "root" . "component" "sched") }}
+  namespace: {{ include "common.names.namespace" . | quote }}
+  labels:
+    {{- include "opsolving-app.podLabels" (dict "root" . "component" "sched") | nindent 4 }}
+  {{- with .Values.sched.service.annotations }}
+  annotations:
+    {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.sched.service.type }}
+  {{- with .Values.sched.service.clusterIP }}
+  clusterIP: {{ . }}
+  {{- end }}
+  ports:
+    - name: http
+      port: {{ .Values.sched.service.ports.http }}
+      targetPort: http
+      protocol: TCP
+  selector:
+    {{- include "opsolving-app.selectorLabels" (dict "root" . "component" "sched") | nindent 4 }}

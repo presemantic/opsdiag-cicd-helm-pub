@@ -1,0 +1,10 @@
+apiVersion: v2
+name: opsolving-app-connector
+description: Opsolving customer-side app connector
+type: application
+version: 1.0.0
+appVersion: "2026-08-10.23-11-17.9500e05"
+dependencies:
+  - name: common
+    repository: https://opsolving.github.io/charts/
+    version: 2.31.4

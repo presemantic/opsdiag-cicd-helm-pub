@@ -1,0 +1,179 @@
+{{/* Copyright Opsolving. All Rights Reserved. SPDX-License-Identifier: APACHE-2.0 */}}
+{{- if (index .Values "pgsql-tables").enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ printf "%s-v18" (include "opsolving-app.pgsqlTables.fullname" .) | trunc 63 | trimSuffix "-" | quote }}
+  namespace: {{ include "common.names.namespace" . | quote }}
+  labels:
+    {{- include "opsolving-app.pgsqlTables.labels" . | nindent 4 }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-20"
+    {{- with .Values.commonAnnotations }}
+    {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+    {{- end }}
+spec:
+  serviceName: {{ printf "%s-headless" (include "opsolving-app.pgsqlTables.fullname" .) | trunc 63 | trimSuffix "-" | quote }}
+  replicas: 1
+  podManagementPolicy: {{ (index .Values "pgsql-tables").primary.podManagementPolicy }}
+  updateStrategy:
+    {{- include "common.tplvalues.render" (dict "value" (index .Values "pgsql-tables").primary.updateStrategy "context" .) | nindent 4 }}
+  selector:
+    matchLabels:
+      {{- include "opsolving-app.pgsqlTables.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "opsolving-app.pgsqlTables.labels" . | nindent 8 }}
+        {{- with (index .Values "pgsql-tables").primary.podLabels }}
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+        {{- end }}
+      annotations:
+        checksum/auth: {{ printf "%s:%s:%s" (include "opsolving-app.pgsqlTables.secretName" .) (index .Values "pgsql-tables").auth.secretKeys.userPasswordKey (index .Values "pgsql-tables").auth.password | sha256sum }}
+        {{- with (index .Values "pgsql-tables").primary.podAnnotations }}
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+        {{- end }}
+    spec:
+      serviceAccountName: {{ include "opsolving-app.pgsqlTables.serviceAccountName" . | quote }}
+      automountServiceAccountToken: {{ (index .Values "pgsql-tables").primary.serviceAccount.automountServiceAccountToken }}
+      enableServiceLinks: false
+      {{- include "common.images.renderPullSecrets" (dict "images" (list (index .Values "pgsql-tables").image) "context" .) | nindent 6 }}
+      {{- if (index .Values "pgsql-tables").primary.podSecurityContext.enabled }}
+      securityContext:
+        {{- omit (index .Values "pgsql-tables").primary.podSecurityContext "enabled" | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with (index .Values "pgsql-tables").primary.priorityClassName }}
+      priorityClassName: {{ . | quote }}
+      {{- end }}
+      {{- with (index .Values "pgsql-tables").primary.schedulerName }}
+      schedulerName: {{ . | quote }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ (index .Values "pgsql-tables").primary.terminationGracePeriodSeconds }}
+      containers:
+        - name: pgsql-tables
+          image: {{ include "common.images.image" (dict "imageRoot" (index .Values "pgsql-tables").image "global" .Values.global "chart" .Chart) | quote }}
+          imagePullPolicy: {{ (index .Values "pgsql-tables").image.pullPolicy }}
+          {{- if (index .Values "pgsql-tables").primary.containerSecurityContext.enabled }}
+          securityContext:
+            {{- omit (index .Values "pgsql-tables").primary.containerSecurityContext "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          env:
+            - name: POSTGRES_USER
+              value: {{ required "pgsql-tables.auth.username is required" (index .Values "pgsql-tables").auth.username | quote }}
+            - name: POSTGRES_DB
+              value: {{ required "pgsql-tables.auth.database is required" (index .Values "pgsql-tables").auth.database | quote }}
+            - name: POSTGRES_PASSWORD_FILE
+              value: /run/secrets/pgsql/password
+            - name: PGDATA
+              value: /var/lib/postgresql/18/docker
+          ports:
+            - name: pgsql
+              containerPort: {{ (index .Values "pgsql-tables").primary.service.ports.pgsql }}
+              protocol: TCP
+          {{- if (index .Values "pgsql-tables").primary.startupProbe.enabled }}
+          startupProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -ec
+                - exec pg_isready -h 127.0.0.1 -p {{ (index .Values "pgsql-tables").primary.service.ports.pgsql }} -U "$POSTGRES_USER" -d "$POSTGRES_DB"
+            {{- include "common.tplvalues.render" (dict "value" (index .Values "pgsql-tables").primary.startupProbe.spec "context" .) | nindent 12 }}
+          {{- end }}
+          {{- if (index .Values "pgsql-tables").primary.readinessProbe.enabled }}
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -ec
+                - exec pg_isready -h 127.0.0.1 -p {{ (index .Values "pgsql-tables").primary.service.ports.pgsql }} -U "$POSTGRES_USER" -d "$POSTGRES_DB"
+            {{- include "common.tplvalues.render" (dict "value" (index .Values "pgsql-tables").primary.readinessProbe.spec "context" .) | nindent 12 }}
+          {{- end }}
+          {{- if (index .Values "pgsql-tables").primary.livenessProbe.enabled }}
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -ec
+                - exec pg_isready -h 127.0.0.1 -p {{ (index .Values "pgsql-tables").primary.service.ports.pgsql }} -U "$POSTGRES_USER" -d "$POSTGRES_DB"
+            {{- include "common.tplvalues.render" (dict "value" (index .Values "pgsql-tables").primary.livenessProbe.spec "context" .) | nindent 12 }}
+          {{- end }}
+          {{- with (index .Values "pgsql-tables").primary.resources }}
+          resources:
+            {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql
+            - name: password
+              mountPath: /run/secrets/pgsql
+              readOnly: true
+            - name: tmp
+              mountPath: /tmp
+            - name: run
+              mountPath: /var/run/postgresql
+            - name: shm
+              mountPath: /dev/shm
+      volumes:
+        - name: password
+          secret:
+            secretName: {{ include "opsolving-app.pgsqlTables.secretName" . | quote }}
+            defaultMode: 0440
+            items:
+              - key: {{ (index .Values "pgsql-tables").auth.secretKeys.userPasswordKey | quote }}
+                path: password
+        - name: tmp
+          emptyDir: {}
+        - name: run
+          emptyDir: {}
+        - name: shm
+          emptyDir:
+            medium: Memory
+        {{- if (index .Values "pgsql-tables").primary.persistence.existingClaim }}
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ tpl (index .Values "pgsql-tables").primary.persistence.existingClaim . | quote }}
+        {{- else if not (index .Values "pgsql-tables").primary.persistence.enabled }}
+        - name: data
+          emptyDir: {}
+        {{- end }}
+      {{- with (index .Values "pgsql-tables").primary.affinity }}
+      affinity:
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+      {{- end }}
+      {{- with (index .Values "pgsql-tables").primary.nodeSelector }}
+      nodeSelector:
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+      {{- end }}
+      {{- with (index .Values "pgsql-tables").primary.tolerations }}
+      tolerations:
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+      {{- end }}
+      {{- with (index .Values "pgsql-tables").primary.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+      {{- end }}
+  {{- if and (index .Values "pgsql-tables").primary.persistence.enabled (not (index .Values "pgsql-tables").primary.persistence.existingClaim) }}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+        {{- with (index .Values "pgsql-tables").primary.persistence.annotations }}
+        annotations:
+          {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 10 }}
+        {{- end }}
+      spec:
+        accessModes:
+          {{- toYaml (index .Values "pgsql-tables").primary.persistence.accessModes | nindent 10 }}
+        {{- if eq "-" (index .Values "pgsql-tables").primary.persistence.storageClass }}
+        storageClassName: ""
+        {{- else if (index .Values "pgsql-tables").primary.persistence.storageClass }}
+        storageClassName: {{ tpl (index .Values "pgsql-tables").primary.persistence.storageClass . | quote }}
+        {{- end }}
+        {{- with (index .Values "pgsql-tables").primary.persistence.selector }}
+        selector:
+          {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 10 }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ (index .Values "pgsql-tables").primary.persistence.size | quote }}
+  {{- end }}
+{{- end }}

@@ -1,0 +1,126 @@
+{{/* Copyright Opsolving. All Rights Reserved. SPDX-License-Identifier: APACHE-2.0 */}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "opsolving-app.componentName" (dict "root" . "component" "vcs") }}
+  namespace: {{ include "common.names.namespace" . | quote }}
+  labels:
+    {{- include "opsolving-app.podLabels" (dict "root" . "component" "vcs") | nindent 4 }}
+  {{- with .Values.commonAnnotations }}
+  annotations:
+    {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+spec:
+  replicas: {{ .Values.vcs.replicaCount }}
+  revisionHistoryLimit: {{ .Values.vcs.revisionHistoryLimit }}
+  strategy:
+    {{- include "common.tplvalues.render" (dict "value" .Values.vcs.updateStrategy "context" .) | nindent 4 }}
+  selector:
+    matchLabels:
+      {{- include "opsolving-app.selectorLabels" (dict "root" . "component" "vcs") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "opsolving-app.podLabels" (dict "root" . "component" "vcs") | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/vcs/secret.yaml") $ | sha256sum }}
+        {{- with .Values.vcs.podAnnotations }}
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+        {{- end }}
+    spec:
+      serviceAccountName: {{ include "opsolving-app.serviceAccountName" (dict "root" . "component" "vcs") }}
+      automountServiceAccountToken: {{ .Values.vcs.serviceAccount.automountServiceAccountToken }}
+      {{- include "common.images.renderPullSecrets" (dict "images" (list .Values.vcs.image) "context" .) | nindent 6 }}
+      {{- if .Values.vcs.podSecurityContext.enabled }}
+      securityContext:
+        {{- omit .Values.vcs.podSecurityContext "enabled" | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with .Values.vcs.priorityClassName }}
+      priorityClassName: {{ . | quote }}
+      {{- end }}
+      {{- with .Values.vcs.schedulerName }}
+      schedulerName: {{ . | quote }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.vcs.terminationGracePeriodSeconds }}
+      {{- with .Values.vcs.nodeSelector }}
+      nodeSelector:
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.vcs.affinity }}
+      affinity:
+        {{- include "common.tplvalues.render" (dict "value" .Values.vcs.affinity "context" .) | nindent 8 }}
+      {{- else if or .Values.vcs.podAffinityPreset .Values.vcs.podAntiAffinityPreset .Values.vcs.nodeAffinityPreset.type }}
+      affinity:
+        {{- if .Values.vcs.podAffinityPreset }}
+        podAffinity:
+          {{- include "common.affinities.pods" (dict "type" .Values.vcs.podAffinityPreset "component" "vcs" "customLabels" .Values.vcs.podLabels "context" .) | nindent 10 }}
+        {{- end }}
+        {{- if .Values.vcs.podAntiAffinityPreset }}
+        podAntiAffinity:
+          {{- include "common.affinities.pods" (dict "type" .Values.vcs.podAntiAffinityPreset "component" "vcs" "customLabels" .Values.vcs.podLabels "context" .) | nindent 10 }}
+        {{- end }}
+        {{- if .Values.vcs.nodeAffinityPreset.type }}
+        nodeAffinity:
+          {{- include "common.affinities.nodes" (dict "type" .Values.vcs.nodeAffinityPreset.type "key" .Values.vcs.nodeAffinityPreset.key "values" .Values.vcs.nodeAffinityPreset.values) | nindent 10 }}
+        {{- end }}
+      {{- end }}
+      {{- with .Values.vcs.tolerations }}
+      tolerations:
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+      {{- end }}
+      {{- with .Values.vcs.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: "vcs"
+          image: {{ include "common.images.image" (dict "imageRoot" .Values.vcs.image "global" .Values.global "chart" .Chart) | quote }}
+          imagePullPolicy: {{ .Values.vcs.image.pullPolicy }}
+          {{- if .Values.vcs.containerSecurityContext.enabled }}
+          securityContext:
+            {{- omit .Values.vcs.containerSecurityContext "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.vcs.containerPorts.http }}
+              protocol: TCP
+          {{- with .Values.vcs.extraEnvVars }}
+          env:
+            {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 12 }}
+          {{- end }}
+          {{- if or .Values.vcs.extraEnvVarsCM .Values.vcs.extraEnvVarsSecret }}
+          envFrom:
+            {{- with .Values.vcs.extraEnvVarsCM }}
+            - configMapRef:
+                name: {{ . }}
+            {{- end }}
+            {{- with .Values.vcs.extraEnvVarsSecret }}
+            - secretRef:
+                name: {{ . }}
+            {{- end }}
+          {{- end }}
+          {{- with .Values.vcs.resources }}
+          resources:
+            {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 12 }}
+          {{- end }}
+          {{- if .Values.vcs.livenessProbe.enabled }}
+          livenessProbe:
+            {{- include "common.tplvalues.render" (dict "value" .Values.vcs.livenessProbe.spec "context" .) | nindent 12 }}
+          {{- end }}
+          {{- if .Values.vcs.readinessProbe.enabled }}
+          readinessProbe:
+            {{- include "common.tplvalues.render" (dict "value" .Values.vcs.readinessProbe.spec "context" .) | nindent 12 }}
+          {{- end }}
+          {{- if .Values.vcs.startupProbe.enabled }}
+          startupProbe:
+            {{- include "common.tplvalues.render" (dict "value" .Values.vcs.startupProbe.spec "context" .) | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: app-config
+              mountPath: /app/config.yaml
+              subPath: config.yaml
+              readOnly: true
+      volumes:
+        - name: app-config
+          secret:
+            secretName: {{ include "opsolving-app.configName" (dict "root" . "component" "vcs") }}

@@ -1,0 +1,131 @@
+{{/* Copyright Opsolving. All Rights Reserved. SPDX-License-Identifier: APACHE-2.0 */}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "opsolving-app.componentName" (dict "root" . "component" "pipelines") }}
+  namespace: {{ include "common.names.namespace" . | quote }}
+  labels:
+    {{- include "opsolving-app.podLabels" (dict "root" . "component" "pipelines") | nindent 4 }}
+  {{- with .Values.commonAnnotations }}
+  annotations:
+    {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+  {{- end }}
+spec:
+  replicas: {{ .Values.pipelines.replicaCount }}
+  revisionHistoryLimit: {{ .Values.pipelines.revisionHistoryLimit }}
+  strategy:
+    {{- include "common.tplvalues.render" (dict "value" .Values.pipelines.updateStrategy "context" .) | nindent 4 }}
+  selector:
+    matchLabels:
+      {{- include "opsolving-app.selectorLabels" (dict "root" . "component" "pipelines") | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "opsolving-app.podLabels" (dict "root" . "component" "pipelines") | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/pipelines/secret.yaml") $ | sha256sum }}
+        {{- with .Values.pipelines.podAnnotations }}
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+        {{- end }}
+    spec:
+      serviceAccountName: {{ include "opsolving-app.serviceAccountName" (dict "root" . "component" "pipelines") }}
+      automountServiceAccountToken: {{ .Values.pipelines.serviceAccount.automountServiceAccountToken }}
+      {{- include "common.images.renderPullSecrets" (dict "images" (list .Values.pipelines.image) "context" .) | nindent 6 }}
+      {{- if .Values.pipelines.podSecurityContext.enabled }}
+      securityContext:
+        {{- omit .Values.pipelines.podSecurityContext "enabled" | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with .Values.pipelines.priorityClassName }}
+      priorityClassName: {{ . | quote }}
+      {{- end }}
+      {{- with .Values.pipelines.schedulerName }}
+      schedulerName: {{ . | quote }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.pipelines.terminationGracePeriodSeconds }}
+      {{- with .Values.pipelines.nodeSelector }}
+      nodeSelector:
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.pipelines.affinity }}
+      affinity:
+        {{- include "common.tplvalues.render" (dict "value" .Values.pipelines.affinity "context" .) | nindent 8 }}
+      {{- else if or .Values.pipelines.podAffinityPreset .Values.pipelines.podAntiAffinityPreset .Values.pipelines.nodeAffinityPreset.type }}
+      affinity:
+        {{- if .Values.pipelines.podAffinityPreset }}
+        podAffinity:
+          {{- include "common.affinities.pods" (dict "type" .Values.pipelines.podAffinityPreset "component" "pipelines" "customLabels" .Values.pipelines.podLabels "context" .) | nindent 10 }}
+        {{- end }}
+        {{- if .Values.pipelines.podAntiAffinityPreset }}
+        podAntiAffinity:
+          {{- include "common.affinities.pods" (dict "type" .Values.pipelines.podAntiAffinityPreset "component" "pipelines" "customLabels" .Values.pipelines.podLabels "context" .) | nindent 10 }}
+        {{- end }}
+        {{- if .Values.pipelines.nodeAffinityPreset.type }}
+        nodeAffinity:
+          {{- include "common.affinities.nodes" (dict "type" .Values.pipelines.nodeAffinityPreset.type "key" .Values.pipelines.nodeAffinityPreset.key "values" .Values.pipelines.nodeAffinityPreset.values) | nindent 10 }}
+        {{- end }}
+      {{- end }}
+      {{- with .Values.pipelines.tolerations }}
+      tolerations:
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+      {{- end }}
+      {{- with .Values.pipelines.topologySpreadConstraints }}
+      topologySpreadConstraints:
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: "pipelines"
+          image: {{ include "common.images.image" (dict "imageRoot" .Values.pipelines.image "global" .Values.global "chart" .Chart) | quote }}
+          imagePullPolicy: {{ .Values.pipelines.image.pullPolicy }}
+          {{- if .Values.pipelines.containerSecurityContext.enabled }}
+          securityContext:
+            {{- omit .Values.pipelines.containerSecurityContext "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.pipelines.containerPorts.http }}
+              protocol: TCP
+          {{- with .Values.pipelines.extraEnvVars }}
+          env:
+            {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 12 }}
+          {{- end }}
+          {{- if or .Values.pipelines.extraEnvVarsCM .Values.pipelines.extraEnvVarsSecret }}
+          envFrom:
+            {{- with .Values.pipelines.extraEnvVarsCM }}
+            - configMapRef:
+                name: {{ . }}
+            {{- end }}
+            {{- with .Values.pipelines.extraEnvVarsSecret }}
+            - secretRef:
+                name: {{ . }}
+            {{- end }}
+          {{- end }}
+          {{- with .Values.pipelines.resources }}
+          resources:
+            {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 12 }}
+          {{- end }}
+          {{- if .Values.pipelines.livenessProbe.enabled }}
+          livenessProbe:
+            {{- include "common.tplvalues.render" (dict "value" .Values.pipelines.livenessProbe.spec "context" .) | nindent 12 }}
+          {{- end }}
+          {{- if .Values.pipelines.readinessProbe.enabled }}
+          readinessProbe:
+            {{- include "common.tplvalues.render" (dict "value" .Values.pipelines.readinessProbe.spec "context" .) | nindent 12 }}
+          {{- end }}
+          {{- if .Values.pipelines.startupProbe.enabled }}
+          startupProbe:
+            {{- include "common.tplvalues.render" (dict "value" .Values.pipelines.startupProbe.spec "context" .) | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: app-config
+              mountPath: /app/config.yaml
+              subPath: config.yaml
+              readOnly: true
+            - name: runtime-tmp
+              mountPath: /tmp
+      volumes:
+        - name: app-config
+          secret:
+            secretName: {{ include "opsolving-app.configName" (dict "root" . "component" "pipelines") }}
+        - name: runtime-tmp
+          emptyDir:
+            sizeLimit: 256Mi

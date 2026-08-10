@@ -1,0 +1,77 @@
+{{- if .Values.api.migration.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ printf "%s-migrate" (include "opsolving-app.componentName" (dict "root" . "component" "api")) | trunc 63 | trimSuffix "-" }}
+  namespace: {{ include "common.names.namespace" . | quote }}
+  labels:
+    {{- include "opsolving-app.podLabels" (dict "root" . "component" "api") | nindent 4 }}
+  annotations:
+    helm.sh/hook: post-install,pre-upgrade
+    helm.sh/hook-weight: "0"
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+    argocd.argoproj.io/hook: Sync
+    argocd.argoproj.io/sync-wave: "-10"
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation,HookSucceeded
+    {{- with .Values.commonAnnotations }}
+    {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+    {{- end }}
+    {{- with .Values.api.migration.annotations }}
+    {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
+    {{- end }}
+spec:
+  {{- with .Values.api.migration.ttlSecondsAfterFinished }}
+  ttlSecondsAfterFinished: {{ . }}
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        {{- include "opsolving-app.podLabels" (dict "root" . "component" "api") | nindent 8 }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/api/migration-secret.yaml") . | sha256sum }}
+        {{- with .Values.api.podAnnotations }}
+        {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
+        {{- end }}
+    spec:
+      restartPolicy: OnFailure
+      serviceAccountName: {{ include "opsolving-app.serviceAccountName" (dict "root" . "component" "api") }}
+      automountServiceAccountToken: {{ .Values.api.serviceAccount.automountServiceAccountToken }}
+      {{- include "common.images.renderPullSecrets" (dict "images" (list .Values.api.image) "context" $) | nindent 6 }}
+      {{- if .Values.api.podSecurityContext.enabled }}
+      securityContext:
+        {{- omit .Values.api.podSecurityContext "enabled" | toYaml | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: migrate
+          image: {{ include "common.images.image" (dict "imageRoot" .Values.api.image "global" .Values.global "chart" .Chart) | quote }}
+          imagePullPolicy: {{ .Values.api.image.pullPolicy }}
+          {{- if .Values.api.containerSecurityContext.enabled }}
+          securityContext:
+            {{- omit .Values.api.containerSecurityContext "enabled" | toYaml | nindent 12 }}
+          {{- end }}
+          args:
+            - migrate
+          env:
+            - name: DB_CONNECT_ATTEMPTS
+              value: {{ .Values.api.migration.databaseConnection.attempts | quote }}
+            - name: DB_CONNECT_RETRY_SECONDS
+              value: {{ .Values.api.migration.databaseConnection.retrySeconds | quote }}
+            - name: DB_CONNECT_TIMEOUT_SECONDS
+              value: {{ .Values.api.migration.databaseConnection.timeoutSeconds | quote }}
+            {{- with .Values.api.migration.extraEnvVars }}
+            {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 12 }}
+            {{- end }}
+          {{- with .Values.api.resources }}
+          resources:
+            {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: app-config
+              mountPath: /app/config.yaml
+              subPath: config.yaml
+              readOnly: true
+      volumes:
+        - name: app-config
+          secret:
+            secretName: {{ printf "%s-migrate-config" (include "opsolving-app.componentName" (dict "root" . "component" "api")) | trunc 63 | trimSuffix "-" }}
+{{- end }}

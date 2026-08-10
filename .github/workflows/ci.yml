@@ -1,4 +1,4 @@
-name: "opsdiag-helm-pub"
+name: "opsolving-helm-pub"
 
 on:
   pull_request:
@@ -20,7 +20,7 @@ permissions:
 
 env:
   REGION: europe
-  GAR_LOCATION: europe-docker.pkg.dev/presemantic/public/charts
+  GAR_LOCATION: europe-west1-docker.pkg.dev/prod-common-cicd/opsolving-docker/charts
 
 jobs:
   validate:
@@ -29,8 +29,8 @@ jobs:
       fail-fast: false
       matrix:
         chart:
-          - opsdiag-app
-          - opsdiag-app-connector
+          - opsolving-app
+          - opsolving-app-connector
     steps:
       - name: "[Checkout] Validate"
         uses: actions/checkout@v4
@@ -52,6 +52,16 @@ jobs:
           fi
 
           grep -Fq 'repository: https://opsolving.github.io/charts/' "${CHART}/Chart.yaml"
+
+          if [ "${CHART}" = "opsolving-app-connector" ]; then
+            ruby -ryaml -e '
+              chart = YAML.safe_load(File.read(File.join(ENV.fetch("CHART"), "Chart.yaml")))
+              values = YAML.safe_load(File.read(File.join(ENV.fetch("CHART"), "values.yaml")), aliases: true) || {}
+              image_tag = values.dig("image", "tag")
+              abort("values.yaml image.tag is required") if image_tag.to_s.empty?
+              abort("Chart.yaml appVersion must equal values.yaml image.tag") unless chart.fetch("appVersion").to_s == image_tag.to_s
+            '
+          fi
 
           if grep -REn '\{\{[^}]*[[:space:]](deepCopy|set|unset|mergeOverwrite)[[:space:](]' "${CHART}/templates"; then
             echo "Owned templates must not mutate copied values."
@@ -109,12 +119,12 @@ jobs:
           CHART: ${{ matrix.chart }}
         run: |
           set -euo pipefail
-          if [ "${CHART}" = "opsdiag-app" ]; then
+          if [ "${CHART}" = "opsolving-app" ]; then
             helm lint "${CHART}" --values "${CHART}/ci-values.yaml"
-            helm template opsdiag "${CHART}" --namespace opsdiag --values "${CHART}/ci-values.yaml" > "/tmp/${CHART}.yaml"
+            helm template "${CHART}" "${CHART}" --namespace prod-opsolving-app --values "${CHART}/ci-values.yaml" > "/tmp/${CHART}.yaml"
           else
             helm lint "${CHART}"
-            helm template opsdiag "${CHART}" --namespace opsdiag > "/tmp/${CHART}.yaml"
+            helm template "${CHART}" "${CHART}" --namespace prod-opsolving-app-connector > "/tmp/${CHART}.yaml"
           fi
       - name: "[Helm] Verify rendered selectors and unsupported resources"
         env:
@@ -145,8 +155,8 @@ jobs:
       fail-fast: false
       matrix:
         chart:
-          - opsdiag-app
-          - opsdiag-app-connector
+          - opsolving-app
+          - opsolving-app-connector
     steps:
       - name: "[Checkout] Build"
         uses: actions/checkout@v4
@@ -218,7 +228,7 @@ jobs:
 
       - name: "[Helm] Lint"
         run: |
-          if [ "${{ matrix.chart }}" = "opsdiag-app" ]; then
+          if [ "${{ matrix.chart }}" = "opsolving-app" ]; then
             helm lint "build/${{ matrix.chart }}" --values "build/${{ matrix.chart }}/ci-values.yaml"
           else
             helm lint "build/${{ matrix.chart }}"
@@ -252,19 +262,19 @@ jobs:
             fi
           done < <(find "${chart}/templates" -type f -name '*.yaml' -print)
 
-          if [ "${{ matrix.chart }}" = "opsdiag-app" ]; then
+          if [ "${{ matrix.chart }}" = "opsolving-app" ]; then
             if tar -tzf "${chart}/charts/apisix-2.16.0.tgz" | grep -Ei '/templates/.*(pdb|poddisruptionbudget|networkpolicy)'; then
               echo "The committed APISIX archive must not contain PDB or NetworkPolicy templates."
               exit 1
             fi
 
-            helm template opsdiag "${chart}" --values "${chart}/ci-values.yaml" > "${rendered}"
+            helm template "${{ matrix.chart }}" "${chart}" --namespace prod-opsolving-app --values "${chart}/ci-values.yaml" > "${rendered}"
             grep -q 'image: "registry-1.docker.io/library/postgres:18"' "${rendered}"
-            grep -q 'name: "opsdiag-pgsql-v18"' "${rendered}"
-            grep -q 'name: "opsdiag-pgsql-tables-v18"' "${rendered}"
+            grep -q 'name: "opsolving-app-pgsql-v18"' "${rendered}"
+            grep -q 'name: "opsolving-app-pgsql-tables-v18"' "${rendered}"
             test "$(grep -c '^kind: StatefulSet$' "${rendered}")" -eq 2
           else
-            helm template opsdiag "${chart}" > "${rendered}"
+            helm template "${{ matrix.chart }}" "${chart}" --namespace prod-opsolving-app-connector > "${rendered}"
           fi
 
           if grep -Eq '^kind: (PodDisruptionBudget|NetworkPolicy)$' "${rendered}"; then
