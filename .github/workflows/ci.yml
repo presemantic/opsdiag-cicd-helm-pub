@@ -228,6 +228,7 @@ jobs:
         run: |
           set -euo pipefail
           chart="build/${{ matrix.chart }}"
+          rendered="/tmp/${{ matrix.chart }}.yaml"
 
           if grep -REn '\{\{[^}]*[[:space:]](deepCopy|set|unset|mergeOverwrite)[[:space:](]' "${chart}/templates"; then
             echo "Owned templates must not mutate copied values."
@@ -257,16 +258,16 @@ jobs:
               exit 1
             fi
 
-            rendered="$(helm template opsdiag "${chart}" --values "${chart}/ci-values.yaml")"
-            printf '%s\n' "${rendered}" | grep -q 'image: "registry-1.docker.io/library/postgres:18"'
-            printf '%s\n' "${rendered}" | grep -q 'name: "opsdiag-pgsql-v18"'
-            printf '%s\n' "${rendered}" | grep -q 'name: "opsdiag-pgsql-tables-v18"'
-            test "$(printf '%s\n' "${rendered}" | grep -c '^kind: StatefulSet$')" -eq 2
+            helm template opsdiag "${chart}" --values "${chart}/ci-values.yaml" > "${rendered}"
+            grep -q 'image: "registry-1.docker.io/library/postgres:18"' "${rendered}"
+            grep -q 'name: "opsdiag-pgsql-v18"' "${rendered}"
+            grep -q 'name: "opsdiag-pgsql-tables-v18"' "${rendered}"
+            test "$(grep -c '^kind: StatefulSet$' "${rendered}")" -eq 2
           else
-            rendered="$(helm template opsdiag "${chart}")"
+            helm template opsdiag "${chart}" > "${rendered}"
           fi
 
-          if printf '%s\n' "${rendered}" | grep -Eq '^kind: (PodDisruptionBudget|NetworkPolicy)$'; then
+          if grep -Eq '^kind: (PodDisruptionBudget|NetworkPolicy)$' "${rendered}"; then
             echo "A forbidden PDB or NetworkPolicy was rendered."
             exit 1
           fi
