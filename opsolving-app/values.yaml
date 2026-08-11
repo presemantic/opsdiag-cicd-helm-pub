@@ -407,9 +407,9 @@ api:
     ## @param api.image.repository App API image repository
     repository: prod-common-cicd/opsolving-docker/images/opsolving-app-api
     ## @param api.image.tag App API image tag
-    tag: "2026-08-11.02-13-59.ded955c"
+    tag: "2026-08-11.03-25-32.01902b0"
     ## @param api.image.digest App API image digest; overrides the tag when set
-    digest: "sha256:280d7f272b42296906a0260cb20234d002e2b56fe8496fe60b342b173da2b0bf"
+    digest: "sha256:09cc1baeda220ca37d4bcee92b8f95f7678f9fad98f2237313aa88fcd7079e8e"
     ## @param api.image.pullPolicy App API image pull policy
     pullPolicy: IfNotPresent
     ## @param api.image.pullSecrets App API image pull secrets
