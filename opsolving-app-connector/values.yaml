@@ -23,9 +23,9 @@ commonAnnotations: {}
 ##
 image:
   ## @param image.registry Opsolving connector image registry
-  registry: europe-west1-docker.pkg.dev
+  registry: europe-docker.pkg.dev
   ## @param image.repository Opsolving connector image repository
-  repository: prod-common-cicd/opsolving-docker/images/opsolving-app-connector
+  repository: presemantic/public/images/opsolving-app-connector
   ## @param image.tag Opsolving connector image tag; defaults to chart appVersion when empty
   tag: "2026-08-11.02-13-59.d3f3a70"
   ## @param image.digest Opsolving connector image digest, used instead of tag when set

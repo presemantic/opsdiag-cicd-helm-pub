@@ -403,9 +403,9 @@ api:
   ## @param api.image App API container image settings
   image:
     ## @param api.image.registry App API image registry
-    registry: europe-west1-docker.pkg.dev
+    registry: europe-docker.pkg.dev
     ## @param api.image.repository App API image repository
-    repository: prod-common-cicd/opsolving-docker/images/opsolving-app-api
+    repository: presemantic/public/images/opsolving-app-api
     ## @param api.image.tag App API image tag
     tag: "2026-08-11.03-25-32.01902b0"
     ## @param api.image.digest App API image digest; overrides the tag when set
@@ -665,9 +665,9 @@ agent:
   ## @param agent.image App Agent container image settings
   image:
     ## @param agent.image.registry App Agent image registry
-    registry: europe-west1-docker.pkg.dev
+    registry: europe-docker.pkg.dev
     ## @param agent.image.repository App Agent image repository
-    repository: prod-common-cicd/opsolving-docker/images/opsolving-app-agent-api
+    repository: presemantic/public/images/opsolving-app-agent-api
     ## @param agent.image.tag App Agent image tag
     tag: "2026-08-11.14-54-54.7694c2e"
     ## @param agent.image.digest App Agent image digest; overrides the tag when set
@@ -897,9 +897,9 @@ mcp-proxy:
   ## @param mcp-proxy.image App MCP Proxy container image settings
   image:
     ## @param mcp-proxy.image.registry App MCP Proxy image registry
-    registry: europe-west1-docker.pkg.dev
+    registry: europe-docker.pkg.dev
     ## @param mcp-proxy.image.repository App MCP Proxy image repository
-    repository: prod-common-cicd/opsolving-docker/images/opsolving-app-mcp-proxy-api
+    repository: presemantic/public/images/opsolving-app-mcp-proxy-api
     ## @param mcp-proxy.image.tag App MCP Proxy image tag
     tag: "2026-08-11.02-13-59.cdff98d"
     ## @param mcp-proxy.image.digest App MCP Proxy image digest; overrides the tag when set
@@ -1106,9 +1106,9 @@ vcs:
   ## @param vcs.image App VCS image settings
   image:
     ## @param vcs.image.registry App VCS image registry
-    registry: europe-west1-docker.pkg.dev
+    registry: europe-docker.pkg.dev
     ## @param vcs.image.repository App VCS image repository
-    repository: prod-common-cicd/opsolving-docker/images/opsolving-app-vcs-api
+    repository: presemantic/public/images/opsolving-app-vcs-api
     ## @param vcs.image.tag Exact published App VCS image tag
     tag: "2026-08-11.02-13-59.f3533d6"
     ## @param vcs.image.digest Optional immutable App VCS image digest
@@ -1312,9 +1312,9 @@ front:
   ## @param front.image App Frontend container image settings
   image:
     ## @param front.image.registry App Frontend image registry
-    registry: europe-west1-docker.pkg.dev
+    registry: europe-docker.pkg.dev
     ## @param front.image.repository App Frontend image repository
-    repository: prod-common-cicd/opsolving-docker/images/opsolving-app-front
+    repository: presemantic/public/images/opsolving-app-front
     ## @param front.image.tag App Frontend image tag
     tag: "2026-08-11.14-55-00.6dbcedf"
     ## @param front.image.digest App Frontend image digest; overrides the tag when set
@@ -1486,9 +1486,9 @@ pipelines:
   ## @param pipelines.image App Pipelines image settings
   image:
     ## @param pipelines.image.registry App Pipelines image registry
-    registry: europe-west1-docker.pkg.dev
+    registry: europe-docker.pkg.dev
     ## @param pipelines.image.repository App Pipelines image repository
-    repository: prod-common-cicd/opsolving-docker/images/opsolving-app-pipelines
+    repository: presemantic/public/images/opsolving-app-pipelines
     ## @param pipelines.image.tag App Pipelines image tag
     tag: "2026-08-11.02-13-59.7521d39"
     ## @param pipelines.image.digest App Pipelines image digest
@@ -1693,9 +1693,9 @@ sched:
   ## @param sched.image App Scheduler container image settings
   image:
     ## @param sched.image.registry App Scheduler image registry
-    registry: europe-west1-docker.pkg.dev
+    registry: europe-docker.pkg.dev
     ## @param sched.image.repository App Scheduler image repository
-    repository: prod-common-cicd/opsolving-docker/images/opsolving-app-sched
+    repository: presemantic/public/images/opsolving-app-sched
     ## @param sched.image.tag App Scheduler image tag
     tag: "2026-08-11.02-13-59.605d682"
     ## @param sched.image.digest App Scheduler image digest; overrides the tag when set

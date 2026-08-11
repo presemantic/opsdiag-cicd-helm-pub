@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This repository publishes customer-deployable Opsolving charts. [`opsolving-app/`](./opsolving-app/) is the unified application stack, and [`opsolving-app-connector/`](./opsolving-app-connector/) is the separately installed customer connector. Release CI publishes OCI charts below `europe-west1-docker.pkg.dev/prod-common-cicd/opsolving-docker/charts`; component images live below the sibling `images` path.
+This repository publishes customer-deployable Opsolving charts. [`opsolving-app/`](./opsolving-app/) is the unified application stack, and [`opsolving-app-connector/`](./opsolving-app-connector/) is the separately installed customer connector. Release CI publishes public OCI charts below `europe-docker.pkg.dev/presemantic/public/charts`; customer-deployable component images live below the sibling `images` path in the same public repository.
 
 ## Structure
 
