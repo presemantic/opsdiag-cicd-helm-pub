@@ -669,9 +669,9 @@ agent:
     ## @param agent.image.repository App Agent image repository
     repository: prod-common-cicd/opsolving-docker/images/opsolving-app-agent-api
     ## @param agent.image.tag App Agent image tag
-    tag: "2026-08-11.02-13-59.80edb10"
+    tag: "2026-08-11.14-54-54.7694c2e"
     ## @param agent.image.digest App Agent image digest; overrides the tag when set
-    digest: "sha256:21804670c123ba0bf4373b0d41597720254a50a45731b87634de17ac8db49d95"
+    digest: "sha256:998807960a5a99a3a2ea81d98ef6f9d3a195656e68de34c4452cd50d781dab07"
     ## @param agent.image.pullPolicy App Agent image pull policy
     pullPolicy: IfNotPresent
     ## @param agent.image.pullSecrets App Agent image pull secrets
@@ -1316,9 +1316,9 @@ front:
     ## @param front.image.repository App Frontend image repository
     repository: prod-common-cicd/opsolving-docker/images/opsolving-app-front
     ## @param front.image.tag App Frontend image tag
-    tag: "2026-08-11.02-13-59.7e9baef"
+    tag: "2026-08-11.14-55-00.6dbcedf"
     ## @param front.image.digest App Frontend image digest; overrides the tag when set
-    digest: "sha256:05f591129998b600331bebe0df718386bac1121abeea4bf36daa94ca4a87a2e9"
+    digest: "sha256:ea5ebee53de105b1793abad37c93e64de0cdab7dd12d5a695d0d52112fb91563"
     ## @param front.image.pullPolicy App Frontend image pull policy
     pullPolicy: IfNotPresent
     ## @param front.image.pullSecrets App Frontend image pull secrets
