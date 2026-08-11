@@ -407,9 +407,9 @@ api:
     ## @param api.image.repository App API image repository
     repository: prod-common-cicd/opsolving-docker/images/opsolving-app-api
     ## @param api.image.tag App API image tag
-    tag: "2026-08-10.23-11-17.c740c98"
+    tag: "2026-08-11.02-13-59.ded955c"
     ## @param api.image.digest App API image digest; overrides the tag when set
-    digest: "sha256:8cffbc6e9deb90ea8ae2f93fbd9f7c6a5998f3a8c70041d43757e0dd075d0b65"
+    digest: "sha256:280d7f272b42296906a0260cb20234d002e2b56fe8496fe60b342b173da2b0bf"
     ## @param api.image.pullPolicy App API image pull policy
     pullPolicy: IfNotPresent
     ## @param api.image.pullSecrets App API image pull secrets
@@ -669,9 +669,9 @@ agent:
     ## @param agent.image.repository App Agent image repository
     repository: prod-common-cicd/opsolving-docker/images/opsolving-app-agent-api
     ## @param agent.image.tag App Agent image tag
-    tag: "2026-08-10.23-11-17.69a3d33"
+    tag: "2026-08-11.02-13-59.80edb10"
     ## @param agent.image.digest App Agent image digest; overrides the tag when set
-    digest: "sha256:4eca583656de20ace028316fdd7e5c65eb1f03c1e44e49a6cc0b01b992ed6881"
+    digest: "sha256:21804670c123ba0bf4373b0d41597720254a50a45731b87634de17ac8db49d95"
     ## @param agent.image.pullPolicy App Agent image pull policy
     pullPolicy: IfNotPresent
     ## @param agent.image.pullSecrets App Agent image pull secrets
@@ -901,9 +901,9 @@ mcp-proxy:
     ## @param mcp-proxy.image.repository App MCP Proxy image repository
     repository: prod-common-cicd/opsolving-docker/images/opsolving-app-mcp-proxy-api
     ## @param mcp-proxy.image.tag App MCP Proxy image tag
-    tag: "2026-08-10.23-11-17.a458397"
+    tag: "2026-08-11.02-13-59.cdff98d"
     ## @param mcp-proxy.image.digest App MCP Proxy image digest; overrides the tag when set
-    digest: "sha256:78394d1f511e25b1b8348420f6893a7c87cbed8c60107bdd3e1b8adde618e284"
+    digest: "sha256:3be1d1659128af115cb06058e0b30beaf3575bf1f744f724fa4a4c87873c3b22"
     ## @param mcp-proxy.image.pullPolicy App MCP Proxy image pull policy
     pullPolicy: IfNotPresent
     ## @param mcp-proxy.image.pullSecrets App MCP Proxy image pull secrets
@@ -1110,9 +1110,9 @@ vcs:
     ## @param vcs.image.repository App VCS image repository
     repository: prod-common-cicd/opsolving-docker/images/opsolving-app-vcs-api
     ## @param vcs.image.tag Exact published App VCS image tag
-    tag: "2026-08-10.23-11-17.df67f5b"
+    tag: "2026-08-11.02-13-59.f3533d6"
     ## @param vcs.image.digest Optional immutable App VCS image digest
-    digest: "sha256:b6b88d15f924006bba348ef8602c2add064aaf45d5928b50726ca1a000be31dd"
+    digest: "sha256:b33fd5e63b95e7a7545d08427c9a9ec5f9aeedc7e2f63d2379a6cb3413c4c31d"
     ## @param vcs.image.pullPolicy App VCS image pull policy
     pullPolicy: IfNotPresent
     ## @param vcs.image.pullSecrets App VCS image pull secrets
@@ -1316,9 +1316,9 @@ front:
     ## @param front.image.repository App Frontend image repository
     repository: prod-common-cicd/opsolving-docker/images/opsolving-app-front
     ## @param front.image.tag App Frontend image tag
-    tag: "2026-08-10.23-11-17.1dd1e90"
+    tag: "2026-08-11.02-13-59.7e9baef"
     ## @param front.image.digest App Frontend image digest; overrides the tag when set
-    digest: "sha256:cf1cbe350da4d974ca1d1cf6d61857f696713962e4184e23e949a8785fe0a465"
+    digest: "sha256:05f591129998b600331bebe0df718386bac1121abeea4bf36daa94ca4a87a2e9"
     ## @param front.image.pullPolicy App Frontend image pull policy
     pullPolicy: IfNotPresent
     ## @param front.image.pullSecrets App Frontend image pull secrets
@@ -1490,9 +1490,9 @@ pipelines:
     ## @param pipelines.image.repository App Pipelines image repository
     repository: prod-common-cicd/opsolving-docker/images/opsolving-app-pipelines
     ## @param pipelines.image.tag App Pipelines image tag
-    tag: "2026-08-10.23-11-17.0d3918b"
+    tag: "2026-08-11.02-13-59.7521d39"
     ## @param pipelines.image.digest App Pipelines image digest
-    digest: "sha256:3338acc136b5c5242e95ba8fb91f5da1a52a803dbd38556522abd88c32dd93a1"
+    digest: "sha256:4648f2ad27deb6a338a9c3bd49eb80b0302be9609e63b529f127e4aeeed0a50e"
     ## @param pipelines.image.pullPolicy App Pipelines image pull policy
     pullPolicy: IfNotPresent
     ## @param pipelines.image.pullSecrets App Pipelines image pull secrets
@@ -1697,9 +1697,9 @@ sched:
     ## @param sched.image.repository App Scheduler image repository
     repository: prod-common-cicd/opsolving-docker/images/opsolving-app-sched
     ## @param sched.image.tag App Scheduler image tag
-    tag: "2026-08-10.23-11-17.0b36a90"
+    tag: "2026-08-11.02-13-59.605d682"
     ## @param sched.image.digest App Scheduler image digest; overrides the tag when set
-    digest: "sha256:4a19bf0e781876cebece8c3ac6d7efeda7e77d18cabeaea4b5abb179cad10158"
+    digest: "sha256:c25985fa22063cd865084ac10a946f1d8c34286875c9c5ad5e15a46b40531dba"
     ## @param sched.image.pullPolicy App Scheduler image pull policy
     pullPolicy: IfNotPresent
     ## @param sched.image.pullSecrets App Scheduler image pull secrets

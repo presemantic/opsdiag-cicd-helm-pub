@@ -27,9 +27,9 @@ image:
   ## @param image.repository Opsolving connector image repository
   repository: prod-common-cicd/opsolving-docker/images/opsolving-app-connector
   ## @param image.tag Opsolving connector image tag; defaults to chart appVersion when empty
-  tag: "2026-08-10.23-11-17.9500e05"
+  tag: "2026-08-11.02-13-59.d3f3a70"
   ## @param image.digest Opsolving connector image digest, used instead of tag when set
-  digest: "sha256:600f51153545e58ece9dedc6bb68f55a89388f3e85dfe6de6d2baf4b79ee601c"
+  digest: "sha256:2120ea595fa4ea07fbf401c37c6752252c736b1023c5a66744afd6933288d460"
   ## @param image.pullPolicy Opsolving connector image pull policy
   pullPolicy: IfNotPresent
   ## @param image.pullSecrets Opsolving connector image pull secret names as strings or maps with a `name` key
