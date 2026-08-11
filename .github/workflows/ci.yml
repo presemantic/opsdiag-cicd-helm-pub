@@ -19,7 +19,7 @@ permissions:
   contents: read
 
 env:
-  REGION: europe
+  REGION: europe-west1
   GAR_LOCATION: europe-west1-docker.pkg.dev/prod-common-cicd/opsolving-docker/charts
 
 jobs:
