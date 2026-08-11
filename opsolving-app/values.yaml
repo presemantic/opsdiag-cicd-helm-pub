@@ -407,9 +407,9 @@ api:
     ## @param api.image.repository App API image repository
     repository: presemantic/public/images/opsolving-app-api
     ## @param api.image.tag App API image tag
-    tag: "2026-08-11.20-37-00.35bdf80"
+    tag: "2026-08-12.01-11-43.e518af4"
     ## @param api.image.digest App API image digest; overrides the tag when set
-    digest: "sha256:1219af11a10e4219bfd82ed3748437ea1ccd9ecdf0d46b9f210ce263f2c7852f"
+    digest: "sha256:f9b3295384533d9f2a34ac234b7f9f71429a23868a439915d19c8a304b68d660"
     ## @param api.image.pullPolicy App API image pull policy
     pullPolicy: IfNotPresent
     ## @param api.image.pullSecrets App API image pull secrets
@@ -464,12 +464,6 @@ api:
     scheduler:
       ## @param api.config.scheduler.url Internal App Scheduler URL; rendered from the Helm release name
       url: 'http://{{ include "opsolving-app.componentName" (dict "root" . "component" "sched") }}:{{ .Values.sched.service.ports.http }}'
-      ## @param api.config.scheduler.workerToken Shared App Scheduler worker token
-      workerToken: ""
-    ## @param api.config.pipelines App API private Pipeline worker authentication
-    pipelines:
-      ## @param api.config.pipelines.workerToken Shared App Pipelines worker token
-      workerToken: ""
     ## @param api.config.vcs App API connection settings for App VCS
     vcs:
       ## @param api.config.vcs.url Internal App VCS URL; rendered from the Helm release name
@@ -669,9 +663,9 @@ agent:
     ## @param agent.image.repository App Agent image repository
     repository: presemantic/public/images/opsolving-app-agent-api
     ## @param agent.image.tag App Agent image tag
-    tag: "2026-08-11.19-40-48.0445fc5"
+    tag: "2026-08-12.01-38-14.2b6dc9c"
     ## @param agent.image.digest App Agent image digest; overrides the tag when set
-    digest: "sha256:30953d24d4759f0098b9fb6412a67ec694b541d14fe7bb4420b6e2f30d005541"
+    digest: "sha256:d07937e8a5981c901ec3f5ddca15edd6eb8709b7f703134dbfdb50693e39fc46"
     ## @param agent.image.pullPolicy App Agent image pull policy
     pullPolicy: IfNotPresent
     ## @param agent.image.pullSecrets App Agent image pull secrets
@@ -711,9 +705,9 @@ agent:
     ## @param agent.config.connector App Agent Connector settings
     connector:
       ## @param agent.config.connector.enabled Enable connector-backed provider access
-      enabled: true
+      enabled: false
       ## @param agent.config.connector.url Control Relay origin used by the App Agent connector client
-      url: https://relay.control.opsolving.ai
+      url: https://relay.opsolving.ai
       ## @param agent.config.connector.license Connector client license
       license: ""
       ## @param agent.config.connector.licenseServer Control Edge origin used to exchange the Connector client license for short-lived transport grants
@@ -1110,9 +1104,9 @@ vcs:
     ## @param vcs.image.repository App VCS image repository
     repository: presemantic/public/images/opsolving-app-vcs-api
     ## @param vcs.image.tag Exact published App VCS image tag
-    tag: "2026-08-11.19-40-48.2b55957"
+    tag: "2026-08-12.01-11-43.cf5ae81"
     ## @param vcs.image.digest Optional immutable App VCS image digest
-    digest: "sha256:65cac2d6b6613ee60c932cc634f8b144f13e20218bb4fd426e69aa0730d71a94"
+    digest: "sha256:fb52b4b5a38b174db1de7edfc0aee2588020a6b904f7ce3699f1ef4dd6f144d1"
     ## @param vcs.image.pullPolicy App VCS image pull policy
     pullPolicy: IfNotPresent
     ## @param vcs.image.pullSecrets App VCS image pull secrets
@@ -1140,9 +1134,9 @@ vcs:
     ## @param vcs.config.connector Encrypted Connector transport settings for all external VCS provider requests
     connector:
       ## @param vcs.config.connector.enabled Route every external VCS provider request through Connector
-      enabled: true
+      enabled: false
       ## @param vcs.config.connector.url Control Relay origin
-      url: https://relay.control.opsolving.ai
+      url: https://relay.opsolving.ai
       ## @param vcs.config.connector.license Connector client license used only for encrypted transport grants; empty inherits the existing App Agent Connector license
       license: ""
       ## @param vcs.config.connector.licenseServer Control Edge origin used to exchange the Connector client license for short-lived transport grants
@@ -1151,11 +1145,11 @@ vcs:
     webhookMasterKey: ""
     ## @param vcs.config.credentials VCS credentials referenced by review sources
     credentials: []
-    ## @param vcs.config.reviewSources GitLab and Bitbucket source arrays
-    reviewSources:
-      ## @param vcs.config.reviewSources.gitlab GitLab Cloud/Self-Managed source entries
+    ## @param vcs.config.sources GitLab and Bitbucket source arrays
+    sources:
+      ## @param vcs.config.sources.gitlab GitLab Cloud/Self-Managed source entries
       gitlab: []
-      ## @param vcs.config.reviewSources.bitbucket Bitbucket Cloud/Data Center source entries
+      ## @param vcs.config.sources.bitbucket Bitbucket Cloud/Data Center source entries
       bitbucket: []
   ## @param vcs.extraEnvVars Additional App VCS environment variables
   extraEnvVars: []
@@ -1490,9 +1484,9 @@ pipelines:
     ## @param pipelines.image.repository App Pipelines image repository
     repository: presemantic/public/images/opsolving-app-pipelines
     ## @param pipelines.image.tag App Pipelines image tag
-    tag: "2026-08-11.19-40-48.5673dea"
+    tag: "2026-08-12.01-11-43.ca84678"
     ## @param pipelines.image.digest App Pipelines image digest
-    digest: "sha256:e2826a431f52e12478ca410392fa8ca7b2988cfacd7fc0e7765747449c75b370"
+    digest: "sha256:b03f1b16f45b147f4000da1ca338bb64bcdbd27122837e1150260c63a23e53ab"
     ## @param pipelines.image.pullPolicy App Pipelines image pull policy
     pullPolicy: IfNotPresent
     ## @param pipelines.image.pullSecrets App Pipelines image pull secrets
@@ -1520,9 +1514,9 @@ pipelines:
     ## @param pipelines.config.connector Encrypted Connector transport settings for Custom Execution fetch and outbound notification nodes
     connector:
       ## @param pipelines.config.connector.enabled Route all external Pipeline HTTP egress through Connector
-      enabled: true
+      enabled: false
       ## @param pipelines.config.connector.url Control Relay origin
-      url: https://relay.control.opsolving.ai
+      url: https://relay.opsolving.ai
       ## @param pipelines.config.connector.license Connector client license used only for encrypted transport grants; empty inherits the existing App Agent Connector license
       license: ""
       ## @param pipelines.config.connector.licenseServer Control Edge origin used to exchange the Connector client license for short-lived transport grants
@@ -1697,9 +1691,9 @@ sched:
     ## @param sched.image.repository App Scheduler image repository
     repository: presemantic/public/images/opsolving-app-sched
     ## @param sched.image.tag App Scheduler image tag
-    tag: "2026-08-11.19-40-48.e796ffd"
+    tag: "2026-08-12.01-39-48.c2f0b02"
     ## @param sched.image.digest App Scheduler image digest; overrides the tag when set
-    digest: "sha256:2af85ca48794cb6145583716d04b06836af90323ad9bfe30ef65cd0d15897cbc"
+    digest: "sha256:3e645c0340619385843ac873973d818330d1a772ccc2d9dbc6e668fe0ae40964"
     ## @param sched.image.pullPolicy App Scheduler image pull policy
     pullPolicy: IfNotPresent
     ## @param sched.image.pullSecrets App Scheduler image pull secrets
@@ -1721,9 +1715,9 @@ sched:
     ## @param sched.config.connector Encrypted Connector transport settings for Opsgenie and PagerDuty provider requests
     connector:
       ## @param sched.config.connector.enabled Route all external Scheduler provider requests through Connector
-      enabled: true
+      enabled: false
       ## @param sched.config.connector.url Control Relay origin
-      url: https://relay.control.opsolving.ai
+      url: https://relay.opsolving.ai
       ## @param sched.config.connector.license Connector client license used only for encrypted transport grants; empty inherits the existing App Agent Connector license
       license: ""
       ## @param sched.config.connector.licenseServer Control Edge origin used to exchange the Connector client license for short-lived transport grants
@@ -1734,12 +1728,22 @@ sched:
       readHeaderTimeoutSeconds: 10
       ## @param sched.config.runtime.providerTimeoutSeconds Upstream provider request timeout
       providerTimeoutSeconds: 60
-    ## @param sched.config.scheduler App Scheduler connection settings for App API
-    scheduler:
-      ## @param sched.config.scheduler.appApiUrl Internal App API URL; rendered from the Helm release name
-      appApiUrl: 'http://{{ include "opsolving-app.componentName" (dict "root" . "component" "api") }}:{{ .Values.api.service.ports.http }}'
-      ## @param sched.config.scheduler.workerToken Shared App Scheduler worker token
-      workerToken: ""
+    ## @param sched.config.appApiUrl Internal App API URL; rendered from the Helm release name
+    appApiUrl: 'http://{{ include "opsolving-app.componentName" (dict "root" . "component" "api") }}:{{ .Values.api.service.ports.http }}'
+    ## @param sched.config.workerId Optional Scheduler worker identity; defaults to the Pod hostname
+    workerId: ""
+    ## @param sched.config.credentials Provider credentials referenced by Scheduler sources
+    credentials:
+      ## @param sched.config.credentials.opsgenie Opsgenie credential entries
+      opsgenie: []
+      ## @param sched.config.credentials.pagerduty PagerDuty credential entries
+      pagerduty: []
+    ## @param sched.config.sources Opsgenie and PagerDuty source arrays
+    sources:
+      ## @param sched.config.sources.opsgenie Opsgenie source entries
+      opsgenie: []
+      ## @param sched.config.sources.pagerduty PagerDuty source entries
+      pagerduty: []
 
   ## Additional App Scheduler deployment settings
   ##
