@@ -27,9 +27,9 @@ image:
   ## @param image.repository Opsolving connector image repository
   repository: presemantic/public/images/opsolving-app-connector
   ## @param image.tag Opsolving connector image tag; defaults to chart appVersion when empty
-  tag: "2026-08-11.02-13-59.d3f3a70"
+  tag: "2026-08-11.19-40-48.a9f01a6"
   ## @param image.digest Opsolving connector image digest, used instead of tag when set
-  digest: "sha256:2120ea595fa4ea07fbf401c37c6752252c736b1023c5a66744afd6933288d460"
+  digest: "sha256:bf4e75d0fdecfd6b8ee719a049418b6173a2b832f8c1c2b977d18e6495492944"
   ## @param image.pullPolicy Opsolving connector image pull policy
   pullPolicy: IfNotPresent
   ## @param image.pullSecrets Opsolving connector image pull secret names as strings or maps with a `name` key

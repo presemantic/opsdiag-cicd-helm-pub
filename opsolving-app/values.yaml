@@ -407,9 +407,9 @@ api:
     ## @param api.image.repository App API image repository
     repository: presemantic/public/images/opsolving-app-api
     ## @param api.image.tag App API image tag
-    tag: "2026-08-11.03-25-32.01902b0"
+    tag: "2026-08-11.19-40-48.647f78b"
     ## @param api.image.digest App API image digest; overrides the tag when set
-    digest: "sha256:09cc1baeda220ca37d4bcee92b8f95f7678f9fad98f2237313aa88fcd7079e8e"
+    digest: "sha256:7fad0e7c1e0f40ab5ca6a3ff86f8f9fec969b46834ae939296c7ae20b2e71c0c"
     ## @param api.image.pullPolicy App API image pull policy
     pullPolicy: IfNotPresent
     ## @param api.image.pullSecrets App API image pull secrets
@@ -669,9 +669,9 @@ agent:
     ## @param agent.image.repository App Agent image repository
     repository: presemantic/public/images/opsolving-app-agent-api
     ## @param agent.image.tag App Agent image tag
-    tag: "2026-08-11.14-54-54.7694c2e"
+    tag: "2026-08-11.19-40-48.0445fc5"
     ## @param agent.image.digest App Agent image digest; overrides the tag when set
-    digest: "sha256:998807960a5a99a3a2ea81d98ef6f9d3a195656e68de34c4452cd50d781dab07"
+    digest: "sha256:30953d24d4759f0098b9fb6412a67ec694b541d14fe7bb4420b6e2f30d005541"
     ## @param agent.image.pullPolicy App Agent image pull policy
     pullPolicy: IfNotPresent
     ## @param agent.image.pullSecrets App Agent image pull secrets
@@ -901,9 +901,9 @@ mcp-proxy:
     ## @param mcp-proxy.image.repository App MCP Proxy image repository
     repository: presemantic/public/images/opsolving-app-mcp-proxy-api
     ## @param mcp-proxy.image.tag App MCP Proxy image tag
-    tag: "2026-08-11.02-13-59.cdff98d"
+    tag: "2026-08-11.19-40-48.8b7235a"
     ## @param mcp-proxy.image.digest App MCP Proxy image digest; overrides the tag when set
-    digest: "sha256:3be1d1659128af115cb06058e0b30beaf3575bf1f744f724fa4a4c87873c3b22"
+    digest: "sha256:d4969549dd0cb106334cd4dd7499f6e34ac257cf621601fd0f6d294a57a4deea"
     ## @param mcp-proxy.image.pullPolicy App MCP Proxy image pull policy
     pullPolicy: IfNotPresent
     ## @param mcp-proxy.image.pullSecrets App MCP Proxy image pull secrets
@@ -1110,9 +1110,9 @@ vcs:
     ## @param vcs.image.repository App VCS image repository
     repository: presemantic/public/images/opsolving-app-vcs-api
     ## @param vcs.image.tag Exact published App VCS image tag
-    tag: "2026-08-11.02-13-59.f3533d6"
+    tag: "2026-08-11.19-40-48.2b55957"
     ## @param vcs.image.digest Optional immutable App VCS image digest
-    digest: "sha256:b33fd5e63b95e7a7545d08427c9a9ec5f9aeedc7e2f63d2379a6cb3413c4c31d"
+    digest: "sha256:65cac2d6b6613ee60c932cc634f8b144f13e20218bb4fd426e69aa0730d71a94"
     ## @param vcs.image.pullPolicy App VCS image pull policy
     pullPolicy: IfNotPresent
     ## @param vcs.image.pullSecrets App VCS image pull secrets
@@ -1316,9 +1316,9 @@ front:
     ## @param front.image.repository App Frontend image repository
     repository: presemantic/public/images/opsolving-app-front
     ## @param front.image.tag App Frontend image tag
-    tag: "2026-08-11.14-55-00.6dbcedf"
+    tag: "2026-08-11.19-20-07.4b1aebf"
     ## @param front.image.digest App Frontend image digest; overrides the tag when set
-    digest: "sha256:ea5ebee53de105b1793abad37c93e64de0cdab7dd12d5a695d0d52112fb91563"
+    digest: "sha256:5a3641f0a63e58ac1b8b4bb65be958c82664a45b6c6206afef5e73bd32ce4b32"
     ## @param front.image.pullPolicy App Frontend image pull policy
     pullPolicy: IfNotPresent
     ## @param front.image.pullSecrets App Frontend image pull secrets
@@ -1490,9 +1490,9 @@ pipelines:
     ## @param pipelines.image.repository App Pipelines image repository
     repository: presemantic/public/images/opsolving-app-pipelines
     ## @param pipelines.image.tag App Pipelines image tag
-    tag: "2026-08-11.02-13-59.7521d39"
+    tag: "2026-08-11.19-40-48.5673dea"
     ## @param pipelines.image.digest App Pipelines image digest
-    digest: "sha256:4648f2ad27deb6a338a9c3bd49eb80b0302be9609e63b529f127e4aeeed0a50e"
+    digest: "sha256:e2826a431f52e12478ca410392fa8ca7b2988cfacd7fc0e7765747449c75b370"
     ## @param pipelines.image.pullPolicy App Pipelines image pull policy
     pullPolicy: IfNotPresent
     ## @param pipelines.image.pullSecrets App Pipelines image pull secrets
@@ -1697,9 +1697,9 @@ sched:
     ## @param sched.image.repository App Scheduler image repository
     repository: presemantic/public/images/opsolving-app-sched
     ## @param sched.image.tag App Scheduler image tag
-    tag: "2026-08-11.02-13-59.605d682"
+    tag: "2026-08-11.19-40-48.e796ffd"
     ## @param sched.image.digest App Scheduler image digest; overrides the tag when set
-    digest: "sha256:c25985fa22063cd865084ac10a946f1d8c34286875c9c5ad5e15a46b40531dba"
+    digest: "sha256:2af85ca48794cb6145583716d04b06836af90323ad9bfe30ef65cd0d15897cbc"
     ## @param sched.image.pullPolicy App Scheduler image pull policy
     pullPolicy: IfNotPresent
     ## @param sched.image.pullSecrets App Scheduler image pull secrets
