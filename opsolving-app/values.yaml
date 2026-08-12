@@ -413,9 +413,9 @@ api:
     ## @param api.image.repository App API image repository
     repository: presemantic/public/images/opsolving-app-api
     ## @param api.image.tag App API image tag
-    tag: "2026-08-12.15-35-29.965b7ec"
+    tag: "2026-08-12.18-46-44.b9134c4"
     ## @param api.image.digest App API image digest; overrides the tag when set
-    digest: "sha256:1dbe0269f668fdca66d8041148988819aad140073d98cea1f78535eca7387088"
+    digest: "sha256:3e1f24ce673cc0fd13472f908d7c52ba8484d843624b3e9a5f2215f807a790aa"
     ## @param api.image.pullPolicy App API image pull policy
     pullPolicy: IfNotPresent
     ## @param api.image.pullSecrets App API image pull secrets
@@ -1358,9 +1358,9 @@ front:
     ## @param front.image.repository App Frontend image repository
     repository: presemantic/public/images/opsolving-app-front
     ## @param front.image.tag App Frontend image tag
-    tag: "2026-08-11.21-56-16.23d34a1"
+    tag: "2026-08-12.18-47-02.23afa35"
     ## @param front.image.digest App Frontend image digest; overrides the tag when set
-    digest: "sha256:77e8f0dea5615da8898de0e84b06ca7977558601f3b2c6ba9fbc43afa7ea50ab"
+    digest: "sha256:e6bb1a64e21c758a68c7a24be85bd679138d811b3f7a0eb3c4cdb64da75292e1"
     ## @param front.image.pullPolicy App Frontend image pull policy
     pullPolicy: IfNotPresent
     ## @param front.image.pullSecrets App Frontend image pull secrets
