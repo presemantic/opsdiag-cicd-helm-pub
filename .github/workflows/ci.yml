@@ -141,11 +141,15 @@ jobs:
 
           ruby -ryaml -e '
             documents = YAML.load_stream(File.read("/tmp/#{ENV.fetch("CHART")}.yaml")).compact
-            documents.select { |document| document["kind"] == "Deployment" }.each do |deployment|
-              selector = deployment.dig("spec", "selector", "matchLabels") || {}
-              labels = deployment.dig("spec", "template", "metadata", "labels") || {}
+            documents.select { |document| %w[Deployment StatefulSet].include?(document["kind"]) }.each do |workload|
+              selector = workload.dig("spec", "selector", "matchLabels") || {}
+              labels = workload.dig("spec", "template", "metadata", "labels") || {}
               missing = selector.reject { |key, value| labels[key] == value }
-              abort("Deployment #{deployment.dig("metadata", "name")} selector does not match pod labels: #{missing}") unless missing.empty?
+              abort("#{workload["kind"]} #{workload.dig("metadata", "name")} selector does not match pod labels: #{missing}") unless missing.empty?
+
+              if workload["kind"] == "StatefulSet" && labels.key?("helm.sh/chart")
+                abort("StatefulSet #{workload.dig("metadata", "name")} pod template contains the chart-version label and would roll on every chart release")
+              end
             end
           '
 

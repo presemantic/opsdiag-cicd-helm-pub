@@ -74,6 +74,15 @@ app.kubernetes.io/part-of: {{ include "common.names.fullname" . | quote }}
 {{- end }}
 {{- end -}}
 
+{{- define "opsolving-app.pgsql.podLabels" -}}
+{{ include "opsolving-app.pgsql.selectorLabels" . }}
+app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+app.kubernetes.io/part-of: {{ include "common.names.fullname" . | quote }}
+{{- with .Values.commonLabels }}
+{{ include "common.tplvalues.render" (dict "value" . "context" $) }}
+{{- end }}
+{{- end -}}
+
 {{- define "opsolving-app.pgsql.url" -}}
 {{- if trim .Values.api.config.database.url -}}
 {{- tpl .Values.api.config.database.url . -}}
@@ -117,6 +126,15 @@ app.kubernetes.io/component: "pgsql-tables"
 {{- define "opsolving-app.pgsqlTables.labels" -}}
 {{ include "opsolving-app.pgsqlTables.selectorLabels" . }}
 helm.sh/chart: {{ printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | quote }}
+app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+app.kubernetes.io/part-of: {{ include "common.names.fullname" . | quote }}
+{{- with .Values.commonLabels }}
+{{ include "common.tplvalues.render" (dict "value" . "context" $) }}
+{{- end }}
+{{- end -}}
+
+{{- define "opsolving-app.pgsqlTables.podLabels" -}}
+{{ include "opsolving-app.pgsqlTables.selectorLabels" . }}
 app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
 app.kubernetes.io/part-of: {{ include "common.names.fullname" . | quote }}
 {{- with .Values.commonLabels }}

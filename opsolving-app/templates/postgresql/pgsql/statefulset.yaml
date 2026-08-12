@@ -24,7 +24,7 @@ spec:
   template:
     metadata:
       labels:
-        {{- include "opsolving-app.pgsql.labels" . | nindent 8 }}
+        {{- include "opsolving-app.pgsql.podLabels" . | nindent 8 }}
         {{- with .Values.pgsql.primary.podLabels }}
         {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 8 }}
         {{- end }}
