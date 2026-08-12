@@ -413,9 +413,9 @@ api:
     ## @param api.image.repository App API image repository
     repository: presemantic/public/images/opsolving-app-api
     ## @param api.image.tag App API image tag
-    tag: "2026-08-12.01-11-43.e518af4"
+    tag: "2026-08-12.15-35-29.965b7ec"
     ## @param api.image.digest App API image digest; overrides the tag when set
-    digest: "sha256:f9b3295384533d9f2a34ac234b7f9f71429a23868a439915d19c8a304b68d660"
+    digest: "sha256:1dbe0269f668fdca66d8041148988819aad140073d98cea1f78535eca7387088"
     ## @param api.image.pullPolicy App API image pull policy
     pullPolicy: IfNotPresent
     ## @param api.image.pullSecrets App API image pull secrets
