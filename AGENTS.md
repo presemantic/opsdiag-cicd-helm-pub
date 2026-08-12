@@ -14,6 +14,8 @@ Both charts follow the Opsolving Bitnami-style contract and use the Opsolving `c
 
 Values are the public parameter reference. Keep `## @section` and adjacent `## @param` documentation complete, preserve structured component roots, and keep component image defaults in the chart. The App suite `appVersion` is release metadata; Connector `appVersion` must equal its default image tag. Dependencies remain pinned by `Chart.lock` and committed vendor archives so linting and packaging do not fetch at release time.
 
+Customer deployment values should carry only licenses, credentials, sources, external persistence choices, exposure settings, and genuine environment overrides. Stable public endpoints, runtime timeouts, process environment, replica counts, and baseline resources belong in chart defaults so a values file does not restate the product runtime contract.
+
 ## Application Contract
 
 APISIX is the only application-routing authority. It runs as a two-or-more-replica standalone data-plane Deployment with etcd, Admin API, Control API, dashboard, ingress controller, CRDs, Gateway API, metrics Service, and stream listeners disabled. Parent-generated `apisix.yaml` owns OAuth discovery, `/mcp/oauth`, `/mcp/proxy`, `/mcp/self`, VCS hooks, API, and Front routes. Kubernetes Ingress, OpenShift Route, and Istio expose only hostname, TLS, and one `/` route to APISIX.

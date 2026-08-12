@@ -472,7 +472,11 @@ api:
   ## Additional App API deployment settings
   ##
   ## @param api.extraEnvVars Additional environment variables for the App API container
-  extraEnvVars: []
+  extraEnvVars:
+    - name: GOMAXPROCS
+      value: "2"
+    - name: GOMEMLIMIT
+      value: 512MiB
   ## @param api.extraEnvVarsCM Existing ConfigMap containing additional App API environment variables
   extraEnvVarsCM: ""
   ## @param api.extraEnvVarsSecret Existing Secret containing additional App API environment variables
@@ -539,7 +543,10 @@ api:
   ## App API resources
   ##
   ## @param api.resources App API resource requests and limits
-  resources: {}
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
 
   ## App API health probes
   ##
@@ -643,7 +650,13 @@ api:
       ## @param api.migration.databaseConnection.timeoutSeconds Timeout for each migration database connection attempt
       timeoutSeconds: 5
     ## @param api.migration.extraEnvVars Additional environment variables for the migration container
-    extraEnvVars: []
+    extraEnvVars:
+      # Keep false unless the explicitly authorized destructive migration may permanently remove data.
+      - name: CHAT_MEMORY_DESTRUCTIVE_MIGRATION_ACK
+        value: "false"
+      # Keep false unless the explicitly authorized migration may run without a restore safety net.
+      - name: SCHEDULER_V2_MIGRATION_ACK
+        value: "false"
 
 ## @section App Agent parameters
 ##
@@ -716,7 +729,11 @@ agent:
   ## Additional App Agent deployment settings
   ##
   ## @param agent.extraEnvVars Additional environment variables for the App Agent container
-  extraEnvVars: []
+  extraEnvVars:
+    - name: GOMAXPROCS
+      value: "2"
+    - name: GOMEMLIMIT
+      value: 512MiB
   ## @param agent.extraEnvVarsCM Existing ConfigMap containing additional App Agent environment variables
   extraEnvVarsCM: ""
   ## @param agent.extraEnvVarsSecret Existing Secret containing additional App Agent environment variables
@@ -783,7 +800,10 @@ agent:
   ## App Agent resources
   ##
   ## @param agent.resources App Agent resource requests and limits
-  resources: {}
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
 
   ## App Agent health probes
   ##
@@ -998,7 +1018,10 @@ mcp-proxy:
     clusterIP: ""
 
   ## @param mcp-proxy.resources App MCP Proxy resource requests and limits
-  resources: {}
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
 
   ## @param mcp-proxy.livenessProbe App MCP Proxy liveness probe settings
   livenessProbe:
@@ -1152,7 +1175,11 @@ vcs:
       ## @param vcs.config.sources.bitbucket Bitbucket Cloud/Data Center source entries
       bitbucket: []
   ## @param vcs.extraEnvVars Additional App VCS environment variables
-  extraEnvVars: []
+  extraEnvVars:
+    - name: GOMAXPROCS
+      value: "2"
+    - name: GOMEMLIMIT
+      value: 512MiB
   ## @param vcs.extraEnvVarsCM Existing ConfigMap containing additional App VCS environment variables
   extraEnvVarsCM: ""
   ## @param vcs.extraEnvVarsSecret Existing Secret containing additional App VCS environment variables
@@ -1206,7 +1233,10 @@ vcs:
     ## @param vcs.service.clusterIP App VCS Service cluster IP
     clusterIP: ""
   ## @param vcs.resources App VCS resource requests and limits
-  resources: {}
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
   ## @param vcs.livenessProbe App VCS liveness probe settings
   livenessProbe:
     ## @param vcs.livenessProbe.enabled Enable the App VCS liveness probe
@@ -1397,7 +1427,10 @@ front:
   ## App Frontend resources
   ##
   ## @param front.resources App Frontend resource requests and limits
-  resources: {}
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
 
   ## App Frontend health probes
   ##
@@ -1540,13 +1573,17 @@ pipelines:
       ## @param pipelines.config.runtime.nodeBinary Node.js binary used by JavaScript nodes
       nodeBinary: /usr/local/bin/node
       ## @param pipelines.config.runtime.sandboxMode Explicit JavaScript broker launch mode: `bubblewrap` for namespace isolation or `broker` for restricted kernels
-      sandboxMode: bubblewrap
+      sandboxMode: broker
       ## @param pipelines.config.runtime.sandboxBinary Bubblewrap binary used only when sandboxMode is `bubblewrap`
       sandboxBinary: /usr/bin/bwrap
       ## @param pipelines.config.runtime.sandboxWorkerBinary Minimal JavaScript broker binary used by both launch modes
       sandboxWorkerBinary: /opt/app/bin/opsdiag-pipelines-sandbox
   ## @param pipelines.extraEnvVars Additional App Pipelines environment variables
-  extraEnvVars: []
+  extraEnvVars:
+    - name: GOMAXPROCS
+      value: "2"
+    - name: GOMEMLIMIT
+      value: 512MiB
   ## @param pipelines.extraEnvVarsCM Existing ConfigMap with additional environment variables
   extraEnvVarsCM: ""
   ## @param pipelines.extraEnvVarsSecret Existing Secret with additional environment variables
@@ -1748,7 +1785,11 @@ sched:
   ## Additional App Scheduler deployment settings
   ##
   ## @param sched.extraEnvVars Additional environment variables for the App Scheduler container
-  extraEnvVars: []
+  extraEnvVars:
+    - name: GOMAXPROCS
+      value: "2"
+    - name: GOMEMLIMIT
+      value: 512MiB
   ## @param sched.extraEnvVarsCM Existing ConfigMap containing additional App Scheduler environment variables
   extraEnvVarsCM: ""
   ## @param sched.extraEnvVarsSecret Existing Secret containing additional App Scheduler environment variables
@@ -1815,7 +1856,10 @@ sched:
   ## App Scheduler resources
   ##
   ## @param sched.resources App Scheduler resource requests and limits
-  resources: {}
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
 
   ## App Scheduler health probes
   ##

@@ -2,7 +2,7 @@ apiVersion: v2
 name: opsolving-app-connector
 description: Opsolving customer-side app connector
 type: application
-version: 1.0.2
+version: 1.0.3
 appVersion: "2026-08-11.19-40-48.a9f01a6"
 dependencies:
   - name: common

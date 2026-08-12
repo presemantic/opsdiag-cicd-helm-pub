@@ -37,8 +37,22 @@ image:
 
 ## @section Opsolving connector config file
 ##
-## @param config Connector config rendered from a Kubernetes Secret as read-only `/app/config.yaml`; users provide licenses and endpoints in their own values or an encrypted values workflow.
-config: {}
+config:
+  ## @param config.license App license used by the Connector process
+  license: ""
+  ## @param config.url Public Control Edge origin used for App license verification
+  url: https://edge.opsolving.ai
+  ## Connector Relay transport settings
+  ##
+  relay:
+    ## @param config.relay.license Connector gateway license
+    license: ""
+    ## @param config.relay.url Public Control Relay WebSocket endpoint
+    url: wss://relay.opsolving.ai/
+    ## @param config.relay.connectTimeoutSeconds Relay connection timeout
+    connectTimeoutSeconds: 10
+    ## @param config.relay.maxFrameBytes Maximum encrypted Relay frame size
+    maxFrameBytes: 98304
 
 ## @section Deployment parameters
 ##
@@ -99,7 +113,10 @@ containerSecurityContext:
 ## @param resourcesPreset Common resources preset used when `resources` is empty. Allowed values include `nano`, `micro`, `small`, `medium`, `large`, `xlarge`, and `2xlarge`.
 resourcesPreset: nano
 ## @param resources Explicit resource requests and limits. Overrides `resourcesPreset` when set.
-resources: {}
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
 
 ## @section Healthcheck parameters
 ##
