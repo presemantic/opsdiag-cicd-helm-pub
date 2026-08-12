@@ -413,9 +413,9 @@ api:
     ## @param api.image.repository App API image repository
     repository: presemantic/public/images/opsolving-app-api
     ## @param api.image.tag App API image tag
-    tag: "2026-08-12.18-46-44.b9134c4"
+    tag: "2026-08-12.23-17-37.c546b74"
     ## @param api.image.digest App API image digest; overrides the tag when set
-    digest: "sha256:3e1f24ce673cc0fd13472f908d7c52ba8484d843624b3e9a5f2215f807a790aa"
+    digest: "sha256:c195e22d3ab4e38bc9bf78bda57077594764f4cf6f81724cec2e46520467cf56"
     ## @param api.image.pullPolicy App API image pull policy
     pullPolicy: IfNotPresent
     ## @param api.image.pullSecrets App API image pull secrets
@@ -685,9 +685,9 @@ agent:
     ## @param agent.image.repository App Agent image repository
     repository: presemantic/public/images/opsolving-app-agent-api
     ## @param agent.image.tag App Agent image tag
-    tag: "2026-08-12.01-38-14.2b6dc9c"
+    tag: "2026-08-12.22-54-05.640666d"
     ## @param agent.image.digest App Agent image digest; overrides the tag when set
-    digest: "sha256:d07937e8a5981c901ec3f5ddca15edd6eb8709b7f703134dbfdb50693e39fc46"
+    digest: "sha256:fa3e3c97768fb3793b42d909ec2b04f46f5e422bebbcbf3617ff20d268505c9b"
     ## @param agent.image.pullPolicy App Agent image pull policy
     pullPolicy: IfNotPresent
     ## @param agent.image.pullSecrets App Agent image pull secrets
@@ -1358,9 +1358,9 @@ front:
     ## @param front.image.repository App Frontend image repository
     repository: presemantic/public/images/opsolving-app-front
     ## @param front.image.tag App Frontend image tag
-    tag: "2026-08-12.18-47-02.23afa35"
+    tag: "2026-08-12.22-54-04.dceca20"
     ## @param front.image.digest App Frontend image digest; overrides the tag when set
-    digest: "sha256:e6bb1a64e21c758a68c7a24be85bd679138d811b3f7a0eb3c4cdb64da75292e1"
+    digest: "sha256:28ddfef8de05869e977f17a87d0f98a66602da0f0934a0ed0c4eb962dc2bc353"
     ## @param front.image.pullPolicy App Frontend image pull policy
     pullPolicy: IfNotPresent
     ## @param front.image.pullSecrets App Frontend image pull secrets
