@@ -126,6 +126,7 @@ jobs:
           else
             helm lint "${CHART}"
             helm template "${CHART}" "${CHART}" --namespace prod-opsolving-app-connector > "/tmp/${CHART}.yaml"
+            helm template "${CHART}" "${CHART}" --namespace prod-opsolving-app-connector --api-versions security.openshift.io/v1 > "/tmp/${CHART}-openshift.yaml"
           fi
       - name: "[Helm] Verify rendered selectors and unsupported resources"
         env:
@@ -133,8 +134,8 @@ jobs:
         run: |
           set -euo pipefail
 
-          if grep -Eq '^kind: (PodDisruptionBudget|NetworkPolicy)$' "/tmp/${CHART}.yaml"; then
-            echo "A forbidden PDB or NetworkPolicy was rendered."
+          if grep -Eq '^kind: (PodDisruptionBudget|NetworkPolicy|SecurityContextConstraints)$' "/tmp/${CHART}.yaml"; then
+            echo "A forbidden PDB, NetworkPolicy, or SecurityContextConstraints resource was rendered."
             exit 1
           fi
 
@@ -148,20 +149,18 @@ jobs:
             end
           '
 
-          if [ "${CHART}" = "opsolving-app" ]; then
-            ruby -ryaml -e '
-              fixed_id_keys = %w[runAsUser runAsGroup fsGroup]
-              workloads = YAML.load_stream(File.read("/tmp/#{ENV.fetch("CHART")}-openshift.yaml")).compact.select do |document|
-                %w[Deployment StatefulSet Job].include?(document["kind"])
-              end
-              workloads.each do |workload|
-                pod_spec = workload.dig("spec", "template", "spec") || {}
-                contexts = [pod_spec["securityContext"]] + pod_spec.fetch("containers", []).map { |container| container["securityContext"] }
-                fixed = contexts.compact.flat_map { |context| context.keys & fixed_id_keys }
-                abort("#{workload["kind"]}/#{workload.dig("metadata", "name")} retains fixed OpenShift security IDs: #{fixed.uniq.join(", ")}") unless fixed.empty?
-              end
-            '
-          fi
+          ruby -ryaml -e '
+            fixed_id_keys = %w[runAsUser runAsGroup fsGroup]
+            workloads = YAML.load_stream(File.read("/tmp/#{ENV.fetch("CHART")}-openshift.yaml")).compact.select do |document|
+              %w[Deployment StatefulSet Job].include?(document["kind"])
+            end
+            workloads.each do |workload|
+              pod_spec = workload.dig("spec", "template", "spec") || {}
+              contexts = [pod_spec["securityContext"]] + pod_spec.fetch("containers", []).map { |container| container["securityContext"] }
+              fixed = contexts.compact.flat_map { |context| context.keys & fixed_id_keys }
+              abort("#{workload["kind"]}/#{workload.dig("metadata", "name")} retains fixed OpenShift security IDs: #{fixed.uniq.join(", ")}") unless fixed.empty?
+            end
+          '
 
   build:
     if: github.event_name == 'workflow_dispatch' || github.ref_type == 'tag'
