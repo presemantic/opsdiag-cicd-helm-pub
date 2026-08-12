@@ -114,8 +114,11 @@ containerSecurityContext:
 resourcesPreset: nano
 ## @param resources Explicit resource requests and limits. Overrides `resourcesPreset` when set.
 resources:
+  ## @param resources.requests Connector resource requests
   requests:
+    ## @param resources.requests.cpu Connector requested CPU
     cpu: 100m
+    ## @param resources.requests.memory Connector requested memory
     memory: 128Mi
 
 ## @section Healthcheck parameters

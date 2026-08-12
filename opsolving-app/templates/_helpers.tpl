@@ -175,6 +175,21 @@ app.kubernetes.io/part-of: {{ include "common.names.fullname" . | quote }}
 {{- .Values.apisix.service.http.servicePort -}}
 {{- end -}}
 
+{{/* Return the explicit external origin or derive it from the active chart-owned exposure. */}}
+{{- define "opsolving-app.externalURL" -}}
+{{- if trim .Values.global.externalURL -}}
+{{- tpl .Values.global.externalURL . | trimSuffix "/" -}}
+{{- else if .Values.openshiftRoute.enabled -}}
+{{- printf "%s://%s" (ternary "https" "http" .Values.openshiftRoute.tls.enabled) (tpl (required "openshiftRoute.hostname is required when openshiftRoute.enabled is true" .Values.openshiftRoute.hostname) .) -}}
+{{- else if .Values.ingress.enabled -}}
+{{- printf "%s://%s" (ternary "https" "http" .Values.ingress.tls) (tpl (required "ingress.hostname is required when ingress.enabled is true" .Values.ingress.hostname) .) -}}
+{{- else if .Values.istio.enabled -}}
+{{- printf "%s://%s" (ternary "https" "http" .Values.istio.gateway.tls.enabled) (tpl (required "istio.hostname is required when istio.enabled is true" .Values.istio.hostname) .) -}}
+{{- else -}}
+https://app.local
+{{- end -}}
+{{- end -}}
+
 {{- define "opsolving-app.openshiftRouteTLS" -}}
 termination: {{ .Values.openshiftRoute.tls.termination | quote }}
 insecureEdgeTerminationPolicy: {{ .Values.openshiftRoute.tls.insecureEdgeTerminationPolicy | quote }}

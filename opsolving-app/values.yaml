@@ -8,8 +8,8 @@ global:
   imageRegistry: ""
   ## @param global.imagePullSecrets Global container registry secret names as an array
   imagePullSecrets: []
-  ## @param global.externalURL Canonical external App origin used as the OAuth issuer
-  externalURL: https://app.local
+  ## @param global.externalURL Optional canonical external App origin used as the OAuth issuer; when empty it is derived from the enabled OpenShift Route, Ingress, or Istio exposure
+  externalURL: ""
 
 ## Common chart parameters
 ##
@@ -459,7 +459,7 @@ api:
     ## @param api.config.oauth App OAuth/OIDC authorization-server settings
     oauth:
       ## @param api.config.oauth.issuer Canonical OAuth/OIDC issuer origin
-      issuer: '{{ .Values.global.externalURL }}'
+      issuer: '{{ include "opsolving-app.externalURL" . }}'
     ## @param api.config.scheduler App API connection settings for App Scheduler
     scheduler:
       ## @param api.config.scheduler.url Internal App Scheduler URL; rendered from the Helm release name
@@ -544,8 +544,11 @@ api:
   ##
   ## @param api.resources App API resource requests and limits
   resources:
+    ## @param api.resources.requests App API resource requests
     requests:
+      ## @param api.resources.requests.cpu App API requested CPU
       cpu: 100m
+      ## @param api.resources.requests.memory App API requested memory
       memory: 128Mi
 
   ## App API health probes
@@ -801,8 +804,11 @@ agent:
   ##
   ## @param agent.resources App Agent resource requests and limits
   resources:
+    ## @param agent.resources.requests App Agent resource requests
     requests:
+      ## @param agent.resources.requests.cpu App Agent requested CPU
       cpu: 100m
+      ## @param agent.resources.requests.memory App Agent requested memory
       memory: 128Mi
 
   ## App Agent health probes
@@ -953,7 +959,7 @@ mcp-proxy:
     ## @param mcp-proxy.config.oauth App MCP Proxy OAuth resource-server settings
     oauth:
       ## @param mcp-proxy.config.oauth.issuer Canonical OAuth/OIDC issuer origin
-      issuer: '{{ .Values.global.externalURL }}'
+      issuer: '{{ include "opsolving-app.externalURL" . }}'
       ## @param mcp-proxy.config.oauth.jwksUrl Internal App API JWKS URL
       jwksUrl: 'http://{{ include "opsolving-app.componentName" (dict "root" . "component" "api") }}:{{ .Values.api.service.ports.http }}/mcp/oauth/jwks'
 
@@ -1019,8 +1025,11 @@ mcp-proxy:
 
   ## @param mcp-proxy.resources App MCP Proxy resource requests and limits
   resources:
+    ## @param mcp-proxy.resources.requests App MCP Proxy resource requests
     requests:
+      ## @param mcp-proxy.resources.requests.cpu App MCP Proxy requested CPU
       cpu: 50m
+      ## @param mcp-proxy.resources.requests.memory App MCP Proxy requested memory
       memory: 64Mi
 
   ## @param mcp-proxy.livenessProbe App MCP Proxy liveness probe settings
@@ -1234,8 +1243,11 @@ vcs:
     clusterIP: ""
   ## @param vcs.resources App VCS resource requests and limits
   resources:
+    ## @param vcs.resources.requests App VCS resource requests
     requests:
+      ## @param vcs.resources.requests.cpu App VCS requested CPU
       cpu: 100m
+      ## @param vcs.resources.requests.memory App VCS requested memory
       memory: 128Mi
   ## @param vcs.livenessProbe App VCS liveness probe settings
   livenessProbe:
@@ -1428,8 +1440,11 @@ front:
   ##
   ## @param front.resources App Frontend resource requests and limits
   resources:
+    ## @param front.resources.requests App Frontend resource requests
     requests:
+      ## @param front.resources.requests.cpu App Frontend requested CPU
       cpu: 100m
+      ## @param front.resources.requests.memory App Frontend requested memory
       memory: 128Mi
 
   ## App Frontend health probes
@@ -1857,8 +1872,11 @@ sched:
   ##
   ## @param sched.resources App Scheduler resource requests and limits
   resources:
+    ## @param sched.resources.requests App Scheduler resource requests
     requests:
+      ## @param sched.resources.requests.cpu App Scheduler requested CPU
       cpu: 100m
+      ## @param sched.resources.requests.memory App Scheduler requested memory
       memory: 128Mi
 
   ## App Scheduler health probes
