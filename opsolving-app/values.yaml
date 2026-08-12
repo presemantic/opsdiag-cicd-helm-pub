@@ -1538,9 +1538,9 @@ pipelines:
     ## @param pipelines.image.repository App Pipelines image repository
     repository: presemantic/public/images/opsolving-app-pipelines
     ## @param pipelines.image.tag App Pipelines image tag
-    tag: "2026-08-12.01-11-43.ca84678"
+    tag: "2026-08-12.13-07-29.218dc08"
     ## @param pipelines.image.digest App Pipelines image digest
-    digest: "sha256:b03f1b16f45b147f4000da1ca338bb64bcdbd27122837e1150260c63a23e53ab"
+    digest: "sha256:d04f272e9cbe1abd5deb485dc5c4ebf620bf92d186d4653e668173282d19587f"
     ## @param pipelines.image.pullPolicy App Pipelines image pull policy
     pullPolicy: IfNotPresent
     ## @param pipelines.image.pullSecrets App Pipelines image pull secrets
