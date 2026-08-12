@@ -20,7 +20,7 @@ APISIX is the only application-routing authority. It runs as a two-or-more-repli
 
 Runtime configuration containing credentials is rendered to component-specific Secrets mounted read-only at `/app/config.yaml`. VCS and Scheduler credentials are inline config entries referenced by name from their `sources`; static Scheduler and Pipelines worker tokens are unsupported, and their internal calls use request-bound license capabilities. App API, migration, and Pipelines must use the same chart-derived main and Tables database URLs. Embedded URLs use `sslmode=disable`; explicit external URLs retain their configured TLS mode. PostgreSQL resources run in Argo wave `-20`, migration dependencies in wave `-11`, and the blocking migration Job in wave `-10`.
 
-Connector-backed egress is disabled by default for every App component. An environment that installs the standalone Connector must explicitly set each participating component's `config.connector.enabled` value and its environment-specific Relay URL; the chart must not infer Connector usage from nested source or credential fields.
+Connector-backed egress is disabled by default for every App component. An environment that installs the standalone Connector must explicitly set each participating component's `config.connector.enabled` value and its environment-specific Relay URL; the chart must not infer Connector usage from nested source or credential fields. Customer-facing defaults use `https://edge.opsolving.ai` for license verification and Connector grants and `https://relay.opsolving.ai` for Connector client transport.
 
 ## Compatibility
 

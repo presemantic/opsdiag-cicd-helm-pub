@@ -2,7 +2,7 @@ apiVersion: v2
 name: opsolving-app
 description: Complete Opsolving application stack
 type: application
-version: 1.0.7
+version: 1.0.8
 appVersion: "2026-08-12.01-39-48"
 dependencies:
   - name: common

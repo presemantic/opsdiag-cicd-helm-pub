@@ -427,7 +427,7 @@ api:
     ## @param api.config.license App API license
     license: ""
     ## @param api.config.licenseServer Control Edge origin used for App API license verification
-    licenseServer: https://edge.control.opsolving.ai
+    licenseServer: https://edge.opsolving.ai
     ## @param api.config.database App API PostgreSQL connection settings
     database:
       ## @param api.config.database.url PostgreSQL connection URL
@@ -689,7 +689,7 @@ agent:
     ## @param agent.config.license App Agent license
     license: ""
     ## @param agent.config.licenseServer Control Edge origin used for App Agent license verification
-    licenseServer: https://edge.control.opsolving.ai
+    licenseServer: https://edge.opsolving.ai
     ## @param agent.config.runtime App Agent runtime settings
     runtime:
       ## @param agent.config.runtime.callbackBaseUrl Internal App API callback origin; rendered from the Helm release name
@@ -711,7 +711,7 @@ agent:
       ## @param agent.config.connector.license Connector client license
       license: ""
       ## @param agent.config.connector.licenseServer Control Edge origin used to exchange the Connector client license for short-lived transport grants
-      licenseServer: https://edge.control.opsolving.ai
+      licenseServer: https://edge.opsolving.ai
 
   ## Additional App Agent deployment settings
   ##
@@ -919,7 +919,7 @@ mcp-proxy:
     ## @param mcp-proxy.config.license App MCP Proxy license
     license: ""
     ## @param mcp-proxy.config.licenseServer Control Edge origin used for license verification
-    licenseServer: https://edge.control.opsolving.ai
+    licenseServer: https://edge.opsolving.ai
     ## @param mcp-proxy.config.proxy App MCP Proxy upstream settings
     proxy:
       ## @param mcp-proxy.config.proxy.upstreamUrl Internal App Agent MCP URL; rendered from the Helm release name
@@ -1126,7 +1126,7 @@ vcs:
     ## @param vcs.config.license App license used by App VCS
     license: ""
     ## @param vcs.config.licenseServer Control Edge origin used for license and capability verification
-    licenseServer: https://edge.control.opsolving.ai
+    licenseServer: https://edge.opsolving.ai
     ## @param vcs.config.appApi Internal App API callback settings
     appApi:
       ## @param vcs.config.appApi.url Internal App API URL; rendered from the Helm release name
@@ -1140,7 +1140,7 @@ vcs:
       ## @param vcs.config.connector.license Connector client license used only for encrypted transport grants; empty inherits the existing App Agent Connector license
       license: ""
       ## @param vcs.config.connector.licenseServer Control Edge origin used to exchange the Connector client license for short-lived transport grants
-      licenseServer: https://edge.control.opsolving.ai
+      licenseServer: https://edge.opsolving.ai
     ## @param vcs.config.webhookMasterKey Secret key used to derive per-reviewer webhook secrets
     webhookMasterKey: ""
     ## @param vcs.config.credentials VCS credentials referenced by review sources
@@ -1500,7 +1500,7 @@ pipelines:
     ## @param pipelines.config.license App Pipelines license
     license: ""
     ## @param pipelines.config.licenseServer Control Edge origin used for license verification
-    licenseServer: https://edge.control.opsolving.ai
+    licenseServer: https://edge.opsolving.ai
     ## @param pipelines.config.database App Pipelines database configuration
     database:
       ## @param pipelines.config.database.url PostgreSQL URL shared with App API
@@ -1520,7 +1520,7 @@ pipelines:
       ## @param pipelines.config.connector.license Connector client license used only for encrypted transport grants; empty inherits the existing App Agent Connector license
       license: ""
       ## @param pipelines.config.connector.licenseServer Control Edge origin used to exchange the Connector client license for short-lived transport grants
-      licenseServer: https://edge.control.opsolving.ai
+      licenseServer: https://edge.opsolving.ai
     ## @param pipelines.config.runtime App Pipelines runtime bounds
     runtime:
       ## @param pipelines.config.runtime.readHeaderTimeoutSeconds HTTP read-header timeout
@@ -1711,7 +1711,7 @@ sched:
     ## @param sched.config.license App Scheduler license
     license: ""
     ## @param sched.config.licenseServer Control Edge origin used for App Scheduler license verification
-    licenseServer: https://edge.control.opsolving.ai
+    licenseServer: https://edge.opsolving.ai
     ## @param sched.config.connector Encrypted Connector transport settings for Opsgenie and PagerDuty provider requests
     connector:
       ## @param sched.config.connector.enabled Route all external Scheduler provider requests through Connector
@@ -1721,7 +1721,7 @@ sched:
       ## @param sched.config.connector.license Connector client license used only for encrypted transport grants; empty inherits the existing App Agent Connector license
       license: ""
       ## @param sched.config.connector.licenseServer Control Edge origin used to exchange the Connector client license for short-lived transport grants
-      licenseServer: https://edge.control.opsolving.ai
+      licenseServer: https://edge.opsolving.ai
     ## @param sched.config.runtime App Scheduler runtime settings
     runtime:
       ## @param sched.config.runtime.readHeaderTimeoutSeconds Scheduler HTTP read-header timeout
