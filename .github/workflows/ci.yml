@@ -122,6 +122,7 @@ jobs:
           if [ "${CHART}" = "opsolving-app" ]; then
             helm lint "${CHART}" --values "${CHART}/ci-values.yaml"
             helm template "${CHART}" "${CHART}" --namespace prod-opsolving-app --values "${CHART}/ci-values.yaml" > "/tmp/${CHART}.yaml"
+            helm template "${CHART}" "${CHART}" --namespace prod-opsolving-app --values "${CHART}/ci-values.yaml" --api-versions security.openshift.io/v1 > "/tmp/${CHART}-openshift.yaml"
           else
             helm lint "${CHART}"
             helm template "${CHART}" "${CHART}" --namespace prod-opsolving-app-connector > "/tmp/${CHART}.yaml"
@@ -146,6 +147,21 @@ jobs:
               abort("Deployment #{deployment.dig("metadata", "name")} selector does not match pod labels: #{missing}") unless missing.empty?
             end
           '
+
+          if [ "${CHART}" = "opsolving-app" ]; then
+            ruby -ryaml -e '
+              fixed_id_keys = %w[runAsUser runAsGroup fsGroup]
+              workloads = YAML.load_stream(File.read("/tmp/#{ENV.fetch("CHART")}-openshift.yaml")).compact.select do |document|
+                %w[Deployment StatefulSet Job].include?(document["kind"])
+              end
+              workloads.each do |workload|
+                pod_spec = workload.dig("spec", "template", "spec") || {}
+                contexts = [pod_spec["securityContext"]] + pod_spec.fetch("containers", []).map { |container| container["securityContext"] }
+                fixed = contexts.compact.flat_map { |context| context.keys & fixed_id_keys }
+                abort("#{workload["kind"]}/#{workload.dig("metadata", "name")} retains fixed OpenShift security IDs: #{fixed.uniq.join(", ")}") unless fixed.empty?
+              end
+            '
+          fi
 
   build:
     if: github.event_name == 'workflow_dispatch' || github.ref_type == 'tag'

@@ -10,6 +10,12 @@ global:
   imagePullSecrets: []
   ## @param global.externalURL Optional canonical external App origin used as the OAuth issuer; when empty it is derived from the enabled OpenShift Route, Ingress, or Istio exposure
   externalURL: ""
+  ## OpenShift compatibility settings
+  ##
+  compatibility:
+    openshift:
+      ## @param global.compatibility.openshift.adaptSecurityContext Adapt fixed user and group IDs to the OpenShift restricted SCC; `auto` detects OpenShift from cluster capabilities
+      adaptSecurityContext: auto
 
 ## Common chart parameters
 ##

@@ -33,7 +33,7 @@ spec:
       {{- include "common.images.renderPullSecrets" (dict "images" (list .Values.pipelines.image) "context" .) | nindent 6 }}
       {{- if .Values.pipelines.podSecurityContext.enabled }}
       securityContext:
-        {{- omit .Values.pipelines.podSecurityContext "enabled" | toYaml | nindent 8 }}
+        {{- include "common.compatibility.renderSecurityContext" (dict "secContext" .Values.pipelines.podSecurityContext "context" $) | nindent 8 }}
       {{- end }}
       {{- with .Values.pipelines.priorityClassName }}
       priorityClassName: {{ . | quote }}
@@ -78,7 +78,7 @@ spec:
           imagePullPolicy: {{ .Values.pipelines.image.pullPolicy }}
           {{- if .Values.pipelines.containerSecurityContext.enabled }}
           securityContext:
-            {{- omit .Values.pipelines.containerSecurityContext "enabled" | toYaml | nindent 12 }}
+            {{- include "common.compatibility.renderSecurityContext" (dict "secContext" .Values.pipelines.containerSecurityContext "context" $) | nindent 12 }}
           {{- end }}
           ports:
             - name: http

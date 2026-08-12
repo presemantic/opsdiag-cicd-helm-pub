@@ -40,7 +40,7 @@ spec:
       {{- include "common.images.renderPullSecrets" (dict "images" (list .Values.pgsql.image) "context" .) | nindent 6 }}
       {{- if .Values.pgsql.primary.podSecurityContext.enabled }}
       securityContext:
-        {{- omit .Values.pgsql.primary.podSecurityContext "enabled" | toYaml | nindent 8 }}
+        {{- include "common.compatibility.renderSecurityContext" (dict "secContext" .Values.pgsql.primary.podSecurityContext "context" $) | nindent 8 }}
       {{- end }}
       {{- with .Values.pgsql.primary.priorityClassName }}
       priorityClassName: {{ . | quote }}
@@ -55,7 +55,7 @@ spec:
           imagePullPolicy: {{ .Values.pgsql.image.pullPolicy }}
           {{- if .Values.pgsql.primary.containerSecurityContext.enabled }}
           securityContext:
-            {{- omit .Values.pgsql.primary.containerSecurityContext "enabled" | toYaml | nindent 12 }}
+            {{- include "common.compatibility.renderSecurityContext" (dict "secContext" .Values.pgsql.primary.containerSecurityContext "context" $) | nindent 12 }}
           {{- end }}
           env:
             - name: POSTGRES_USER
