@@ -289,8 +289,10 @@ jobs:
 
             helm template "${{ matrix.chart }}" "${chart}" --namespace prod-opsolving-app --values "${chart}/ci-values.yaml" > "${rendered}"
             grep -q 'image: "registry-1.docker.io/library/postgres:18"' "${rendered}"
-            grep -q 'name: "opsolving-app-pgsql-v18"' "${rendered}"
-            grep -q 'name: "opsolving-app-pgsql-tables-v18"' "${rendered}"
+            grep -q 'name: "opsolving-app-pgsql"' "${rendered}"
+            grep -q 'name: "opsolving-app-pgsql-tables"' "${rendered}"
+            ! grep -q 'name: "opsolving-app-pgsql-v18"' "${rendered}"
+            ! grep -q 'name: "opsolving-app-pgsql-tables-v18"' "${rendered}"
             test "$(grep -c '^kind: StatefulSet$' "${rendered}")" -eq 2
           else
             helm template "${{ matrix.chart }}" "${chart}" --namespace prod-opsolving-app-connector > "${rendered}"

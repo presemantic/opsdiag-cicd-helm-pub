@@ -3,7 +3,7 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ printf "%s-v18" (include "opsolving-app.pgsqlTables.fullname" .) | trunc 63 | trimSuffix "-" | quote }}
+  name: {{ include "opsolving-app.pgsqlTables.fullname" . | quote }}
   namespace: {{ include "common.names.namespace" . | quote }}
   labels:
     {{- include "opsolving-app.pgsqlTables.labels" . | nindent 4 }}
