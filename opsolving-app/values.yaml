@@ -400,7 +400,19 @@ pgsql-tables:
 ## @param api App API component settings
 api:
   ## @param api.replicaCount Number of App API replicas
-  replicaCount: 2
+  replicaCount: 1
+  ## App API autoscaling parameters
+  autoscaling:
+    ## @param api.autoscaling.enabled Enable HorizontalPodAutoscaler
+    enabled: false
+    ## @param api.autoscaling.minReplicas Minimum number of replicas
+    minReplicas: 1
+    ## @param api.autoscaling.maxReplicas Maximum number of replicas
+    maxReplicas: 10
+    ## @param api.autoscaling.targetCPUUtilizationPercentage Target average CPU utilization
+    targetCPUUtilizationPercentage: 80
+    ## @param api.autoscaling.targetMemoryUtilizationPercentage Target average memory utilization; empty disables the memory metric
+    targetMemoryUtilizationPercentage: ""
   ## @param api.revisionHistoryLimit Number of previous ReplicaSets retained for rollback
   revisionHistoryLimit: 10
 
@@ -673,6 +685,18 @@ api:
 agent:
   ## @param agent.replicaCount Number of App Agent replicas
   replicaCount: 1
+  ## App Agent autoscaling parameters
+  autoscaling:
+    ## @param agent.autoscaling.enabled Enable HorizontalPodAutoscaler
+    enabled: false
+    ## @param agent.autoscaling.minReplicas Minimum number of replicas
+    minReplicas: 1
+    ## @param agent.autoscaling.maxReplicas Maximum number of replicas
+    maxReplicas: 10
+    ## @param agent.autoscaling.targetCPUUtilizationPercentage Target average CPU utilization
+    targetCPUUtilizationPercentage: 80
+    ## @param agent.autoscaling.targetMemoryUtilizationPercentage Target average memory utilization; empty disables the memory metric
+    targetMemoryUtilizationPercentage: ""
   ## @param agent.revisionHistoryLimit Number of previous App Agent ReplicaSets retained for rollback
   revisionHistoryLimit: 10
 
@@ -917,6 +941,18 @@ agent:
 mcp-proxy:
   ## @param mcp-proxy.replicaCount Number of App MCP Proxy replicas
   replicaCount: 1
+  ## App MCP Proxy autoscaling parameters
+  autoscaling:
+    ## @param mcp-proxy.autoscaling.enabled Enable HorizontalPodAutoscaler
+    enabled: false
+    ## @param mcp-proxy.autoscaling.minReplicas Minimum number of replicas
+    minReplicas: 1
+    ## @param mcp-proxy.autoscaling.maxReplicas Maximum number of replicas
+    maxReplicas: 10
+    ## @param mcp-proxy.autoscaling.targetCPUUtilizationPercentage Target average CPU utilization
+    targetCPUUtilizationPercentage: 80
+    ## @param mcp-proxy.autoscaling.targetMemoryUtilizationPercentage Target average memory utilization; empty disables the memory metric
+    targetMemoryUtilizationPercentage: ""
   ## @param mcp-proxy.revisionHistoryLimit Number of previous App MCP Proxy ReplicaSets retained for rollback
   revisionHistoryLimit: 10
 
@@ -1133,6 +1169,18 @@ mcp-proxy:
 vcs:
   ## @param vcs.replicaCount Number of App VCS replicas
   replicaCount: 1
+  ## App VCS autoscaling parameters
+  autoscaling:
+    ## @param vcs.autoscaling.enabled Enable HorizontalPodAutoscaler
+    enabled: false
+    ## @param vcs.autoscaling.minReplicas Minimum number of replicas
+    minReplicas: 1
+    ## @param vcs.autoscaling.maxReplicas Maximum number of replicas
+    maxReplicas: 10
+    ## @param vcs.autoscaling.targetCPUUtilizationPercentage Target average CPU utilization
+    targetCPUUtilizationPercentage: 80
+    ## @param vcs.autoscaling.targetMemoryUtilizationPercentage Target average memory utilization; empty disables the memory metric
+    targetMemoryUtilizationPercentage: ""
   ## @param vcs.revisionHistoryLimit Number of old ReplicaSets retained by the Deployment
   revisionHistoryLimit: 10
   ## @param vcs.image App VCS image settings
@@ -1346,6 +1394,18 @@ vcs:
 front:
   ## @param front.replicaCount Number of App Frontend replicas
   replicaCount: 1
+  ## App Frontend autoscaling parameters
+  autoscaling:
+    ## @param front.autoscaling.enabled Enable HorizontalPodAutoscaler
+    enabled: false
+    ## @param front.autoscaling.minReplicas Minimum number of replicas
+    minReplicas: 1
+    ## @param front.autoscaling.maxReplicas Maximum number of replicas
+    maxReplicas: 10
+    ## @param front.autoscaling.targetCPUUtilizationPercentage Target average CPU utilization
+    targetCPUUtilizationPercentage: 80
+    ## @param front.autoscaling.targetMemoryUtilizationPercentage Target average memory utilization; empty disables the memory metric
+    targetMemoryUtilizationPercentage: ""
   ## @param front.revisionHistoryLimit Number of previous App Frontend ReplicaSets retained for rollback
   revisionHistoryLimit: 10
 
@@ -1529,6 +1589,18 @@ front:
 pipelines:
   ## @param pipelines.replicaCount Number of App Pipelines replicas
   replicaCount: 1
+  ## App Pipelines autoscaling parameters
+  autoscaling:
+    ## @param pipelines.autoscaling.enabled Enable HorizontalPodAutoscaler
+    enabled: false
+    ## @param pipelines.autoscaling.minReplicas Minimum number of replicas
+    minReplicas: 1
+    ## @param pipelines.autoscaling.maxReplicas Maximum number of replicas
+    maxReplicas: 10
+    ## @param pipelines.autoscaling.targetCPUUtilizationPercentage Target average CPU utilization
+    targetCPUUtilizationPercentage: 80
+    ## @param pipelines.autoscaling.targetMemoryUtilizationPercentage Target average memory utilization; empty disables the memory metric
+    targetMemoryUtilizationPercentage: ""
   ## @param pipelines.revisionHistoryLimit Number of retained App Pipelines ReplicaSets
   revisionHistoryLimit: 10
   ## @param pipelines.image App Pipelines image settings
@@ -1737,6 +1809,18 @@ pipelines:
 sched:
   ## @param sched.replicaCount Number of App Scheduler replicas
   replicaCount: 1
+  ## App Scheduler autoscaling parameters
+  autoscaling:
+    ## @param sched.autoscaling.enabled Enable HorizontalPodAutoscaler
+    enabled: false
+    ## @param sched.autoscaling.minReplicas Minimum number of replicas
+    minReplicas: 1
+    ## @param sched.autoscaling.maxReplicas Maximum number of replicas
+    maxReplicas: 10
+    ## @param sched.autoscaling.targetCPUUtilizationPercentage Target average CPU utilization
+    targetCPUUtilizationPercentage: 80
+    ## @param sched.autoscaling.targetMemoryUtilizationPercentage Target average memory utilization; empty disables the memory metric
+    targetMemoryUtilizationPercentage: ""
   ## @param sched.revisionHistoryLimit Number of previous App Scheduler ReplicaSets retained for rollback
   revisionHistoryLimit: 10
 
@@ -2073,8 +2157,8 @@ gateway:
 
 ## @param apisix Official Apache APISIX chart configuration; standalone safety invariants are enforced by opsolving-app templates
 apisix:
-  ## @param apisix.replicaCount APISIX Deployment replicas; at least two are required
-  replicaCount: 2
+  ## @param apisix.replicaCount APISIX Deployment replicas when autoscaling is disabled
+  replicaCount: 1
   ## @param apisix.useDaemonSet Must remain false so APISIX runs as a Deployment
   useDaemonSet: false
   ## @param apisix.nameOverride Optional partial APISIX resource-name override
@@ -2102,10 +2186,20 @@ apisix:
       ## @param apisix.updateStrategy.rollingUpdate.maxUnavailable Maximum unavailable APISIX pods during an update
       maxUnavailable: 0
 
-  ## @param apisix.autoscaling APISIX autoscaling settings; autoscaling must remain disabled
+  ## APISIX autoscaling settings
   autoscaling:
-    ## @param apisix.autoscaling.enabled Must remain false so the enforced replica floor is deterministic
+    ## @param apisix.autoscaling.enabled Enable HorizontalPodAutoscaler
     enabled: false
+    ## @param apisix.autoscaling.version HPA API version
+    version: v2
+    ## @param apisix.autoscaling.minReplicas Minimum number of replicas
+    minReplicas: 1
+    ## @param apisix.autoscaling.maxReplicas Maximum number of replicas
+    maxReplicas: 10
+    ## @param apisix.autoscaling.targetCPUUtilizationPercentage Target average CPU utilization
+    targetCPUUtilizationPercentage: 80
+    ## @param apisix.autoscaling.targetMemoryUtilizationPercentage Target average memory utilization
+    targetMemoryUtilizationPercentage: 80
 
   ## @param apisix.podSecurityContext APISIX pod security context
   podSecurityContext:

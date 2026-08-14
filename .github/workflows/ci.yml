@@ -123,6 +123,15 @@ jobs:
             helm lint "${CHART}" --values "${CHART}/ci-values.yaml"
             helm template "${CHART}" "${CHART}" --namespace prod-opsolving-app --values "${CHART}/ci-values.yaml" > "/tmp/${CHART}.yaml"
             helm template "${CHART}" "${CHART}" --namespace prod-opsolving-app --values "${CHART}/ci-values.yaml" --api-versions security.openshift.io/v1 > "/tmp/${CHART}-openshift.yaml"
+            helm template "${CHART}" "${CHART}" --namespace prod-opsolving-app --values "${CHART}/ci-values.yaml" \
+              --set api.autoscaling.enabled=true \
+              --set agent.autoscaling.enabled=true \
+              --set mcp-proxy.autoscaling.enabled=true \
+              --set vcs.autoscaling.enabled=true \
+              --set front.autoscaling.enabled=true \
+              --set pipelines.autoscaling.enabled=true \
+              --set sched.autoscaling.enabled=true \
+              --set apisix.autoscaling.enabled=true > "/tmp/${CHART}-autoscaling.yaml"
           else
             helm lint "${CHART}"
             helm template "${CHART}" "${CHART}" --namespace prod-opsolving-app-connector > "/tmp/${CHART}.yaml"
@@ -165,6 +174,21 @@ jobs:
               abort("#{workload["kind"]}/#{workload.dig("metadata", "name")} retains fixed OpenShift security IDs: #{fixed.uniq.join(", ")}") unless fixed.empty?
             end
           '
+
+          if [ "${CHART}" = "opsolving-app" ]; then
+            ruby -ryaml -e '
+              documents = YAML.load_stream(File.read("/tmp/opsolving-app-autoscaling.yaml")).compact
+              deployments = documents.select { |document| document["kind"] == "Deployment" }.to_h { |document| [document.dig("metadata", "name"), document] }
+              hpas = documents.select { |document| document["kind"] == "HorizontalPodAutoscaler" }
+              abort("expected eight HorizontalPodAutoscalers, got #{hpas.length}") unless hpas.length == 8
+              hpas.each do |hpa|
+                target_name = hpa.dig("spec", "scaleTargetRef", "name")
+                deployment = deployments.fetch(target_name)
+                abort("autoscaled Deployment #{target_name} must omit spec.replicas") if deployment.fetch("spec").key?("replicas")
+                abort("invalid HPA range for #{target_name}") unless hpa.dig("spec", "minReplicas") == 1 && hpa.dig("spec", "maxReplicas") == 10
+              end
+            '
+          fi
 
   build:
     if: github.event_name == 'workflow_dispatch' || github.ref_type == 'tag'

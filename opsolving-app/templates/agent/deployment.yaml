@@ -11,7 +11,9 @@ metadata:
     {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
   {{- end }}
 spec:
+  {{- if not .Values.agent.autoscaling.enabled }}
   replicas: {{ .Values.agent.replicaCount }}
+  {{- end }}
   revisionHistoryLimit: {{ .Values.agent.revisionHistoryLimit }}
   strategy:
     {{- include "common.tplvalues.render" (dict "value" .Values.agent.updateStrategy "context" .) | nindent 4 }}

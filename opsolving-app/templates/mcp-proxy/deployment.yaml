@@ -11,7 +11,9 @@ metadata:
     {{- include "common.tplvalues.render" (dict "value" . "context" $) | nindent 4 }}
   {{- end }}
 spec:
+  {{- if not (index .Values "mcp-proxy").autoscaling.enabled }}
   replicas: {{ (index .Values "mcp-proxy").replicaCount }}
+  {{- end }}
   revisionHistoryLimit: {{ (index .Values "mcp-proxy").revisionHistoryLimit }}
   strategy:
     {{- include "common.tplvalues.render" (dict "value" (index .Values "mcp-proxy").updateStrategy "context" .) | nindent 4 }}

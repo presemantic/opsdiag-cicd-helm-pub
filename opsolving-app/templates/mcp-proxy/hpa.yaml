@@ -1,0 +1,34 @@
+{{/* Copyright Opsolving. All Rights Reserved. SPDX-License-Identifier: APACHE-2.0 */}}
+{{- if (index .Values "mcp-proxy").autoscaling.enabled }}
+apiVersion: {{ include "common.capabilities.hpa.apiVersion" (dict "context" .) }}
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "opsolving-app.componentName" (dict "root" . "component" "mcp-proxy") }}
+  namespace: {{ include "common.names.namespace" . | quote }}
+  labels:
+    {{- include "opsolving-app.podLabels" (dict "root" . "component" "mcp-proxy") | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "opsolving-app.componentName" (dict "root" . "component" "mcp-proxy") }}
+  minReplicas: {{ (index .Values "mcp-proxy").autoscaling.minReplicas }}
+  maxReplicas: {{ (index .Values "mcp-proxy").autoscaling.maxReplicas }}
+  metrics:
+    {{- with (index .Values "mcp-proxy").autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ . }}
+    {{- end }}
+    {{- with (index .Values "mcp-proxy").autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ . }}
+    {{- end }}
+{{- end }}

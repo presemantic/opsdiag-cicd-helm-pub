@@ -1,18 +1,12 @@
 {{/* Copyright Opsolving. All Rights Reserved. SPDX-License-Identifier: Apache-2.0 */}}
 
-{{/* Validate the fixed standalone APISIX deployment and application routing contract. */}}
+{{/* Validate the standalone APISIX deployment and application routing contract. */}}
 {{- define "opsolving-app.validateApisix" -}}
 {{- if .Values.apisix.useDaemonSet -}}
 {{- fail "opsolving-app requires APISIX to run as a Deployment; apisix.useDaemonSet must be false" -}}
 {{- end -}}
-{{- if .Values.apisix.autoscaling.enabled -}}
-{{- fail "opsolving-app owns a fixed highly available APISIX Deployment; apisix.autoscaling.enabled must be false" -}}
-{{- end -}}
 {{- if .Values.apisix.rbac.create -}}
 {{- fail "standalone APISIX must not receive Kubernetes API permissions; apisix.rbac.create must be false" -}}
-{{- end -}}
-{{- if lt (int .Values.apisix.replicaCount) 2 -}}
-{{- fail "opsolving-app requires at least two APISIX replicas" -}}
 {{- end -}}
 {{- if ne .Values.apisix.service.type "ClusterIP" -}}
 {{- fail "APISIX must remain internal; apisix.service.type must be ClusterIP" -}}

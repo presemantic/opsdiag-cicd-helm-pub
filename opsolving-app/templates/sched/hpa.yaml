@@ -1,0 +1,34 @@
+{{/* Copyright Opsolving. All Rights Reserved. SPDX-License-Identifier: APACHE-2.0 */}}
+{{- if .Values.sched.autoscaling.enabled }}
+apiVersion: {{ include "common.capabilities.hpa.apiVersion" (dict "context" .) }}
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "opsolving-app.componentName" (dict "root" . "component" "sched") }}
+  namespace: {{ include "common.names.namespace" . | quote }}
+  labels:
+    {{- include "opsolving-app.podLabels" (dict "root" . "component" "sched") | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "opsolving-app.componentName" (dict "root" . "component" "sched") }}
+  minReplicas: {{ .Values.sched.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.sched.autoscaling.maxReplicas }}
+  metrics:
+    {{- with .Values.sched.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ . }}
+    {{- end }}
+    {{- with .Values.sched.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ . }}
+    {{- end }}
+{{- end }}
