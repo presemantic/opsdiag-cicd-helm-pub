@@ -486,6 +486,8 @@ api:
     vcs:
       ## @param api.config.vcs.url Internal App VCS URL; rendered from the Helm release name
       url: 'http://{{ include "opsolving-app.componentName" (dict "root" . "component" "vcs") }}:{{ .Values.vcs.service.ports.http }}'
+      ## @param api.config.vcs.webhookBaseUrl Optional public HTTPS origin used only for provider webhook callbacks; empty falls back to the OAuth issuer
+      webhookBaseUrl: ""
 
   ## Additional App API deployment settings
   ##
