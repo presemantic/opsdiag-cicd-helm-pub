@@ -19,10 +19,6 @@ global:
 
 ## Common chart parameters
 ##
-## @param nameOverride String to partially override the chart name
-nameOverride: ""
-## @param fullnameOverride String to fully override generated resource names
-fullnameOverride: ""
 ## @param namespaceOverride String to fully override the release namespace
 namespaceOverride: ""
 ## @param commonLabels Labels to add to every deployed resource
@@ -41,10 +37,6 @@ commonAnnotations: {}
 pgsql:
   ## @param pgsql.enabled Deploy the main App PostgreSQL instance
   enabled: true
-  ## @param pgsql.nameOverride String to partially override the main PostgreSQL name
-  nameOverride: ""
-  ## @param pgsql.fullnameOverride String to fully override the main PostgreSQL name
-  fullnameOverride: ""
   ## @param pgsql.image Official PostgreSQL container image settings
   image:
     ## @param pgsql.image.registry Official PostgreSQL image registry
@@ -220,10 +212,6 @@ pgsql:
 pgsql-tables:
   ## @param pgsql-tables.enabled Deploy the dedicated Pipeline Tables PostgreSQL instance
   enabled: true
-  ## @param pgsql-tables.nameOverride String to partially override the Pipeline Tables PostgreSQL name
-  nameOverride: ""
-  ## @param pgsql-tables.fullnameOverride String to fully override the Pipeline Tables PostgreSQL name
-  fullnameOverride: ""
   ## @param pgsql-tables.image Official PostgreSQL container image settings
   image:
     ## @param pgsql-tables.image.registry Official PostgreSQL image registry
@@ -2163,10 +2151,6 @@ apisix:
   replicaCount: 1
   ## @param apisix.useDaemonSet Must remain false so APISIX runs as a Deployment
   useDaemonSet: false
-  ## @param apisix.nameOverride Optional partial APISIX resource-name override
-  nameOverride: ""
-  ## @param apisix.fullnameOverride Optional complete APISIX resource-name override
-  fullnameOverride: ""
 
   ## @param apisix.image Official APISIX container image settings
   image:

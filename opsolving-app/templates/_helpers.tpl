@@ -37,13 +37,7 @@ app.kubernetes.io/managed-by: {{ .root.Release.Service | quote }}
 {{- end -}}
 
 {{- define "opsolving-app.pgsql.fullname" -}}
-{{- if .Values.pgsql.fullnameOverride -}}
-{{- .Values.pgsql.fullnameOverride | trunc 63 | trimSuffix "-" -}}
-{{- else if contains (default "pgsql" .Values.pgsql.nameOverride) .Release.Name -}}
-{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- printf "%s-%s" .Release.Name (default "pgsql" .Values.pgsql.nameOverride) | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
+{{- printf "%s-pgsql" .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{- define "opsolving-app.pgsql.secretName" -}}
@@ -96,13 +90,7 @@ app.kubernetes.io/part-of: {{ include "common.names.fullname" . | quote }}
 {{- end -}}
 
 {{- define "opsolving-app.pgsqlTables.fullname" -}}
-{{- if (index .Values "pgsql-tables").fullnameOverride -}}
-{{- (index .Values "pgsql-tables").fullnameOverride | trunc 63 | trimSuffix "-" -}}
-{{- else if contains (default "pgsql-tables" (index .Values "pgsql-tables").nameOverride) .Release.Name -}}
-{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- printf "%s-%s" .Release.Name (default "pgsql-tables" (index .Values "pgsql-tables").nameOverride) | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
+{{- printf "%s-pgsql-tables" .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{- define "opsolving-app.pgsqlTables.secretName" -}}
@@ -172,17 +160,7 @@ app.kubernetes.io/part-of: {{ include "common.names.fullname" . | quote }}
 {{- end -}}
 
 {{- define "opsolving-app.apisixFullname" -}}
-{{- $values := .Values.apisix -}}
-{{- if $values.fullnameOverride -}}
-{{- $values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- $name := default "apisix" $values.nameOverride -}}
-{{- if contains $name .Release.Name -}}
-{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
-{{- else -}}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-{{- end -}}
+{{- printf "%s-apisix" .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{- define "opsolving-app.apisixServiceName" -}}
